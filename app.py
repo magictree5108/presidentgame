@@ -5,12 +5,12 @@ import base64
 import os
 
 # -----------------------------------------------------------------------------
-# [설정] 페이지 기본 설정
+# [설정] 페이지 기본 설정 (가장 먼저 실행)
 # -----------------------------------------------------------------------------
 st.set_page_config(page_title="미스터 프레지던트", layout="centered")
 
 # -----------------------------------------------------------------------------
-# [설정] 파일 경로 (GitHub 배포용)
+# [설정] 파일 경로
 # -----------------------------------------------------------------------------
 FILE_BGM = "bgm.mp3"
 FILE_BG = "background.jpg"
@@ -18,7 +18,9 @@ FILE_EMBLEM = "emblem.jpg"
 
 ARCHS = ["자본가", "중산층", "노동자", "빈곤층"]
 
-# [함수] 로컬 파일 -> Base64 변환
+# -----------------------------------------------------------------------------
+# [함수] 유틸리티 및 렌더링 함수 정의 (여기에 모두 모음)
+# -----------------------------------------------------------------------------
 def get_base64_file(bin_file):
     if os.path.exists(bin_file):
         try:
@@ -29,7 +31,6 @@ def get_base64_file(bin_file):
             return None
     return None
 
-# [함수] BGM 재생기
 def render_bgm():
     b64 = get_base64_file(FILE_BGM)
     if b64:
@@ -42,7 +43,6 @@ def render_bgm():
             </div>
         """, unsafe_allow_html=True)
 
-# [함수] 배경 이미지 렌더링
 def render_background():
     b64 = get_base64_file(FILE_BG)
     if b64:
@@ -51,20 +51,19 @@ def render_background():
             unsafe_allow_html=True
         )
 
-# [함수] 명패 이미지 태그 (★ 누락되었던 함수 복구 완료!)
+# ★ [오류 해결] 이 함수가 누락되어 있었습니다. 복구 완료!
 def get_emblem_tag():
     b64 = get_base64_file(FILE_EMBLEM)
     if b64:
         return f'<img src="data:image/jpeg;base64,{b64}" class="phoenix-logo">'
     else:
-        # 파일 없으면 태극기 이모지 사용 (중앙 정렬)
+        # 파일이 없으면 깔끔한 태극기 이모티콘 리턴
         return '<div style="font-size: 60px; margin-bottom: 10px;">🇰🇷</div>'
 
-# [함수] 이름 업데이트 콜백
 def update_name():
     st.session_state.player_name = st.session_state.temp_name
 
-# [함수] 이벤트 이미지 로더
+# 깃허브에 crisis_0.jpg 등이 있으면 그걸 쓰고, 없으면 웹 이미지를 씁니다.
 def get_crisis_image(idx, default_url):
     local_filename = f"crisis_{idx}.jpg"
     if os.path.exists(local_filename):
@@ -72,7 +71,7 @@ def get_crisis_image(idx, default_url):
     return default_url
 
 # -----------------------------------------------------------------------------
-# [데이터 1] 계층별 상세 설명
+# [데이터 1] 계층별 상세 설명 (내용 유지)
 # -----------------------------------------------------------------------------
 ARCH_DESC = {
     "자본가": """
@@ -102,7 +101,7 @@ ARCH_DESC = {
 }
 
 # -----------------------------------------------------------------------------
-# [데이터 2] 15개 시나리오 (이미지 수정됨)
+# [데이터 2] 15개 시나리오 (이미지 고증 수정 및 상세 설명 유지)
 # -----------------------------------------------------------------------------
 CRISES_POOL = [
     {
@@ -376,12 +375,11 @@ st.markdown("""
     <style>
         .nameplate {
             background-color: #003478; border: 4px solid #c2a042;
-            padding: 20px; border-radius: 10px; text-align: center;
+            padding: 15px; border-radius: 10px; text-align: center;
             margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            display: flex; flex-direction: column; align-items: center;
         }
-        .nameplate h3 { color: #c2a042 !important; margin: 0; font-weight: bold; font-size: 1.5rem; letter-spacing: 2px; }
-        .nameplate h1 { color: white !important; margin: 5px 0 0 0; font-family: 'serif'; font-size: 2.8rem; font-weight: bold; text-shadow: 2px 2px 4px black; }
+        .nameplate h4 { color: #c2a042 !important; margin: 0; font-weight: bold; font-size: 1.1rem; letter-spacing: 2px; }
+        .nameplate h2 { color: white !important; margin: 5px 0 0 0; font-family: 'serif'; font-size: 2.0rem; font-weight: bold; text-shadow: 2px 2px 4px black; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -389,8 +387,8 @@ emblem_tag = get_emblem_tag()
 st.markdown(f'''
 <div class="nameplate">
     {emblem_tag}
-    <h3>대한민국 대통령</h3>
-    <h1>{st.session_state.player_name}</h1>
+    <h4>대한민국 대통령</h4>
+    <h2>{st.session_state.player_name}</h2>
 </div>
 ''', unsafe_allow_html=True)
 
@@ -413,7 +411,7 @@ with st.sidebar:
             st.markdown(f"{v}")
             st.markdown("---")
 
-# HUD (진행 상황 추가)
+# HUD
 cols = st.columns(5)
 cols[0].metric("국고", f"{st.session_state.budget}조")
 for i, a in enumerate(ARCHS):
@@ -452,6 +450,7 @@ if st.session_state.game_over:
         else:
             st.info(f"### ⚖️ '공과 과' 뚜렷... {st.session_state.player_name} 정부 5년의 막을 내리다\n\n위기 관리 능력은 돋보였으나, 계층 간 갈등 해소는 과제로 남아")
 
+        # 지지층 분석
         sorted_stats = sorted(st.session_state.stats.items(), key=lambda x: x[1])
         best_group = sorted_stats[-1]
         worst_group = sorted_stats[0]
