@@ -5,12 +5,12 @@ import base64
 import os
 
 # -----------------------------------------------------------------------------
-# [설정] 페이지 기본 설정
+# [1] 페이지 기본 설정 (가장 먼저 실행)
 # -----------------------------------------------------------------------------
 st.set_page_config(page_title="미스터 프레지던트", layout="centered")
 
 # -----------------------------------------------------------------------------
-# [설정] 기본 파일 경로
+# [2] 파일 경로 설정
 # -----------------------------------------------------------------------------
 FILE_BGM = "bgm.mp3"
 FILE_BG = "background.jpg"
@@ -19,8 +19,10 @@ FILE_EMBLEM = "emblem.jpg"
 ARCHS = ["자본가", "중산층", "노동자", "빈곤층"]
 
 # -----------------------------------------------------------------------------
-# [함수] 리소스 로더 및 유틸리티
+# [3] 핵심 함수 정의 (여기에 모든 기능을 미리 정의함 -> NameError 방지)
 # -----------------------------------------------------------------------------
+
+# (1) 로컬 파일 -> Base64 변환 (파일 없어도 에러 안 나게 처리)
 def get_base64_file(bin_file):
     if os.path.exists(bin_file):
         try:
@@ -31,6 +33,7 @@ def get_base64_file(bin_file):
             return None
     return None
 
+# (2) BGM 재생기 렌더링
 def render_bgm():
     b64 = get_base64_file(FILE_BGM)
     if b64:
@@ -43,6 +46,7 @@ def render_bgm():
             </div>
         """, unsafe_allow_html=True)
 
+# (3) 배경 이미지 렌더링
 def render_background():
     b64 = get_base64_file(FILE_BG)
     if b64:
@@ -51,27 +55,29 @@ def render_background():
             unsafe_allow_html=True
         )
 
+# (4) 명패 이미지 태그 생성
 def get_emblem_tag():
     b64 = get_base64_file(FILE_EMBLEM)
     if b64:
         return f'<img src="data:image/jpeg;base64,{b64}" class="phoenix-logo">'
     else:
+        # 파일 없으면 태극기 이모지 리턴
         return '<div style="font-size: 60px; margin-bottom: 10px;">🇰🇷</div>'
 
+# (5) 이름 업데이트 콜백
 def update_name():
     st.session_state.player_name = st.session_state.temp_name
 
-# [NEW] 이벤트 이미지 결정 함수 (로컬 파일 우선 -> 없으면 웹 URL)
-def get_final_crisis_image(crisis_id, web_url):
-    # 사용자가 crisis_0.jpg, crisis_1.png 등으로 올렸는지 확인
-    for ext in ['jpg', 'jpeg', 'png', 'gif']:
-        local_filename = f"crisis_{crisis_id}.{ext}"
-        if os.path.exists(local_filename):
-            return local_filename # 로컬 파일 경로 반환
-    return web_url # 없으면 기존 웹 URL 반환
+# (6) ★ [문제 해결] 이벤트 이미지 로더 함수 정의
+def get_crisis_image(idx, default_url):
+    # 로컬 파일(crisis_0.jpg 등)이 있으면 그걸 쓰고, 없으면 웹 URL 사용
+    local_filename = f"crisis_{idx}.jpg"
+    if os.path.exists(local_filename):
+        return local_filename
+    return default_url
 
 # -----------------------------------------------------------------------------
-# [데이터 1] 계층별 상세 설명
+# [4] 데이터: 계층 설명
 # -----------------------------------------------------------------------------
 ARCH_DESC = {
     "자본가": """
@@ -101,7 +107,7 @@ ARCH_DESC = {
 }
 
 # -----------------------------------------------------------------------------
-# [데이터 2] 15개 시나리오
+# [5] 데이터: 15개 시나리오 (이미지 & 설명 포함)
 # -----------------------------------------------------------------------------
 CRISES_POOL = [
     {
@@ -419,7 +425,7 @@ for i, a in enumerate(ARCHS):
     # 지지율이라고 명시
     cols[i+1].metric(f"{a} 지지율", f"{st.session_state.stats[a]}%")
 
-# 진행바에 텍스트 추가 (남은 안건 수)
+# [수정] 진행바에 텍스트 추가 (남은 안건 수)
 if not st.session_state.game_over:
     st.write(f"### 🗓️ 임기 {st.session_state.turn}년차 / 총 10년 (남은 안건: {11 - st.session_state.turn}개)")
     st.progress(min(1.0, (st.session_state.turn - 1) / 10))
@@ -437,7 +443,7 @@ if st.session_state.game_over:
         
         st.markdown(f"### 📊 최종 성적: 평균 지지율 {avg:.1f}% / 국고 {budget}조")
         
-        # [엔딩 분기: 뉴스 헤드라인 깔끔하게 정리]
+        # [엔딩 분기: 뉴스 헤드라인 깔끔하게 정리 (줄바꿈 수정)]
         st.subheader("📰 [호외] 임기 종료 특별 보도")
         
         if avg >= 80 and budget >= 80:
@@ -492,7 +498,7 @@ else:
     c = st.session_state.current_crisis
     st.error(f"🚨 [속보] {c['title']}")
     
-    # 이미지 표시 (로컬 파일 우선, 없으면 웹 URL, 둘 다 없으면 표시 안함)
+    # [수정] 이미지 표시 (로컬 파일 우선, 없으면 웹 URL, 둘 다 없으면 표시 안함)
     img_url = get_crisis_image(c.get('id', 99), c.get('img'))
     if img_url:
         st.image(img_url, use_container_width=True)
