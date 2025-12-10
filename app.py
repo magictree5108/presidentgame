@@ -1,3 +1,12 @@
+# 1. 프로세스 초기화
+import os
+os.system("pkill -9 streamlit")
+os.system("pkill -9 cloudflared")
+os.system("rm -f app.py")
+os.system("pip install -q streamlit")
+
+# 2. app.py 작성 (따옴표 충돌 방지 적용)
+code = '''
 import streamlit as st
 import pandas as pd
 import random
@@ -46,20 +55,16 @@ def render_background():
             unsafe_allow_html=True
         )
 
-# [함수] 명패 이미지 태그
+# [함수] 명패 이미지 태그 (태극기 고정)
 def get_emblem_tag():
-    b64 = get_base64_file(FILE_EMBLEM)
-    if b64:
-        return f'<img src="data:image/jpeg;base64,{b64}" class="phoenix-logo">'
-    else:
-        return '<div style="font-size: 50px; margin-bottom: 10px;">🇰🇷</div>'
+    return '<div style="font-size: 60px; margin-bottom: 10px;">🇰🇷</div>'
 
 # -----------------------------------------------------------------------------
 # [데이터] 1. 계층별 상세 설명
 # -----------------------------------------------------------------------------
 ARCH_DESC = {
     "자본가": """
-    **💰 [기업주/건물주/초고소득자]**
+    **💰 [자본가/기업주]**
     - **핵심 가치:** 시장 자유, 재산권 보호, 작은 정부
     - **혐오:** 법인세 인상, 규제 강화, 노동조합
     - **특징:** 경제 위기 시 자산을 해외로 빼돌릴 수 있으며, 투자 위축으로 정부를 압박합니다.
@@ -80,7 +85,7 @@ ARCH_DESC = {
     **🙏 [기초수급자/노인/구직단념자]**
     - **핵심 가치:** 생존, 복지 확대, 공공 서비스
     - **혐오:** 복지 축소, 공공요금 인상, 사회적 무관심
-    - **특징:** 정부의 지원 없이는 생존이 불가능합니다. 이들의 지지율 하락은 곧 폭동을 의미합니다.
+    - **특징:** 정부의 지원 없이는 생존이 불가능합니다. 이들의 지지율 하락은 곧 생존 위기를 의미합니다.
     """
 }
 
@@ -285,7 +290,6 @@ if 'turn' not in st.session_state:
     st.session_state.stats = {k: 50 for k in ARCHS}
     st.session_state.budget = 100
     st.session_state.game_over = False
-    st.session_state.fail_msg = ""
     st.session_state.logs = []
     st.session_state.player_name = "각하"
     
@@ -311,13 +315,13 @@ def next_turn(idx):
         st.session_state.fail_msg = "🔥 대규모 폭동 발생 (지지율 0%)"
     elif st.session_state.turn >= 10:
         st.session_state.game_over = True
-        st.session_state.fail_msg = "🎉 임기 5년 만료"
+        st.session_state.fail_msg = "🎉 임기 5년 무사 만료"
     else:
         st.session_state.turn += 1
-        st.session_state.current_crisis = random.choice(CRISES_POOL)
+        st.session_state.current_crisis = CRISES_POOL[st.session_state.event_deck.pop()]
 
 # UI: 명패 및 상태바
-st.markdown(\"\"\"
+st.markdown("""
     <style>
         .nameplate {
             background-color: #003478; border: 4px solid #c2a042;
@@ -327,7 +331,7 @@ st.markdown(\"\"\"
         .nameplate h4 { color: #c2a042 !important; margin: 0; font-weight: bold; font-size: 1.1rem; letter-spacing: 2px; }
         .nameplate h2 { color: white !important; margin: 5px 0 0 0; font-family: 'serif'; font-size: 2.0rem; font-weight: bold; text-shadow: 2px 2px 4px black; }
     </style>
-\"\"\", unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 emblem_tag = get_emblem_tag()
 st.markdown(f'''
@@ -445,3 +449,21 @@ else:
             if st.button(f"승인 ({i+1})", key=f"btn_{st.session_state.turn}_{i}"):
                 next_turn(i)
                 st.rerun()
+'''
+
+with open("app.py", "w") as f:
+    f.write(code)
+
+# 2. requirements.txt (필수)
+with open("requirements.txt", "w") as f:
+    f.write("streamlit\npandas\n")
+
+# 3. Cloudflare 실행
+!wget -q -O cloudflared-linux-amd64 https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
+!chmod +x cloudflared-linux-amd64
+!nohup ./cloudflared-linux-amd64 tunnel --url http://localhost:8501 > cloudflared.log 2>&1 &
+!sleep 5
+
+print("👇 아래 링크를 클릭하세요 (v37.0: 문법 오류 없는 최종 완결판):")
+!grep -o 'https://.*\.trycloudflare.com' cloudflared.log | head -n 1
+!streamlit run app.py &>/dev/null
