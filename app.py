@@ -51,17 +51,25 @@ def render_background():
             unsafe_allow_html=True
         )
 
+# [함수] 명패 이미지 태그 (★ 누락되었던 함수 복구 완료!)
+def get_emblem_tag():
+    b64 = get_base64_file(FILE_EMBLEM)
+    if b64:
+        return f'<img src="data:image/jpeg;base64,{b64}" class="phoenix-logo">'
+    else:
+        # 파일 없으면 태극기 이모지 사용 (중앙 정렬)
+        return '<div style="font-size: 60px; margin-bottom: 10px;">🇰🇷</div>'
+
 # [함수] 이름 업데이트 콜백
 def update_name():
     st.session_state.player_name = st.session_state.temp_name
 
-# [함수] 이벤트 이미지 로더 (로컬 파일 우선 -> 웹 이미지)
-# 깃허브에 crisis_0.jpg, crisis_1.jpg ... 로 올리면 그걸 먼저 띄웁니다.
+# [함수] 이벤트 이미지 로더
 def get_crisis_image(idx, default_url):
     local_filename = f"crisis_{idx}.jpg"
     if os.path.exists(local_filename):
-        return local_filename # 로컬 파일 반환 (st.image는 파일 경로도 처리 가능)
-    return default_url # 없으면 웹 URL 반환
+        return local_filename
+    return default_url
 
 # -----------------------------------------------------------------------------
 # [데이터 1] 계층별 상세 설명
@@ -96,7 +104,6 @@ ARCH_DESC = {
 # -----------------------------------------------------------------------------
 # [데이터 2] 15개 시나리오 (이미지 수정됨)
 # -----------------------------------------------------------------------------
-# ★ 팁: 이미지가 맘에 안 들면 깃허브에 crisis_0.jpg, crisis_1.jpg ... 로 파일을 올리세요.
 CRISES_POOL = [
     {
         "id": 0,
@@ -191,7 +198,7 @@ CRISES_POOL = [
             {"name": "현금 지원 대폭 확대", "cost": -30, "effect": [-5, 10, 5, -5], 
              "detail": "아이 낳는 가정에 파격적인 돈을 줍니다. 하지만 재원 마련을 위해 노인 복지 예산을 깎아 노인 빈곤이 심화됩니다.", "reason": "중산층+10 (양육비), 빈곤층-5 (복지축소)"},
             {"name": "이민청 설립 (개방)", "cost": -5, "effect": [10, -10, -10, 5], 
-             "detail": "외국인으로 노동력을 채워 기업은 안도합니다. 하지만 일자리 경쟁이 치열해진 노동자와 문화적 충돌을 우려하는 중산층이 반발합니다.", "reason": "자본가+10 (인력), 노동자-10 (경쟁)"},
+             "detail": "외국인으로 노동력을 채워 기업은 안도합니다. 하지만 일자리 경쟁이 치열해진 노동자와 문화적 충돌을 우려하는 중산층의 반발이 거셉니다.", "reason": "자본가+10 (인력), 노동자-10 (경쟁)"},
             {"name": "연금 개혁 (고통 분담)", "cost": +10, "effect": [-5, -15, -15, -5], 
              "detail": "재정 시한폭탄은 제거했습니다. 그러나 당장 월급에서 더 많은 돈이 떼이는 직장인들의 분노가 투표 심판으로 이어집니다.", "reason": "중산층-15 (보험료), 국고+10 (재정)"}
         ]
@@ -313,8 +320,6 @@ CRISES_POOL = [
 # -----------------------------------------------------------------------------
 # [메인 로직]
 # -----------------------------------------------------------------------------
-st.set_page_config(page_title="미스터 프레지던트: 리부트", layout="centered")
-
 # 배경음악/사진 렌더링
 render_bgm()
 render_background()
@@ -325,6 +330,7 @@ if 'turn' not in st.session_state:
     st.session_state.stats = {k: 50 for k in ARCHS}
     st.session_state.budget = 100
     st.session_state.game_over = False
+    st.session_state.fail_msg = ""
     st.session_state.logs = []
     st.session_state.player_name = "각하"
     
@@ -370,12 +376,12 @@ st.markdown("""
     <style>
         .nameplate {
             background-color: #003478; border: 4px solid #c2a042;
-            padding: 15px; border-radius: 10px; text-align: center;
+            padding: 20px; border-radius: 10px; text-align: center;
             margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
             display: flex; flex-direction: column; align-items: center;
         }
         .nameplate h3 { color: #c2a042 !important; margin: 0; font-weight: bold; font-size: 1.5rem; letter-spacing: 2px; }
-        .nameplate h1 { color: white !important; margin: 5px 0 0 0; font-family: 'serif'; font-size: 2.5rem; font-weight: bold; text-shadow: 2px 2px 4px black; }
+        .nameplate h1 { color: white !important; margin: 5px 0 0 0; font-family: 'serif'; font-size: 2.8rem; font-weight: bold; text-shadow: 2px 2px 4px black; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -393,7 +399,10 @@ st.title("🏛️ 미스터 프레지던트")
 # 사이드바
 with st.sidebar:
     st.header("1. 대통령 취임")
+    # 콜백 함수로 엔터 치자마자 업데이트
     st.text_input("성함 입력 (엔터치면 반영):", key="temp_name", on_change=update_name)
+    
+    # 초기값 설정
     if 'temp_name' not in st.session_state:
         st.session_state.temp_name = st.session_state.player_name
 
@@ -408,9 +417,10 @@ with st.sidebar:
 cols = st.columns(5)
 cols[0].metric("국고", f"{st.session_state.budget}조")
 for i, a in enumerate(ARCHS):
+    # 지지율이라고 명시
     cols[i+1].metric(f"{a} 지지율", f"{st.session_state.stats[a]}%")
 
-# [수정] 진행바에 텍스트 추가
+# [수정] 진행바에 텍스트 추가 (남은 안건 수)
 if not st.session_state.game_over:
     st.write(f"### 🗓️ 임기 {st.session_state.turn}년차 / 총 10년 (남은 안건: {11 - st.session_state.turn}개)")
     st.progress(min(1.0, (st.session_state.turn - 1) / 10))
@@ -428,7 +438,7 @@ if st.session_state.game_over:
         
         st.markdown(f"### 📊 최종 성적: 평균 지지율 {avg:.1f}% / 국고 {budget}조")
         
-        # [엔딩 분기: 뉴스 헤드라인 깔끔하게 정리]
+        # [엔딩 분기: 뉴스 헤드라인 깔끔하게 정리 (줄바꿈 수정)]
         st.subheader("📰 [호외] 임기 종료 특별 보도")
         
         if avg >= 80 and budget >= 80:
