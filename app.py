@@ -5,7 +5,12 @@ import base64
 import os
 
 # -----------------------------------------------------------------------------
-# [설정] 파일 경로
+# [설정] 페이지 기본 설정
+# -----------------------------------------------------------------------------
+st.set_page_config(page_title="미스터 프레지던트", layout="centered")
+
+# -----------------------------------------------------------------------------
+# [설정] 파일 경로 (GitHub 배포용)
 # -----------------------------------------------------------------------------
 FILE_BGM = "bgm.mp3"
 FILE_BG = "background.jpg"
@@ -13,7 +18,7 @@ FILE_EMBLEM = "emblem.jpg"
 
 ARCHS = ["자본가", "중산층", "노동자", "빈곤층"]
 
-# [함수] 리소스 로더
+# [함수] 로컬 파일 -> Base64 변환
 def get_base64_file(bin_file):
     if os.path.exists(bin_file):
         try:
@@ -24,6 +29,7 @@ def get_base64_file(bin_file):
             return None
     return None
 
+# [함수] BGM 재생기
 def render_bgm():
     b64 = get_base64_file(FILE_BGM)
     if b64:
@@ -36,6 +42,7 @@ def render_bgm():
             </div>
         """, unsafe_allow_html=True)
 
+# [함수] 배경 이미지 렌더링
 def render_background():
     b64 = get_base64_file(FILE_BG)
     if b64:
@@ -44,18 +51,20 @@ def render_background():
             unsafe_allow_html=True
         )
 
-def get_emblem_tag():
-    b64 = get_base64_file(FILE_EMBLEM)
-    if b64:
-        return f'<img src="data:image/jpeg;base64,{b64}" class="phoenix-logo">'
-    else:
-        return '<div style="font-size: 60px; margin-bottom: 10px;">🇰🇷</div>'
-
+# [함수] 이름 업데이트 콜백
 def update_name():
     st.session_state.player_name = st.session_state.temp_name
 
+# [함수] 이벤트 이미지 로더 (로컬 파일 우선 -> 웹 이미지)
+# 깃허브에 crisis_0.jpg, crisis_1.jpg ... 로 올리면 그걸 먼저 띄웁니다.
+def get_crisis_image(idx, default_url):
+    local_filename = f"crisis_{idx}.jpg"
+    if os.path.exists(local_filename):
+        return local_filename # 로컬 파일 반환 (st.image는 파일 경로도 처리 가능)
+    return default_url # 없으면 웹 URL 반환
+
 # -----------------------------------------------------------------------------
-# [데이터 1] 계층별 상세 설명 (요청하신 디테일 반영)
+# [데이터 1] 계층별 상세 설명
 # -----------------------------------------------------------------------------
 ARCH_DESC = {
     "자본가": """
@@ -85,10 +94,12 @@ ARCH_DESC = {
 }
 
 # -----------------------------------------------------------------------------
-# [데이터 2] 15개 시나리오 상세 데이터 (이미지 + 상황설명 + 선택지설명)
+# [데이터 2] 15개 시나리오 (이미지 수정됨)
 # -----------------------------------------------------------------------------
+# ★ 팁: 이미지가 맘에 안 들면 깃허브에 crisis_0.jpg, crisis_1.jpg ... 로 파일을 올리세요.
 CRISES_POOL = [
     {
+        "id": 0,
         "title": "📉 글로벌 복합 금융 위기",
         "img": "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?q=80&w=800",
         "desc": "미국발 금리 인상과 전쟁 리스크로 주가가 폭락하고 환율이 1,500원을 돌파했습니다. 기업들은 줄도산을 경고하고 있으며, 가계 부채는 시한폭탄처럼 째깍거리고 있습니다.",
@@ -102,6 +113,7 @@ CRISES_POOL = [
         ]
     },
     {
+        "id": 1,
         "title": "🦠 치명적 신종 바이러스",
         "img": "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?q=80&w=800",
         "desc": "치사율 높은 전염병이 확산 중입니다. 병상은 포화 상태이며, 공포에 질린 시민들의 사재기가 이어지고 있습니다. 의료 체계 붕괴 직전입니다.",
@@ -115,6 +127,7 @@ CRISES_POOL = [
         ]
     },
     {
+        "id": 2,
         "title": "📢 광화문 100만 촛불",
         "img": "https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=800",
         "desc": "정부의 불통과 실정에 분노한 시민들이 광화문을 가득 메웠습니다. '대통령 퇴진' 구호가 등장했습니다. 청와대 앞까지 행진이 이어집니다.",
@@ -128,6 +141,7 @@ CRISES_POOL = [
         ]
     },
     {
+        "id": 3,
         "title": "🤖 AI가 일자리를 습격하다",
         "img": "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=800",
         "desc": "생성형 AI의 발전으로 사무직과 단순 노무직의 대량 해고가 시작되었습니다. '기계가 인간을 대체한다'는 공포가 사회를 덮쳤습니다.",
@@ -141,8 +155,9 @@ CRISES_POOL = [
         ]
     },
     {
+        "id": 4,
         "title": "⚔️ 주변국 무역 보복 조치",
-        "img": "https://images.unsplash.com/photo-1622630998477-20aa696c4c5c?q=80&w=800",
+        "img": "https://images.unsplash.com/photo-1595246737293-27d096162332?q=80&w=800",
         "desc": "외교 갈등으로 주요 교역국이 반도체 핵심 소재 수출을 금지했습니다. 공장 가동이 멈추고 수출길이 막힐 위기입니다.",
         "options": [
             {"name": "굴욕적 협상 (실리)", "cost": 0, "effect": [10, 5, 5, -5], 
@@ -154,8 +169,9 @@ CRISES_POOL = [
         ]
     },
     {
+        "id": 5,
         "title": "🏭 최악의 미세먼지와 기후 재난",
-        "img": "https://images.unsplash.com/photo-1621451537084-482c73073a0f?q=80&w=800",
+        "img": "https://images.unsplash.com/photo-1579766922979-4d6cb600259d?q=80&w=800",
         "desc": "숨을 쉴 수 없는 미세먼지와 기록적인 폭우가 동시에 덮쳤습니다. 반지하 거주민이 고립되고 농작물 가격이 폭등합니다.",
         "options": [
             {"name": "탄소세 도입 (규제)", "cost": +5, "effect": [-15, -5, 5, 10], 
@@ -167,6 +183,7 @@ CRISES_POOL = [
         ]
     },
     {
+        "id": 6,
         "title": "📉 합계출산율 0.5명 쇼크",
         "img": "https://images.unsplash.com/photo-1519689680058-324335c77eba?q=80&w=800",
         "desc": "국가 소멸 위기론이 대두되었습니다. 국민연금 고갈 공포가 확산되며 세대 간 갈등이 폭발 직전입니다.",
@@ -180,6 +197,7 @@ CRISES_POOL = [
         ]
     },
     {
+        "id": 7,
         "title": "🏘️ 부동산 시장 대폭락",
         "img": "https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=800",
         "desc": "금리 인상 여파로 집값이 30% 이상 급락했습니다. 깡통 전세 피해자가 속출하고 건설사 부도 위기가 감돕니다.",
@@ -193,8 +211,9 @@ CRISES_POOL = [
         ]
     },
     {
+        "id": 8,
         "title": "🕵️ 권력형 비리 게이트",
-        "img": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800",
+        "img": "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?q=80&w=800",
         "desc": "장관 후보자 자녀의 특혜 채용과 입시 비리가 드러났습니다. '공정'에 민감한 여론이 폭발했습니다.",
         "options": [
             {"name": "성역 없는 수사", "cost": 0, "effect": [-15, 10, 10, 0], 
@@ -206,8 +225,9 @@ CRISES_POOL = [
         ]
     },
     {
+        "id": 9,
         "title": "⚡ 에너지 위기 (유가 폭등)",
-        "img": "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?q=80&w=800",
+        "img": "https://images.unsplash.com/photo-1565514020125-998dc57774dc?q=80&w=800",
         "desc": "중동 전쟁으로 유가가 배럴당 150불을 넘었습니다. 난방비 폭탄에 서민들은 떨고 있고, 한전 적자는 감당 불가입니다.",
         "options": [
             {"name": "요금 현실화 (인상)", "cost": +10, "effect": [0, -10, -15, -20], 
@@ -219,8 +239,9 @@ CRISES_POOL = [
         ]
     },
     {
+        "id": 10,
         "title": "💣 북한 국지적 도발",
-        "img": "https://images.unsplash.com/photo-1554223249-1755a5b512c8?q=80&w=800",
+        "img": "https://images.unsplash.com/photo-1596720426673-e4f28bc40470?q=80&w=800",
         "desc": "휴전선 인근에서 포격 도발이 발생했습니다. 금융 시장은 출렁이고 안보 불안감이 최고조에 달했습니다.",
         "options": [
             {"name": "강력 응징 (보복)", "cost": -20, "effect": [5, -5, -5, -5], 
@@ -232,8 +253,9 @@ CRISES_POOL = [
         ]
     },
     {
+        "id": 11,
         "title": "🚢 대형 해상 참사",
-        "img": "https://images.unsplash.com/photo-1518105570919-e342af1a8275?q=80&w=800",
+        "img": "https://images.unsplash.com/photo-1627916562099-234b63309b69?q=80&w=800",
         "desc": "대형 인명 사고 발생. 국가 안전 시스템 부재와 늦장 대응에 대한 비판이 쏟아집니다.",
         "options": [
             {"name": "전면 안전 감찰", "cost": -10, "effect": [-10, 5, 5, 5], 
@@ -245,8 +267,9 @@ CRISES_POOL = [
         ]
     },
     {
+        "id": 12,
         "title": "🧬 신약 부작용 사태",
-        "img": "https://images.unsplash.com/photo-1579165466741-7f35a4755657?q=80&w=800",
+        "img": "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?q=80&w=800",
         "desc": "국가 지원 신약에서 치명적인 부작용이 발견되었습니다. 피해자들의 소송과 정부 책임론이 대두됩니다.",
         "options": [
             {"name": "허가 취소 및 배상", "cost": -20, "effect": [-10, 5, 5, 5], 
@@ -258,8 +281,9 @@ CRISES_POOL = [
         ]
     },
     {
+        "id": 13,
         "title": "🍔 프랜차이즈 갑질",
-        "img": "https://images.unsplash.com/photo-1512428559087-560fa0ced998?q=80&w=800",
+        "img": "https://images.unsplash.com/photo-1606787366850-de6330128bfc?q=80&w=800",
         "desc": "대형 본사의 갑질로 가맹점주가 사망했습니다. 경제 민주화 요구가 빗발칩니다.",
         "options": [
             {"name": "규제 3법 통과", "cost": 0, "effect": [-20, 5, 10, 10], 
@@ -271,6 +295,7 @@ CRISES_POOL = [
         ]
     },
     {
+        "id": 14,
         "title": "📉 코인 거래소 파산",
         "img": "https://images.unsplash.com/photo-1621504450168-38f647319936?q=80&w=800",
         "desc": "국내 1위 코인 거래소가 먹튀 파산했습니다. 2030 세대의 자산이 증발하고 자살 시도가 잇따릅니다.",
@@ -347,9 +372,10 @@ st.markdown("""
             background-color: #003478; border: 4px solid #c2a042;
             padding: 15px; border-radius: 10px; text-align: center;
             margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            display: flex; flex-direction: column; align-items: center;
         }
-        .nameplate h4 { color: #c2a042 !important; margin: 0; font-weight: bold; font-size: 1.1rem; letter-spacing: 2px; }
-        .nameplate h2 { color: white !important; margin: 5px 0 0 0; font-family: 'serif'; font-size: 2.0rem; font-weight: bold; text-shadow: 2px 2px 4px black; }
+        .nameplate h3 { color: #c2a042 !important; margin: 0; font-weight: bold; font-size: 1.5rem; letter-spacing: 2px; }
+        .nameplate h1 { color: white !important; margin: 5px 0 0 0; font-family: 'serif'; font-size: 2.5rem; font-weight: bold; text-shadow: 2px 2px 4px black; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -357,8 +383,8 @@ emblem_tag = get_emblem_tag()
 st.markdown(f'''
 <div class="nameplate">
     {emblem_tag}
-    <h4>대한민국 대통령</h4>
-    <h2>{st.session_state.player_name}</h2>
+    <h3>대한민국 대통령</h3>
+    <h1>{st.session_state.player_name}</h1>
 </div>
 ''', unsafe_allow_html=True)
 
@@ -367,10 +393,7 @@ st.title("🏛️ 미스터 프레지던트")
 # 사이드바
 with st.sidebar:
     st.header("1. 대통령 취임")
-    # 콜백 함수로 엔터 치자마자 업데이트
     st.text_input("성함 입력 (엔터치면 반영):", key="temp_name", on_change=update_name)
-    
-    # 초기값 설정
     if 'temp_name' not in st.session_state:
         st.session_state.temp_name = st.session_state.player_name
 
@@ -381,12 +404,16 @@ with st.sidebar:
             st.markdown(f"{v}")
             st.markdown("---")
 
-# HUD
+# HUD (진행 상황 추가)
 cols = st.columns(5)
 cols[0].metric("국고", f"{st.session_state.budget}조")
 for i, a in enumerate(ARCHS):
-    # 지지율이라고 명시
     cols[i+1].metric(f"{a} 지지율", f"{st.session_state.stats[a]}%")
+
+# [수정] 진행바에 텍스트 추가
+if not st.session_state.game_over:
+    st.write(f"### 🗓️ 임기 {st.session_state.turn}년차 / 총 10년 (남은 안건: {11 - st.session_state.turn}개)")
+    st.progress(min(1.0, (st.session_state.turn - 1) / 10))
 
 st.markdown("---")
 
@@ -399,40 +426,22 @@ if st.session_state.game_over:
         avg = sum(st.session_state.stats.values()) / 4
         budget = st.session_state.budget
         
-        st.write(f"### 📊 최종 성적: 평균 지지율 {avg:.1f}% / 국고 {budget}조")
+        st.markdown(f"### 📊 최종 성적: 평균 지지율 {avg:.1f}% / 국고 {budget}조")
         
-        # [엔딩 분기: 뉴스 헤드라인 다양화]
+        # [엔딩 분기: 뉴스 헤드라인 깔끔하게 정리]
         st.subheader("📰 [호외] 임기 종료 특별 보도")
         
-        headline = ""
-        sub_msg = ""
-        
         if avg >= 80 and budget >= 80:
-            headline = f"🌟 역사상 가장 위대한 지도자, {st.session_state.player_name} 대통령 퇴임"
-            sub_msg = "지지율과 경제 두 마리 토끼를 모두 잡은 '전설의 성군'으로 기록될 것"
-            st.success(f"**{headline}**\\n\\n{sub_msg}")
-            
+            st.success(f"### 🌟 역사상 가장 위대한 지도자, {st.session_state.player_name} 대통령 퇴임\n\n지지율과 경제 두 마리 토끼를 모두 잡은 '전설의 성군'으로 기록될 것")
         elif avg >= 60:
-            headline = f"✅ 성공적인 국정 운영, 박수칠 때 떠나는 {st.session_state.player_name} 대통령"
-            sub_msg = "숱한 위기 속에서도 대한민국을 안정적으로 이끌었다는 평가"
-            st.success(f"**{headline}**\\n\\n{sub_msg}")
-            
+            st.success(f"### ✅ 성공적인 국정 운영, 박수칠 때 떠나는 {st.session_state.player_name} 대통령\n\n숱한 위기 속에서도 대한민국을 안정적으로 이끌었다는 평가")
         elif budget < 20:
-            headline = f"💸 '인기는 얻었으나 곳간은 비었다'... 포퓰리즘 논란 속 퇴임"
-            sub_msg = "차기 정부에 막대한 재정 부담을 넘기게 되어... 국가 신용등급 우려"
-            st.warning(f"**{headline}**\\n\\n{sub_msg}")
-            
+            st.warning(f"### 💸 '인기는 얻었으나 곳간은 비었다'... 포퓰리즘 논란 속 퇴임\n\n차기 정부에 막대한 재정 부담을 넘기게 되어... 국가 신용등급 우려")
         elif avg < 30:
-            headline = f"💀 역대 최저 지지율... {st.session_state.player_name} 대통령의 쓸쓸한 뒷모습"
-            sub_msg = "국론 분열과 정책 실패로 얼룩진 5년... '식물 정부' 오명 남겨"
-            st.error(f"**{headline}**\\n\\n{sub_msg}")
-            
+            st.error(f"### 💀 역대 최저 지지율... {st.session_state.player_name} 대통령의 쓸쓸한 뒷모습\n\n국론 분열과 정책 실패로 얼룩진 5년... '식물 정부' 오명 남겨")
         else:
-            headline = f"⚖️ '공과 과' 뚜렷... {st.session_state.player_name} 정부 5년의 막을 내리다"
-            sub_msg = "위기 관리 능력은 돋보였으나, 계층 간 갈등 해소는 과제로 남아"
-            st.info(f"**{headline}**\\n\\n{sub_msg}")
+            st.info(f"### ⚖️ '공과 과' 뚜렷... {st.session_state.player_name} 정부 5년의 막을 내리다\n\n위기 관리 능력은 돋보였으나, 계층 간 갈등 해소는 과제로 남아")
 
-        # 지지층 분석
         sorted_stats = sorted(st.session_state.stats.items(), key=lambda x: x[1])
         best_group = sorted_stats[-1]
         worst_group = sorted_stats[0]
@@ -446,16 +455,20 @@ if st.session_state.game_over:
         
     else:
         st.error(f"💀 GAME OVER: {st.session_state.fail_msg}")
+        # 게임오버 상세 사유
+        reason = ""
         if "부도" in st.session_state.fail_msg:
-            st.write("국가 재정이 바닥나 IMF 구제금융을 신청하게 되었습니다.")
+            reason = "국가 재정이 바닥나 IMF 구제금융을 신청하게 되었습니다."
         elif "자본" in st.session_state.fail_msg:
-            st.write("외국인 투자자가 모두 떠나고 증시가 폭락했습니다.")
+            reason = "외국인 투자자가 모두 떠나고 증시가 폭락했습니다."
         elif "중산층" in st.session_state.fail_msg:
-            st.write("광화문에 100만 명이 모여 대통령 탄핵을 외치고 있습니다.")
+            reason = "광화문에 100만 명이 모여 대통령 탄핵을 외치고 있습니다."
         elif "노동자" in st.session_state.fail_msg:
-            st.write("전국적인 총파업으로 전기, 수도, 교통이 모두 끊겼습니다.")
+            reason = "전국적인 총파업으로 전기, 수도, 교통이 모두 끊겼습니다."
         elif "빈곤층" in st.session_state.fail_msg:
-            st.write("생존권을 요구하는 격렬한 시위가 폭동으로 번졌습니다.")
+            reason = "생존권을 요구하는 격렬한 시위가 폭동으로 번졌습니다."
+        
+        st.markdown(f"**{reason}**")
     
     if st.button("🔄 다시 하기"):
         st.session_state.clear()
@@ -469,19 +482,20 @@ else:
     c = st.session_state.current_crisis
     st.error(f"🚨 [속보] {c['title']}")
     
-    # 이미지 표시 (URL이 있다면)
-    if "img" in c:
-        st.image(c["img"], use_container_width=True)
+    # [수정] 이미지 표시 (로컬 파일 우선, 없으면 웹 URL, 둘 다 없으면 표시 안함)
+    img_url = get_crisis_image(c.get('id', 99), c.get('img'))
+    if img_url:
+        st.image(img_url, use_container_width=True)
         
-    st.write(c['desc'])
+    st.write(f"### {c['desc']}")
     
     col1, col2, col3 = st.columns(3)
     for i, opt in enumerate(c['options']):
         with [col1, col2, col3][i]:
             st.info(f"{opt['name']}")
-            st.caption(opt['detail'])
+            st.caption(f"📝 {opt['detail']}")
             sign = "+" if opt['cost'] > 0 else ""
-            st.write(f"**국고 {sign}{opt['cost']}조**")
+            st.write(f"💰 **국고 {sign}{opt['cost']}조**")
             if st.button(f"승인 ({i+1})", key=f"btn_{st.session_state.turn}_{i}"):
                 next_turn(i)
                 st.rerun()
