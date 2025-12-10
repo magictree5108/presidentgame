@@ -1,10 +1,3 @@
-# 1. 기존 파일 삭제 및 초기화
-import os
-os.system("rm -f app.py")
-os.system("pip install -q streamlit")
-
-# 2. app.py 작성 (문법 오류 수정됨)
-code = """
 import streamlit as st
 import pandas as pd
 import random
@@ -12,15 +5,16 @@ import base64
 import os
 
 # -----------------------------------------------------------------------------
-# [설정] 파일 경로 (GitHub 배포 시에도 이 파일들이 같이 있어야 함)
+# [설정] 파일 경로 (GitHub 배포용 상대 경로)
 # -----------------------------------------------------------------------------
+# 주의: 깃허브 저장소(Repository)에 아래 파일들이 app.py와 같은 위치에 있어야 합니다.
 FILE_BGM = "bgm.mp3"
 FILE_BG = "background.jpg"
 FILE_EMBLEM = "emblem.jpg"
 
 ARCHS = ["자본가", "중산층", "노동자", "빈곤층"]
 
-# [함수] 로컬 파일 -> Base64 변환
+# [함수] 로컬 파일 -> Base64 변환 (파일 없어도 에러 안 나게 처리)
 def get_base64_file(bin_file):
     if os.path.exists(bin_file):
         try:
@@ -31,19 +25,21 @@ def get_base64_file(bin_file):
             return None
     return None
 
-# [함수] BGM 재생기 (따옴표 수정됨)
+# [함수] BGM 재생기
 def render_bgm():
     b64 = get_base64_file(FILE_BGM)
     if b64:
-        # 여기서 문법 오류가 났었습니다. 작은따옴표(''')로 변경하여 해결!
-        st.markdown(f'''
+        st.markdown(f"""
             <div style="margin-bottom: 10px; padding: 10px; background: rgba(0,0,0,0.5); border-radius: 10px;">
                 <p style="color:gold; font-weight:bold; margin:0; font-size:0.8rem;">🎵 BGM Loaded</p>
                 <audio controls autoplay loop style="width:100%; height:30px;">
                     <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
                 </audio>
             </div>
-        ''', unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
+    else:
+        # 파일이 없을 경우 표시하지 않음 (깔끔하게)
+        pass
 
 # [함수] 배경 이미지 렌더링
 def render_background():
@@ -54,7 +50,7 @@ def render_background():
             unsafe_allow_html=True
         )
 
-# [함수] 명패 이미지 태그 (파일 있으면 쓰고 없으면 태극기)
+# [함수] 명패 이미지 태그
 def get_emblem_tag():
     b64 = get_base64_file(FILE_EMBLEM)
     if b64:
@@ -144,9 +140,9 @@ CRISES_POOL = [
         {"name": "긴급 대출", "cost": -15, "effect": [-5, 5, 0, 10], "detail": "폐업 방지. 가계 부채 증가.", "reason": "빈곤층+10 (생존), 국고-15 (지출)"}
     ]},
     {"title": "📉 코인 거래소 파산", "desc": "거래소 먹튀. 청년 자산 증발.", "options": [
-        {"name": "손실 보전", "cost": -25, "effect": [-10, -10, 15, -5], "detail": "세금으로 피해를 보전해줍니다. 청년 파산은 막았으나, '도박 빚을 갚아주냐'는 성실 납세자들의 분노가 폭발했습니다.", "reason": "노동자+15 (구제), 중산층-10 (분노)"},
-        {"name": "책임 원칙", "cost": 0, "effect": [5, 5, -20, -10], "detail": "투기 수요에 경종을 울렸습니다. 하지만 전 재산을 잃은 청년층이 대거 신용불량자로 전락하며 사회적 활력이 급격히 떨어집니다.", "reason": "중산층+5 (원칙), 노동자-20 (파산)"},
-        {"name": "규제 강화", "cost": -5, "effect": [-5, 0, -5, 0], "detail": "뒤늦게 규제 장벽을 세웠습니다. 시장은 건전해졌지만, '소 잃고 외양간 고치기'라는 비판과 함께 산업 위축을 가져왔습니다.", "reason": "자본가-5 (규제), 노동자-5 (뒷북)"}
+        {"name": "손실 보전", "cost": -25, "effect": [-10, -10, 15, -5], "detail": "세금으로 구제. 납세자 분노.", "reason": "노동자+15 (구제), 중산층-10 (분노)"},
+        {"name": "책임 원칙", "cost": 0, "effect": [5, 5, -20, -10], "detail": "투자자 책임. 청년 파산.", "reason": "중산층+5 (원칙), 노동자-20 (파산)"},
+        {"name": "규제 강화", "cost": -5, "effect": [-5, 0, -5, 0], "detail": "뒤늦은 규제. 산업 위축.", "reason": "자본가-5 (규제), 노동자-5 (뒷북)"}
     ]}
 ]
 
@@ -178,56 +174,27 @@ def next_turn(idx):
     
     st.session_state.logs.append(f"Turn {st.session_state.turn}: {opt['name']} 선택")
     
-    if st.session_state.budget < 0:
+    if st.session_state.budget < 0 or any(v <= 0 for v in st.session_state.stats.values()):
         st.session_state.game_over = True
-        st.session_state.fail_msg = "💸 국가 부도 선언 (국고 고갈)"
-    elif any(v <= 0 for v in st.session_state.stats.values()):
-        st.session_state.game_over = True
-        st.session_state.fail_msg = "🔥 대규모 폭동 발생 (지지율 0%)"
+        st.session_state.fail_msg = "파산 또는 폭동 발생"
     elif st.session_state.turn >= 10:
         st.session_state.game_over = True
-        st.session_state.fail_msg = "🎉 임기 5년 무사 만료"
+        st.session_state.fail_msg = "임기 만료 성공"
     else:
         st.session_state.turn += 1
         st.session_state.current_crisis = random.choice(CRISES_POOL)
 
 # UI: 명패 및 상태바
-st.markdown(\"\"\"
-    <style>
-        .nameplate {
-            background-color: #003478; border: 4px solid #c2a042;
-            padding: 15px; border-radius: 10px; text-align: center;
-            margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-        }
-        .phoenix-logo { width: 100px; margin-bottom: 10px; display: block; margin-left: auto; margin-right: auto; }
-        .nameplate h4 { color: #c2a042 !important; margin: 0; font-weight: bold; font-size: 1.1rem; letter-spacing: 2px; }
-        .nameplate h2 { color: white !important; margin: 5px 0 0 0; font-family: 'serif'; font-size: 2.0rem; font-weight: bold; text-shadow: 2px 2px 4px black; }
-    </style>
-\"\"\", unsafe_allow_html=True)
-
-emblem_tag = get_emblem_tag()
 st.markdown(f'''
-<div class="nameplate">
-    {emblem_tag}
-    <h4>대한민국 대통령</h4>
-    <h2>{st.session_state.player_name}</h2>
+<div style="text-align:center; padding:20px; background:rgba(0,0,50,0.8); border:2px solid gold; border-radius:10px;">
+    <h1 style="font-size:50px; margin:0;">🇰🇷</h1>
+    <h3 style="color:white; margin:0;">대한민국 대통령</h3>
+    <h1 style="color:gold; margin:0;">{st.session_state.player_name}</h1>
 </div>
 ''', unsafe_allow_html=True)
 
-st.title("🏛️ 미스터 프레지던트")
-
-# 사이드바
-with st.sidebar:
-    st.header("1. 대통령 취임")
-    name = st.text_input("성함 입력 (엔터치면 반영):", value=st.session_state.player_name)
-    if name: st.session_state.player_name = name
-    
-    st.markdown("---")
-    st.header("ℹ️ 계층 가이드")
-    with st.expander("❓ 계층별 핵심 이익 보기"):
-        for k, v in ARCH_DESC.items():
-            st.markdown(f"{v}")
-            st.markdown("---")
+name = st.text_input("대통령 성함 입력 (엔터치면 반영):", value=st.session_state.player_name)
+if name: st.session_state.player_name = name
 
 # HUD
 cols = st.columns(5)
@@ -239,28 +206,22 @@ st.markdown("---")
 
 # 게임 화면
 if st.session_state.game_over:
-    if "성공" in st.session_state.fail_msg or "만료" in st.session_state.fail_msg:
+    if "성공" in st.session_state.fail_msg:
         st.balloons()
-        st.success(f"🏆 {st.session_state.fail_msg}")
+        st.success("🏆 임기를 성공적으로 마쳤습니다!")
         avg = sum(st.session_state.stats.values()) / 4
-        st.write(f"### 📊 최종 지지율: {avg:.1f}%")
+        st.write(f"최종 지지율: {avg:.1f}%")
         
         st.subheader("📰 [호외] 임기 종료 특별 보도")
         if avg >= 70: st.success(f"🌟 역사에 남을 성군, {st.session_state.player_name} 대통령 퇴임")
         elif avg < 40: st.error(f"💀 역대 최저 지지율... 쓸쓸한 퇴장")
         else: st.info(f"⚖️ 공과 과 남기고 떠나는 {st.session_state.player_name} 대통령")
-        
     else:
         st.error(f"💀 GAME OVER: {st.session_state.fail_msg}")
     
-    if st.button("🔄 다시 하기"):
+    if st.button("다시 하기"):
         st.session_state.clear()
         st.rerun()
-        
-    with st.expander("📜 지난 기록 보기"):
-        for log in st.session_state.logs:
-            st.write(log)
-
 else:
     c = st.session_state.current_crisis
     st.error(f"🚨 [속보] {c['title']}")
@@ -276,21 +237,7 @@ else:
             if st.button(f"승인 ({i+1})", key=f"btn_{st.session_state.turn}_{i}"):
                 next_turn(i)
                 st.rerun()
-"""
-
-with open("app.py", "w") as f:
-    f.write(code)
-
-# 2. requirements.txt (필수)
-with open("requirements.txt", "w") as f:
-    f.write("streamlit\npandas\n")
-
-# 3. Cloudflare 실행
-!wget -q -O cloudflared-linux-amd64 https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
-!chmod +x cloudflared-linux-amd64
-!nohup ./cloudflared-linux-amd64 tunnel --url http://localhost:8501 > cloudflared.log 2>&1 &
-!sleep 5
-
-print("👇 아래 링크를 클릭하세요 (v36.0: 문법 오류 수정 완료):")
-!grep -o 'https://.*\.trycloudflare.com' cloudflared.log | head -n 1
-!streamlit run app.py &>/dev/null
+                
+    with st.expander("지난 기록"):
+        for l in reversed(st.session_state.logs):
+            st.write(l)
