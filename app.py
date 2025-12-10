@@ -1,12 +1,3 @@
-# 1. 프로세스 초기화
-import os
-os.system("pkill -9 streamlit")
-os.system("pkill -9 cloudflared")
-os.system("rm -f app.py")
-os.system("pip install -q streamlit")
-
-# 2. app.py 작성 (따옴표 충돌 방지 적용)
-code = '''
 import streamlit as st
 import pandas as pd
 import random
@@ -14,7 +5,7 @@ import base64
 import os
 
 # -----------------------------------------------------------------------------
-# [설정] 파일 경로 (GitHub 배포용 상대 경로)
+# [설정] 파일 경로 (GitHub 저장소에 이 파일들이 있어야 함)
 # -----------------------------------------------------------------------------
 FILE_BGM = "bgm.mp3"
 FILE_BG = "background.jpg"
@@ -37,14 +28,14 @@ def get_base64_file(bin_file):
 def render_bgm():
     b64 = get_base64_file(FILE_BGM)
     if b64:
-        st.markdown(f"""
+        st.markdown(f'''
             <div style="margin-bottom: 10px; padding: 10px; background: rgba(0,0,0,0.5); border-radius: 10px;">
                 <p style="color:gold; font-weight:bold; margin:0; font-size:0.8rem;">🎵 BGM Loaded</p>
                 <audio controls autoplay loop style="width:100%; height:30px;">
                     <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
                 </audio>
             </div>
-        """, unsafe_allow_html=True)
+        ''', unsafe_allow_html=True)
 
 # [함수] 배경 이미지 렌더링
 def render_background():
@@ -55,9 +46,13 @@ def render_background():
             unsafe_allow_html=True
         )
 
-# [함수] 명패 이미지 태그 (태극기 고정)
+# [함수] 명패 이미지 태그 (파일 없으면 태극기)
 def get_emblem_tag():
-    return '<div style="font-size: 60px; margin-bottom: 10px;">🇰🇷</div>'
+    b64 = get_base64_file(FILE_EMBLEM)
+    if b64:
+        return f'<img src="data:image/jpeg;base64,{b64}" class="phoenix-logo">'
+    else:
+        return '<div style="font-size: 60px; margin-bottom: 10px;">🇰🇷</div>'
 
 # -----------------------------------------------------------------------------
 # [데이터] 1. 계층별 상세 설명
@@ -90,7 +85,7 @@ ARCH_DESC = {
 }
 
 # -----------------------------------------------------------------------------
-# [데이터] 2. 이벤트 및 선택지 상세 설명 (15종)
+# [데이터] 2. 이벤트 및 선택지 (15종)
 # -----------------------------------------------------------------------------
 CRISES_POOL = [
     {
@@ -315,23 +310,23 @@ def next_turn(idx):
         st.session_state.fail_msg = "🔥 대규모 폭동 발생 (지지율 0%)"
     elif st.session_state.turn >= 10:
         st.session_state.game_over = True
-        st.session_state.fail_msg = "🎉 임기 5년 무사 만료"
+        st.session_state.fail_msg = "🎉 임기 5년 만료"
     else:
         st.session_state.turn += 1
-        st.session_state.current_crisis = CRISES_POOL[st.session_state.event_deck.pop()]
+        st.session_state.current_crisis = random.choice(CRISES_POOL)
 
 # UI: 명패 및 상태바
-st.markdown("""
+st.markdown(f'''
     <style>
-        .nameplate {
+        .nameplate {{
             background-color: #003478; border: 4px solid #c2a042;
             padding: 15px; border-radius: 10px; text-align: center;
             margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-        }
-        .nameplate h4 { color: #c2a042 !important; margin: 0; font-weight: bold; font-size: 1.1rem; letter-spacing: 2px; }
-        .nameplate h2 { color: white !important; margin: 5px 0 0 0; font-family: 'serif'; font-size: 2.0rem; font-weight: bold; text-shadow: 2px 2px 4px black; }
+        }}
+        .nameplate h4 {{ color: #c2a042 !important; margin: 0; font-weight: bold; font-size: 1.1rem; letter-spacing: 2px; }}
+        .nameplate h2 {{ color: white !important; margin: 5px 0 0 0; font-family: 'serif'; font-size: 2.0rem; font-weight: bold; text-shadow: 2px 2px 4px black; }}
     </style>
-""", unsafe_allow_html=True)
+''', unsafe_allow_html=True)
 
 emblem_tag = get_emblem_tag()
 st.markdown(f'''
@@ -385,27 +380,27 @@ if st.session_state.game_over:
         if avg >= 80 and budget >= 80:
             headline = f"🌟 역사상 가장 위대한 지도자, {st.session_state.player_name} 대통령 퇴임"
             sub_msg = "지지율과 경제 두 마리 토끼를 모두 잡은 '전설의 성군'으로 기록될 것"
-            st.success(f"**{headline}**\n\n{sub_msg}")
+            st.success(f"**{headline}**\\n\\n{sub_msg}")
             
         elif avg >= 60:
             headline = f"✅ 성공적인 국정 운영, 박수칠 때 떠나는 {st.session_state.player_name} 대통령"
             sub_msg = "숱한 위기 속에서도 대한민국을 안정적으로 이끌었다는 평가"
-            st.success(f"**{headline}**\n\n{sub_msg}")
+            st.success(f"**{headline}**\\n\\n{sub_msg}")
             
         elif budget < 20:
             headline = f"💸 '인기는 얻었으나 곳간은 비었다'... 포퓰리즘 논란 속 퇴임"
             sub_msg = "차기 정부에 막대한 재정 부담을 넘기게 되어... 국가 신용등급 우려"
-            st.warning(f"**{headline}**\n\n{sub_msg}")
+            st.warning(f"**{headline}**\\n\\n{sub_msg}")
             
         elif avg < 30:
             headline = f"💀 역대 최저 지지율... {st.session_state.player_name} 대통령의 쓸쓸한 뒷모습"
             sub_msg = "국론 분열과 정책 실패로 얼룩진 5년... '식물 정부' 오명 남겨"
-            st.error(f"**{headline}**\n\n{sub_msg}")
+            st.error(f"**{headline}**\\n\\n{sub_msg}")
             
         else:
             headline = f"⚖️ '공과 과' 뚜렷... {st.session_state.player_name} 정부 5년의 막을 내리다"
             sub_msg = "위기 관리 능력은 돋보였으나, 계층 간 갈등 해소는 과제로 남아"
-            st.info(f"**{headline}**\n\n{sub_msg}")
+            st.info(f"**{headline}**\\n\\n{sub_msg}")
 
         # 지지층 분석
         sorted_stats = sorted(st.session_state.stats.items(), key=lambda x: x[1])
@@ -449,21 +444,3 @@ else:
             if st.button(f"승인 ({i+1})", key=f"btn_{st.session_state.turn}_{i}"):
                 next_turn(i)
                 st.rerun()
-'''
-
-with open("app.py", "w") as f:
-    f.write(code)
-
-# 2. requirements.txt (필수)
-with open("requirements.txt", "w") as f:
-    f.write("streamlit\npandas\n")
-
-# 3. Cloudflare 실행
-!wget -q -O cloudflared-linux-amd64 https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
-!chmod +x cloudflared-linux-amd64
-!nohup ./cloudflared-linux-amd64 tunnel --url http://localhost:8501 > cloudflared.log 2>&1 &
-!sleep 5
-
-print("👇 아래 링크를 클릭하세요 (v37.0: 문법 오류 없는 최종 완결판):")
-!grep -o 'https://.*\.trycloudflare.com' cloudflared.log | head -n 1
-!streamlit run app.py &>/dev/null
