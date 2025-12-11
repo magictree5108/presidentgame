@@ -187,7 +187,7 @@ if 'turn' not in st.session_state:
     st.session_state.fail_msg = ""
     st.session_state.logs = []
     st.session_state.player_name = "성명을 입력하세요\n\n모바일은 좌측 상단 >> 클릭"
-    st.session_state.temp_name = st.session_state.player_name
+    st.session_state.temp_name = ""
     st.session_state.current_crisis = random.choice(CRISES_POOL["초기"])
 
 def restart():
