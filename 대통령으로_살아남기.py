@@ -317,7 +317,7 @@ if st.session_state.game_over:
         st.subheader("📰 [호외] 임기 종료 특별 보도")
         
         score = int(avg + budget) # 점수 계산용 임시 변수
-        if avg >= 60 and budget >= 80:
+        if avg >= 60 and budget >= 60:
             st.success(f"### 🌟 역사상 가장 위대한 지도자, {st.session_state.player_name} 대통령 퇴임\n\n지지율과 경제 두 마리 토끼를 모두 잡은 '전설의 성군'으로 기록될 것")
         elif avg >= 40:
             st.success(f"### ✅ 성공적인 국정 운영, 박수칠 때 떠나는 {st.session_state.player_name} 대통령\n\n숱한 위기 속에서도 대한민국을 안정적으로 이끌었다는 평가")
@@ -390,9 +390,9 @@ if st.session_state.game_over:
             final_title = "불명예 퇴진"
             final_score = int(final_score / 2) # 실패 시 점수 반토막
         else:
-            if final_score >= 160: final_title = "전설의 성군"
-            elif final_score >= 140: final_title = "성공한 지도자"
-            elif final_score >= 120: final_title = "노련한 정치가"
+            if final_score >= 180: final_title = "전설의 성군"
+            elif final_score >= 160: final_title = "성공한 지도자"
+            elif final_score >= 140: final_title = "노련한 정치가"
             else: final_title = "아쉬운 대통령"
         
         if "save_ranking" in globals():
