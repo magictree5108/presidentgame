@@ -3,14 +3,16 @@ import pandas as pd
 import random
 import base64
 import os
+from datetime import datetime
 
 # =============================================================================
 # [1] 기본 설정 (맨 처음에 실행)
 # =============================================================================
-st.set_page_config(page_title="미스터 프레지던트", layout="centered")
+st.set_page_config(page_title="대통령으로 살아남기", layout="centered")
 
 # 파일 경로
 FILE_BGM = "bgm.mp3"
+FILE_RANKING = "ranking.csv"
 FILE_BG = "background.jpg"
 FILE_EMBLEM = "emblem.jpg"
 
@@ -80,19 +82,25 @@ def get_crisis_image(idx, default_url):
     # 3. 그것도 없으면 None
     return None
 
-# [함수] 랭킹 시스템
+# -----------------------------------------------------------------------------
+# [추가] 랭킹 시스템 함수
+# -----------------------------------------------------------------------------
 def load_ranking():
+    """랭킹 파일 불러오기 (없으면 생성)"""
     if not os.path.exists(FILE_RANKING):
         return pd.DataFrame(columns=["이름", "점수", "칭호", "일시"])
     return pd.read_csv(FILE_RANKING)
 
 def save_ranking(name, score, title):
+    """결과 저장하기"""
     df = load_ranking()
     now = datetime.now().strftime("%m-%d %H:%M")
     new_data = pd.DataFrame({"이름": [name], "점수": [score], "칭호": [title], "일시": [now]})
+    # 기존에 같은 이름으로 저장된 기록이 있으면 삭제 (선택사항, 중복 방지용)
+    # df = df[df["이름"] != name] 
+    
     df = pd.concat([df, new_data], ignore_index=True)
-    # 점수 높은 순 정렬
-    df = df.sort_values(by="점수", ascending=False)
+    df = df.sort_values(by="점수", ascending=False) # 점수 높은 순 정렬
     df.to_csv(FILE_RANKING, index=False)
     return df
     
@@ -362,6 +370,11 @@ if 'turn' not in st.session_state:
     st.session_state.event_deck = deck
     st.session_state.current_crisis = CRISES_POOL[st.session_state.event_deck.pop()]
 
+# [추가] 재시작 함수
+def restart():
+    st.session_state.clear()
+    st.rerun()
+    
 # 턴 넘기기
 def next_turn(idx):
     opt = st.session_state.current_crisis['options'][idx]
@@ -417,7 +430,7 @@ st.markdown(f'''
 </div>
 ''', unsafe_allow_html=True)
 
-st.title("🏛️ 미스터 프레지던트")
+st.title("🏛️ 대통령으로 살아남기")
 
 # 사이드바
 with st.sidebar:
@@ -436,6 +449,16 @@ with st.sidebar:
             st.markdown(f"{v}")
             st.markdown("---")
 
+# [추가] 사이드바 맨 아래에 랭킹 표시
+    st.markdown("---")
+    st.subheader("🏆 명예의 전당 (Top 5)")
+    if os.path.exists(FILE_RANKING):
+        df_rank = pd.read_csv(FILE_RANKING)
+        # 1등부터 5등까지만 보여줌
+        st.dataframe(df_rank[["이름", "점수", "칭호"]].head(5), hide_index=True)
+    else:
+        st.caption("아직 등록된 랭킹이 없습니다.")
+
 # HUD (진행 상황 추가)
 cols = st.columns(5)
 cols[0].metric("국고", f"{st.session_state.budget}조")
@@ -451,6 +474,7 @@ if not st.session_state.game_over:
 st.markdown("---")
 
 # 게임 화면
+# 게임 화면 (랭킹 저장 기능 추가됨)
 if st.session_state.game_over:
     if "성공" in st.session_state.fail_msg or "만료" in st.session_state.fail_msg:
         st.balloons()
@@ -461,9 +485,8 @@ if st.session_state.game_over:
         
         st.markdown(f"### 📊 최종 성적: 평균 지지율 {avg:.1f}% / 국고 {budget}조")
         
-        # [엔딩 분기: 뉴스 헤드라인 깔끔하게 정리 (줄바꿈 수정)]
+        # 엔딩 뉴스 (기존 코드 유지)
         st.subheader("📰 [호외] 임기 종료 특별 보도")
-        
         if avg >= 80 and budget >= 80:
             st.success(f"### 🌟 역사상 가장 위대한 지도자, {st.session_state.player_name} 대통령 퇴임\n\n지지율과 경제 두 마리 토끼를 모두 잡은 '전설의 성군'으로 기록될 것")
         elif avg >= 60:
@@ -475,48 +498,52 @@ if st.session_state.game_over:
         else:
             st.info(f"### ⚖️ '공과 과' 뚜렷... {st.session_state.player_name} 정부 5년의 막을 내리다\n\n위기 관리 능력은 돋보였으나, 계층 간 갈등 해소는 과제로 남아")
 
-        # 지지층 분석
-        sorted_stats = sorted(st.session_state.stats.items(), key=lambda x: x[1])
-        best_group = sorted_stats[-1]
-        worst_group = sorted_stats[0]
-        
-        st.markdown(f"""
-        ---
-        **🔍 계층별 지지 성향 분석**
-        * ❤️ **콘크리트 지지층:** {best_group[0]} ({best_group[1]}%)
-        * 💔 **최대 비토층:** {worst_group[0]} ({worst_group[1]}%)
-        """)
-        
     else:
         st.error(f"💀 GAME OVER: {st.session_state.fail_msg}")
-        # 게임오버 상세 사유
+        # 실패 사유 출력 (기존 코드 유지)
         reason = ""
-        if "부도" in st.session_state.fail_msg:
-            reason = "국가 재정이 바닥나 IMF 구제금융을 신청하게 되었습니다."
-        elif "자본" in st.session_state.fail_msg:
-            reason = "외국인 투자자가 모두 떠나고 증시가 폭락했습니다."
-        elif "중산층" in st.session_state.fail_msg:
-            reason = "광화문에 100만 명이 모여 대통령 탄핵을 외치고 있습니다."
-        elif "노동자" in st.session_state.fail_msg:
-            reason = "전국적인 총파업으로 전기, 수도, 교통이 모두 끊겼습니다."
-        elif "빈곤층" in st.session_state.fail_msg:
-            reason = "생존권을 요구하는 격렬한 시위가 폭동으로 번졌습니다."
-        
+        if "부도" in st.session_state.fail_msg: reason = "국가 재정이 바닥나 IMF 구제금융을 신청하게 되었습니다."
+        elif "자본" in st.session_state.fail_msg: reason = "외국인 투자자가 모두 떠나고 증시가 폭락했습니다."
+        elif "중산층" in st.session_state.fail_msg: reason = "광화문에 100만 명이 모여 대통령 탄핵을 외치고 있습니다."
+        elif "노동자" in st.session_state.fail_msg: reason = "전국적인 총파업으로 전기, 수도, 교통이 모두 끊겼습니다."
+        elif "빈곤층" in st.session_state.fail_msg: reason = "생존권을 요구하는 격렬한 시위가 폭동으로 번졌습니다."
         st.markdown(f"**{reason}**")
+
+    # ---------------------------------------------------------
+    # [랭킹 저장 로직] 여기가 핵심입니다!
+    # ---------------------------------------------------------
+    if "score_saved" not in st.session_state:
+        # 점수 계산: (지지율 평균 * 2) + (국고) -> 지지율 비중을 좀 높임
+        final_score = int((sum(st.session_state.stats.values()) / 4) * 2 + st.session_state.budget)
+        
+        # 칭호 결정
+        if final_score >= 250: final_title = "전설의 성군"
+        elif final_score >= 200: final_title = "존경받는 지도자"
+        elif final_score >= 150: final_title = "노련한 정치가"
+        else: final_title = "아쉬운 대통령"
+        
+        # 게임 오버(탄핵/파산)면 칭호 변경 및 점수 패널티
+        if "성공" not in st.session_state.fail_msg and "만료" not in st.session_state.fail_msg:
+             final_title = "불명예 퇴진"
+             final_score = int(final_score / 2) # 점수 반토막
+
+        # 랭킹 파일에 저장
+        save_ranking(st.session_state.player_name, final_score, final_title)
+        st.session_state.score_saved = True # 중복 저장 방지
     
-    if st.button("🔄 다시 하기"):
-        st.session_state.clear()
-        st.rerun()
+    # 다시하기 버튼
+    if st.button("재당선"):
+        restart() # 아까 만든 함수 호출
         
     with st.expander("📜 지난 기록 보기"):
         for log in st.session_state.logs:
             st.write(log)
 
 else:
+    # (게임 진행 중 화면 - 기존 코드 그대로 둠)
     c = st.session_state.current_crisis
     st.error(f"🚨 [속보] {c['title']}")
     
-    # [수정] 이미지 표시 (로컬 파일 우선, 없으면 웹 URL, 둘 다 없으면 표시 안함)
     img_url = get_crisis_image(c.get('id', 99), c.get('img'))
     if img_url:
         st.image(img_url, use_container_width=True)
