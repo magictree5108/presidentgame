@@ -487,9 +487,9 @@ if st.session_state.game_over:
         
         # 엔딩 뉴스 (기존 코드 유지)
         st.subheader("📰 [호외] 임기 종료 특별 보도")
-        if avg >= 80 and budget >= 80:
+        if avg >= 70 and budget >= 80:
             st.success(f"### 🌟 역사상 가장 위대한 지도자, {st.session_state.player_name} 대통령 퇴임\n\n지지율과 경제 두 마리 토끼를 모두 잡은 '전설의 성군'으로 기록될 것")
-        elif avg >= 60:
+        elif avg >= 50:
             st.success(f"### ✅ 성공적인 국정 운영, 박수칠 때 떠나는 {st.session_state.player_name} 대통령\n\n숱한 위기 속에서도 대한민국을 안정적으로 이끌었다는 평가")
         elif budget < 20:
             st.warning(f"### 💸 '인기는 얻었으나 곳간은 비었다'... 포퓰리즘 논란 속 퇴임\n\n차기 정부에 막대한 재정 부담을 넘기게 되어... 국가 신용등급 우려")
@@ -517,9 +517,9 @@ if st.session_state.game_over:
         final_score = int((sum(st.session_state.stats.values()) / 4) * 2 + st.session_state.budget)
         
         # 칭호 결정
-        if final_score >= 250: final_title = "전설의 성군"
-        elif final_score >= 180: final_title = "존경받는 지도자"
-        elif final_score >= 150: final_title = "성공한 대통령"
+        if final_score >= 200: final_title = "전설의 성군"
+        elif final_score >= 160: final_title = "존경받는 지도자"
+        elif final_score >= 140: final_title = "성공한 대통령"
         elif final_score >= 120: final_title = "노련한 정치가"
         else: final_title = "아쉬운 대통령"
         
