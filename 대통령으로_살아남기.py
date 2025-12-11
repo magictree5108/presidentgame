@@ -135,22 +135,79 @@ ARCH_DESC = {
     """
 }
 
-CRISES_POOL = [
-    {
-        "id": 0,
-        "title": "📉 글로벌 복합 금융 위기",
-        "img": "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?q=80&w=800",
-        "desc": "미국발 금리 인상과 전쟁 리스크로 주가가 폭락하고 환율이 1,500원을 돌파했습니다. 기업들은 줄도산을 경고하고 있으며, 가계 부채는 시한폭탄처럼 째깍거리고 있습니다.",
-        "options": [
-            {"name": "법인세 인하 (낙수효과)", "cost": -10, "effect": [15, 5, -10, -15], 
-             "detail": "기업의 세금을 깎아주어 투자를 유도합니다. 기업 숨통은 트이지만, 세수 부족으로 복지 예산이 대폭 삭감됩니다.", "reason": "자본가+15 (감세), 빈곤층-15 (복지축소)"},
-            {"name": "재난지원금 살포", "cost": -30, "effect": [-15, 5, 10, 20], 
-             "detail": "국채를 발행해 현금을 풉니다. 내수는 방어하지만, 물가 상승과 국가 부채 급증으로 경제 펀더멘털이 훼손됩니다.", "reason": "빈곤층+20 (현금), 자본가-15 (인플레)"},
-            {"name": "고금리 긴축 (구조조정)", "cost": +10, "effect": [5, -20, -10, -5], 
-             "detail": "허리띠를 졸라매어 물가를 잡습니다. 국가 신용은 지키지만, 이자 폭탄을 맞은 중산층과 자영업자가 붕괴합니다.", "reason": "자본가+5 (자산방어), 중산층-20 (이자폭탄)"}
-        ]
+# [추가] 정치인 유형 데이터 (사진은 웹 URL 사용, 필요시 파일명으로 교체)
+POLITICIAN_TYPES = {
+    "진보": {
+        "title": "서민의 벗, 행동하는 양심",
+        "models": [
+            {"name": "노무현", "img": "https://upload.wikimedia.org/wikipedia/commons/f/f3/Roh_Moo-hyun_Presidential_Portrait.jpg"},
+            {"name": "김대중", "img": "https://upload.wikimedia.org/wikipedia/commons/e/ee/Kim_Dae-jung_Official_Portrait.jpg"}
+        ],
+        "desc": "당신은 서민과 노동자를 위한 정책을 펼쳤습니다. 기득권과의 타협보다는 원칙을 중요시하며, 대중의 뜨거운 지지를 받았습니다."
     },
-    {
+    "중도진보": {
+        "title": "원칙과 포용의 리더십",
+        "models": [
+            {"name": "문재인", "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Moon_Jae-in_presidential_portrait.jpg"},
+            {"name": "이재명", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Lee_Jae-myung_%28cropped%29.jpg/440px-Lee_Jae-myung_%28cropped%29.jpg"}
+        ],
+        "desc": "당신은 개혁을 추구하면서도 안정적인 국정 운영을 시도했습니다. 복지와 공정성을 강조하며 탄탄한 지지층을 확보했습니다."
+    },
+    "중도보수": {
+        "title": "실용주의와 혁신",
+        "models": [
+            {"name": "안철수", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Ahn_Cheol-soo_portrait.jpg/440px-Ahn_Cheol-soo_portrait.jpg"},
+            {"name": "이준석", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Lee_Jun-seok_%28cropped%29.jpg/440px-Lee_Jun-seok_%28cropped%29.jpg"}
+        ],
+        "desc": "당신은 이념보다는 실용과 과학, 합리성을 중시했습니다. 기존 정치 문법을 깨는 새로운 시도로 중도층의 호응을 얻었습니다."
+    },
+    "보수": {
+        "title": "자유 시장과 법치",
+        "models": [
+            {"name": "윤석열", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Yoon_Suk-yeol_in_May_2022.jpg/440px-Yoon_Suk-yeol_in_May_2022.jpg"},
+            {"name": "김문수", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Kim_Moon-soo_in_October_2024.png/440px-Kim_Moon-soo_in_October_2024.png"}
+        ],
+        "desc": "당신은 시장의 자유와 튼튼한 안보를 최우선으로 여겼습니다. 기업하기 좋은 나라를 만들고 법과 원칙을 강조했습니다."
+    }
+}
+
+def get_politician_type(stats):
+    # 단순 로직: 자본가+중산층 점수 vs 노동자+빈곤층 점수
+    conservative_score = stats["자본가"] + stats["중산층"]
+    progressive_score = stats["노동자"] + stats["빈곤층"]
+    
+    diff = progressive_score - conservative_score
+    
+    if diff > 30: return "진보"
+    elif diff > 0: return "중도진보"
+    elif diff > -30: return "중도보수"
+    else: return "보수"
+
+# -----------------------------------------------------------------------------
+# [수정] 4. 시기별 이벤트 데이터 (초기/중기/말기 분리)
+# -----------------------------------------------------------------------------
+CRISES_POOL = {
+    "초기": [ # 1~3년차: 민생, 사회 이슈 위주
+        {"id": 13, "title": "🍔 프랜차이즈 갑질 파동", "img": "https://images.unsplash.com/photo-1550547660-d9450f859349", "desc": "대형 본사의 갑질로 가맹점주가 사망했습니다. 을의 눈물에 국민들이 분노합니다.", "options": [{"name": "규제 3법 통과", "cost": 0, "effect": [-20, 5, 10, 10], "detail": "강력 규제. 재계 반발.", "reason": "자본가-20, 노동자+10"}, {"name": "자율 상생 유도", "cost": 0, "effect": [10, -5, -10, -5], "detail": "기업 자율. 봐주기 논란.", "reason": "자본가+10, 노동자-10"}, {"name": "긴급 대출 지원", "cost": -15, "effect": [-5, 5, 0, 10], "detail": "폐업 방지. 가계부채 증가.", "reason": "빈곤층+10, 국고-15"}]},
+        {"id": 14, "title": "📉 코인 거래소 먹튀", "img": "https://images.unsplash.com/photo-1621504450168-38f647319936", "desc": "거래소 파산으로 2030 세대 자산이 증발했습니다.", "options": [{"name": "손실 보전", "cost": -25, "effect": [-10, -10, 15, -5], "detail": "세금 투입. 납세자 분노.", "reason": "노동자+15, 중산층-10"}, {"name": "책임 원칙", "cost": 0, "effect": [5, 5, -20, -10], "detail": "투기 경종. 청년 파산.", "reason": "중산층+5, 노동자-20"}, {"name": "규제 강화", "cost": -5, "effect": [-5, 0, -5, 0], "detail": "뒷북 규제. 산업 위축.", "reason": "자본가-5, 노동자-5"}]},
+        {"id": 3, "title": "🤖 AI 일자리 습격", "img": "https://images.unsplash.com/photo-1485827404703-89b55fcc595e", "desc": "AI가 인간 업무를 대체하며 고용 불안이 확산됩니다.", "options": [{"name": "로봇세 도입", "cost": -15, "effect": [-20, 5, 10, 10], "detail": "기업 증세.", "reason": "자본가-20, 노동자+10"}, {"name": "규제 철폐", "cost": +10, "effect": [20, 5, -15, -15], "detail": "AI 강국 도약.", "reason": "자본가+20, 노동자-15"}, {"name": "공공 근로", "cost": -20, "effect": [-5, -5, 5, 10], "detail": "단기 일자리.", "reason": "빈곤층+10, 국고-20"}]},
+        {"id": 12, "title": "🧬 신약 부작용 사태", "img": "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69", "desc": "국가 지원 신약의 부작용이 발견되었습니다.", "options": [{"name": "허가 취소", "cost": -20, "effect": [-10, 5, 5, 5], "detail": "안전 우선. 산업 위축.", "reason": "중산층+5, 자본가-10"}, {"name": "인과 규명 우선", "cost": 0, "effect": [10, -10, -10, -5], "detail": "산업 보호. 여론 악화.", "reason": "자본가+10, 중산층-10"}, {"name": "공공 의료 강화", "cost": -30, "effect": [-15, 5, 10, 15], "detail": "공공성 확충. 세금 투입.", "reason": "빈곤층+15, 자본가-15"}]}
+    ],
+    "중기": [ # 4~7년차: 구조적 경제/사회 문제
+        {"id": 7, "title": "🏘️ 부동산 시장 대폭락", "img": "https://images.unsplash.com/photo-1560518883-ce09059eeffa", "desc": "집값 급락으로 깡통 전세와 건설사 부도가 속출합니다.", "options": [{"name": "부양책", "cost": -10, "effect": [15, 5, -10, -10], "detail": "규제 완화.", "reason": "자본가+15, 노동자-10"}, {"name": "시장 자율", "cost": 0, "effect": [-20, -20, 10, 5], "detail": "거품 붕괴 용인.", "reason": "자본가-20, 노동자+10"}, {"name": "피해 구제", "cost": -20, "effect": [-5, -5, 10, 15], "detail": "세금 지원.", "reason": "빈곤층+15, 국고-20"}]},
+        {"id": 9, "title": "⚡ 에너지 위기", "img": "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e", "desc": "유가 폭등으로 난방비 대란이 일어났습니다.", "options": [{"name": "요금 인상", "cost": +10, "effect": [0, -10, -15, -20], "detail": "적자 해소.", "reason": "국고+10, 빈곤층-20"}, {"name": "요금 동결", "cost": -30, "effect": [-5, 10, 10, 10], "detail": "재정 부담.", "reason": "빈곤층+10, 국고-30"}, {"name": "바우처 지급", "cost": -10, "effect": [0, -5, -5, 15], "detail": "선별 지원.", "reason": "빈곤층+15, 노동자-5"}]},
+        {"id": 4, "title": "⚔️ 무역 보복 조치", "img": "https://images.unsplash.com/photo-1595246737293-27d096162332", "desc": "핵심 소재 수출 금지로 공장이 멈췄습니다.", "options": [{"name": "굴욕적 협상", "cost": 0, "effect": [10, 5, 5, -5], "detail": "실리 추구.", "reason": "자본가+10, 빈곤층-5"}, {"name": "강경 대응", "cost": -10, "effect": [-15, -10, -10, -5], "detail": "자존심.", "reason": "자본가-15, 중산층-10"}, {"name": "국산화 R&D", "cost": -30, "effect": [-5, -5, 5, 0], "detail": "장기 투자.", "reason": "노동자+5, 국고-30"}]},
+        {"id": 5, "title": "🏭 기후 재난", "img": "https://images.unsplash.com/photo-1579766922979-4d6cb600259d", "desc": "기록적인 폭우와 미세먼지가 덮쳤습니다.", "options": [{"name": "탄소세 도입", "cost": +5, "effect": [-15, -5, 5, 10], "detail": "환경 개선.", "reason": "자본가-15, 빈곤층+10"}, {"name": "경제 우선", "cost": 0, "effect": [15, 5, -10, -20], "detail": "규제 완화.", "reason": "자본가+15, 빈곤층-20"}, {"name": "피해 복구금", "cost": -20, "effect": [-5, 0, 0, 10], "detail": "현금 지급.", "reason": "빈곤층+10, 국고-20"}]},
+        {"id": 6, "title": "📉 합계출산율 0.5명", "img": "https://images.unsplash.com/photo-1519689680058-324335c77eba", "desc": "국가 소멸 위기론이 대두되었습니다.", "options": [{"name": "현금 지원", "cost": -30, "effect": [-5, 10, 5, -5], "detail": "양육비 확대.", "reason": "중산층+10, 빈곤층-5"}, {"name": "이민청 설립", "cost": -5, "effect": [10, -10, -10, 5], "detail": "노동력 수입.", "reason": "자본가+10, 노동자-10"}, {"name": "연금 개혁", "cost": +10, "effect": [-5, -15, -15, -5], "detail": "고통 분담.", "reason": "중산층-15, 국고+10"}]}
+    ],
+    "말기": [ # 8~10년차: 정권의 명운을 건 초대형 위기
+        {"id": 0, "title": "📉 글로벌 복합 금융 위기", "img": "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3", "desc": "환율 1,500원 돌파. 국가 부도 위기설.", "options": [{"name": "법인세 인하", "cost": -10, "effect": [15, 5, -10, -15], "detail": "낙수효과.", "reason": "자본가+15, 빈곤층-15"}, {"name": "재난지원금", "cost": -30, "effect": [-15, 5, 10, 20], "detail": "내수 방어.", "reason": "빈곤층+20, 자본가-15"}, {"name": "고금리 긴축", "cost": +10, "effect": [5, -20, -10, -5], "detail": "물가 안정.", "reason": "자본가+5, 중산층-20"}]},
+        {"id": 2, "title": "📢 광화문 100만 촛불", "img": "https://images.unsplash.com/photo-1563986768609-322da13575f3", "desc": "정권 퇴진을 요구하는 100만 인파가 집결했습니다.", "options": [{"name": "증세 및 복지", "cost": +20, "effect": [-25, -5, 10, 20], "detail": "요구 수용.", "reason": "빈곤층+20, 자본가-25"}, {"name": "공권력 투입", "cost": -5, "effect": [15, 5, -20, -15], "detail": "강제 진압.", "reason": "자본가+15, 노동자-20"}, {"name": "대국민 사과", "cost": 0, "effect": [-10, 5, 5, 5], "detail": "내각 사퇴.", "reason": "자본가-10, 중산층+5"}]},
+        {"id": 10, "title": "💣 북한 국지적 도발", "img": "https://images.unsplash.com/photo-1554223249-1755a5b512c8", "desc": "휴전선 포격 도발. 전쟁 위기 고조.", "options": [{"name": "강력 응징", "cost": -20, "effect": [5, -5, -5, -5], "detail": "원점 타격.", "reason": "자본가+5, 중산층-5"}, {"name": "대화 시도", "cost": 0, "effect": [-15, 5, 5, 5], "detail": "확전 방지.", "reason": "자본가-15, 빈곤층+5"}, {"name": "국방비 증액", "cost": -30, "effect": [-5, -10, -15, -5], "detail": "군비 강화.", "reason": "노동자-15, 국고-30"}]},
+        {"id": 8, "title": "🕵️ 권력형 비리 게이트", "img": "https://images.unsplash.com/photo-1589829545856-d10d557cf95f", "desc": "측근 비리 발각으로 도덕성에 치명타.", "options": [{"name": "성역 없는 수사", "cost": 0, "effect": [-15, 10, 10, 0], "detail": "읍참마속.", "reason": "중산층+10, 자본가-15"}, {"name": "정치 탄압 주장", "cost": 0, "effect": [5, -20, -20, -5], "detail": "지지층 결집.", "reason": "자본가+5, 중산층-20"}, {"name": "제도 개혁 약속", "cost": -10, "effect": [-5, 5, 5, 0], "detail": "시선 분산.", "reason": "중산층+5, 자본가-5"}]},
+        {"id": 1, "title": "🦠 치명적 신종 바이러스", "img": "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144", "desc": "전염병 확산으로 의료 체계 붕괴.", "options": [{"name": "국가 봉쇄", "cost": -10, "effect": [-5, -10, -15, 5], "detail": "경제 마비.", "reason": "빈곤층+5, 노동자-15"}, {"name": "위드 코로나", "cost": 0, "effect": [10, 5, 0, -25], "detail": "경제 우선.", "reason": "자본가+10, 빈곤층-25"}, {"name": "치료제 무상", "cost": -40, "effect": [-5, 5, 5, 15], "detail": "재정 투입.", "reason": "빈곤층+15, 국고-40"}]}
+    ]
+}
         "id": 1,
         "title": "🦠 치명적 신종 바이러스",
         "img": "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?q=80&w=800",
@@ -356,6 +413,7 @@ render_bgm()
 render_background()
 
 # 상태 초기화
+# 상태 초기화
 if 'turn' not in st.session_state:
     st.session_state.turn = 1
     st.session_state.stats = {k: 50 for k in ARCHS}
@@ -363,18 +421,46 @@ if 'turn' not in st.session_state:
     st.session_state.game_over = False
     st.session_state.fail_msg = ""
     st.session_state.logs = []
-    st.session_state.player_name = "성함입력\n\n(모바일은 좌측 상단 >> 클릭)"
+    st.session_state.player_name = "성명을 입력하세요"
     
-    deck = list(range(len(CRISES_POOL)))
-    random.shuffle(deck)
-    st.session_state.event_deck = deck
-    st.session_state.current_crisis = CRISES_POOL[st.session_state.event_deck.pop()]
+    # [수정] 덱 초기화 필요 없음 (그때그때 뽑음)
+    # 초기 이벤트 설정
+    st.session_state.current_crisis = random.choice(CRISES_POOL["초기"])
 
-# [추가] 재시작 함수
-def restart():
-    st.session_state.clear()
-    st.rerun()
+# 턴 넘기기
+def next_turn(idx):
+    opt = st.session_state.current_crisis['options'][idx]
+    st.session_state.budget += opt['cost']
+    for i, a in enumerate(ARCHS):
+        st.session_state.stats[a] = max(0, min(100, st.session_state.stats[a] + opt['effect'][i]))
     
+    st.session_state.logs.append(f"Turn {st.session_state.turn}: {opt['name']} 선택")
+    
+    # 게임 오버 체크 (기존과 동일)
+    if st.session_state.budget < 0:
+        st.session_state.game_over = True
+        st.session_state.fail_msg = "💸 국가 부도 선언 (국고 고갈)"
+    elif any(v <= 0 for v in st.session_state.stats.values()):
+        st.session_state.game_over = True
+        st.session_state.fail_msg = "🔥 대규모 폭동 발생 (지지율 0%)"
+    elif st.session_state.turn >= 10:
+        st.session_state.game_over = True
+        st.session_state.fail_msg = "🎉 임기 5년 만료"
+    else:
+        st.session_state.turn += 1
+        # [수정] 시기에 맞는 이벤트 뽑기
+        turn = st.session_state.turn
+        if turn <= 3: pool = CRISES_POOL["초기"]
+        elif turn <= 7: pool = CRISES_POOL["중기"]
+        else: pool = CRISES_POOL["말기"]
+        
+        st.session_state.current_crisis = random.choice(pool)
+        
+        # 랭킹 저장 (기존과 동일)
+        if st.session_state.game_over and "save_ranking" in globals():
+             score = int(sum(st.session_state.stats.values()) / 4 + st.session_state.budget)
+             title = "대통령"
+             save_ranking(st.session_state.player_name, score, title)
 # 턴 넘기기
 def next_turn(idx):
     opt = st.session_state.current_crisis['options'][idx]
@@ -479,36 +565,55 @@ if st.session_state.game_over:
     if "성공" in st.session_state.fail_msg or "만료" in st.session_state.fail_msg:
         st.balloons()
         st.success(f"🏆 {st.session_state.fail_msg}")
-        
-        avg = sum(st.session_state.stats.values()) / 4
-        budget = st.session_state.budget
-        
-        st.markdown(f"### 📊 최종 성적: 평균 지지율 {avg:.1f}% / 국고 {budget}조")
-        
-        # 엔딩 뉴스 (기존 코드 유지)
-        st.subheader("📰 [호외] 임기 종료 특별 보도")
-        if avg >= 60 and budget >= 80:
-            st.success(f"### 🌟 역사상 가장 위대한 지도자, {st.session_state.player_name} 대통령 퇴임\n\n지지율과 경제 두 마리 토끼를 모두 잡은 '전설의 성군'으로 기록될 것")
-        elif avg >= 40:
-            st.success(f"### ✅ 성공적인 국정 운영, 박수칠 때 떠나는 {st.session_state.player_name} 대통령\n\n숱한 위기 속에서도 대한민국을 안정적으로 이끌었다는 평가")
-        elif budget < 20:
-            st.warning(f"### 💸 '인기는 얻었으나 곳간은 비었다'... 포퓰리즘 논란 속 퇴임\n\n차기 정부에 막대한 재정 부담을 넘기게 되어... 국가 신용등급 우려")
-        elif avg < 30:
-            st.error(f"### 💀 역대 최저 지지율... {st.session_state.player_name} 대통령의 쓸쓸한 뒷모습\n\n국론 분열과 정책 실패로 얼룩진 5년... '식물 정부' 오명 남겨")
-        else:
-            st.info(f"### ⚖️ '공과 과' 뚜렷... {st.session_state.player_name} 정부 5년의 막을 내리다\n\n위기 관리 능력은 돋보였으나, 계층 간 갈등 해소는 과제로 남아")
-
     else:
         st.error(f"💀 GAME OVER: {st.session_state.fail_msg}")
-        # 실패 사유 출력 (기존 코드 유지)
-        reason = ""
-        if "부도" in st.session_state.fail_msg: reason = "국가 재정이 바닥나 IMF 구제금융을 신청하게 되었습니다."
-        elif "자본" in st.session_state.fail_msg: reason = "외국인 투자자가 모두 떠나고 증시가 폭락했습니다."
-        elif "중산층" in st.session_state.fail_msg: reason = "광화문에 100만 명이 모여 대통령 탄핵을 외치고 있습니다."
-        elif "노동자" in st.session_state.fail_msg: reason = "전국적인 총파업으로 전기, 수도, 교통이 모두 끊겼습니다."
-        elif "빈곤층" in st.session_state.fail_msg: reason = "생존권을 요구하는 격렬한 시위가 폭동으로 번졌습니다."
-        st.markdown(f"**{reason}**")
 
+    # 최종 점수 계산
+    avg = sum(st.session_state.stats.values()) / 4
+    budget = st.session_state.budget
+    st.markdown(f"### 📊 최종 성적: 평균 지지율 {avg:.1f}% / 국고 {budget}조")
+
+    # [NEW] 정치인 유형 분석
+    my_type = get_politician_type(st.session_state.stats)
+    p_data = POLITICIAN_TYPES[my_type]
+    
+    st.markdown("---")
+    st.subheader(f"🧩 당신의 정치 성향: [{my_type}]")
+    st.write(f"**\"{p_data['title']}\"**")
+    st.info(p_data['desc'])
+    
+    st.write("#### 👥 당신과 비슷한 현실 정치인")
+    pc1, pc2 = st.columns(2)
+    with pc1:
+        st.image(p_data['models'][0]['img'], caption=p_data['models'][0]['name'])
+    with pc2:
+        st.image(p_data['models'][1]['img'], caption=p_data['models'][1]['name'])
+
+    st.markdown("---")
+
+    # [NEW] 지지층/비토층 분석
+    sorted_stats = sorted(st.session_state.stats.items(), key=lambda x: x[1])
+    best = sorted_stats[-1]
+    worst = sorted_stats[0]
+    
+    col_a, col_b = st.columns(2)
+    col_a.metric("❤️ 핵심 지지층", f"{best[0]} ({best[1]}%)")
+    col_b.metric("💔 최대 비토층", f"{worst[0]} ({worst[1]}%)")
+
+    # [NEW] 명예의 전당 (Top 10) 결과창에도 표시
+    if "load_ranking" in globals() and os.path.exists(FILE_RANKING):
+        st.markdown("---")
+        st.subheader("🏆 명예의 전당 (Top 10)")
+        df_rank = load_ranking()
+        if not df_rank.empty:
+            st.dataframe(df_rank.head(10), hide_index=True)
+
+    if st.button("🔄 다시 하기"):
+        restart()
+        
+    with st.expander("📜 지난 기록 보기"):
+        for log in st.session_state.logs:
+            st.write(log)
     # ---------------------------------------------------------
     # [랭킹 저장 로직] 여기가 핵심입니다!
     # ---------------------------------------------------------
