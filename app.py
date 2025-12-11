@@ -339,7 +339,7 @@ if 'turn' not in st.session_state:
     st.session_state.game_over = False
     st.session_state.fail_msg = ""
     st.session_state.logs = []
-    st.session_state.player_name = "성함을 입력해주세요"
+    st.session_state.player_name = "성함입력(모바일은 좌측 상단 >> 클릭)"
     
     deck = list(range(len(CRISES_POOL)))
     random.shuffle(deck)
