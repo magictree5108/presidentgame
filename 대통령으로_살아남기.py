@@ -199,7 +199,7 @@ if 'turn' not in st.session_state:
     
     # 기본 이름 설정
     if 'player_name' not in st.session_state:
-        st.session_state.player_name = "성명을 입력하세요"
+        st.session_state.player_name = "성명을 입력하세요\n\n모바일은 좌측상단 >> 클릭"
     if 'temp_name' not in st.session_state:
         st.session_state.temp_name = ""
     
