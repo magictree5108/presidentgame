@@ -201,7 +201,7 @@ if 'turn' not in st.session_state:
     if 'player_name' not in st.session_state:
         st.session_state.player_name = "성명을 입력하세요"
     if 'temp_name' not in st.session_state:
-        st.session_state.temp_name = st.session_state.player_name
+        st.session_state.temp_name = ""
     
     # [중복 방지 핵심] 시기별로 카드를 미리 섞어서 덱(Deck)을 만듭니다.
     # 이렇게 하면 뽑을 때마다 카드가 줄어들어 중복이 안 나옵니다.
