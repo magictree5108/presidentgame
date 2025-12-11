@@ -63,6 +63,14 @@ def get_crisis_image(idx, default_url):
         return local_filename
     return default_url
 
+# [추가] 정치인 이미지 로더 (파일 우선 -> 웹 URL)
+# 파일명 규칙: poly_아이디.jpg (예: poly_roh.jpg)
+def get_model_image(model_id, default_url):
+    local_filename = f"poly_{model_id}.jpg"
+    if os.path.exists(local_filename):
+        return local_filename
+    return default_url
+
 # [랭킹 시스템]
 def load_ranking():
     if not os.path.exists(FILE_RANKING):
@@ -116,38 +124,39 @@ ARCH_DESC = {
     """
 }
 
+# [수정] 정치인 데이터 (ID 추가됨)
 POLITICIAN_TYPES = {
     "진보": {
         "title": "서민의 벗, 행동하는 양심",
+        "desc": "당신은 서민과 노동자를 위한 정책을 과감하게 펼쳤습니다. 기득권과의 타협보다는 원칙을 중요시하며, 대중의 뜨거운 지지를 받았습니다.",
         "models": [
-            {"name": "노무현", "img": "https://upload.wikimedia.org/wikipedia/commons/f/f3/Roh_Moo-hyun_Presidential_Portrait.jpg"},
-            {"name": "김대중", "img": "https://upload.wikimedia.org/wikipedia/commons/e/ee/Kim_Dae-jung_Official_Portrait.jpg"}
-        ],
-        "desc": "당신은 서민과 노동자를 위한 정책을 과감하게 펼쳤습니다. 기득권과의 타협보다는 원칙을 중요시하며, 대중의 뜨거운 지지를 받았습니다."
+            {"name": "노무현", "id": "roh", "img": "https://upload.wikimedia.org/wikipedia/commons/f/f3/Roh_Moo-hyun_Presidential_Portrait.jpg"},
+            {"name": "김대중", "id": "dj", "img": "https://upload.wikimedia.org/wikipedia/commons/e/ee/Kim_Dae-jung_Official_Portrait.jpg"}
+        ]
     },
     "중도진보": {
         "title": "원칙과 포용의 리더십",
+        "desc": "당신은 개혁을 추구하면서도 안정적인 국정 운영을 시도했습니다. 복지와 공정성을 강조하며 탄탄한 지지층을 확보했습니다.",
         "models": [
-            {"name": "문재인", "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Moon_Jae-in_presidential_portrait.jpg"},
-            {"name": "이재명", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Lee_Jae-myung_%28cropped%29.jpg/440px-Lee_Jae-myung_%28cropped%29.jpg"}
-        ],
-        "desc": "당신은 개혁을 추구하면서도 안정적인 국정 운영을 시도했습니다. 복지와 공정성을 강조하며 탄탄한 지지층을 확보했습니다."
+            {"name": "문재인", "id": "moon", "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Moon_Jae-in_presidential_portrait.jpg"},
+            {"name": "이재명", "id": "lee", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Lee_Jae-myung_%28cropped%29.jpg/440px-Lee_Jae-myung_%28cropped%29.jpg"}
+        ]
     },
     "중도보수": {
         "title": "실용주의와 혁신",
+        "desc": "당신은 이념보다는 실용과 과학, 합리성을 중시했습니다. 기존 정치 문법을 깨는 새로운 시도로 중도층의 호응을 얻었습니다.",
         "models": [
-            {"name": "안철수", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Ahn_Cheol-soo_portrait.jpg/440px-Ahn_Cheol-soo_portrait.jpg"},
-            {"name": "이준석", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Lee_Jun-seok_%28cropped%29.jpg/440px-Lee_Jun-seok_%28cropped%29.jpg"}
-        ],
-        "desc": "당신은 이념보다는 실용과 과학, 합리성을 중시했습니다. 기존 정치 문법을 깨는 새로운 시도로 중도층의 호응을 얻었습니다."
+            {"name": "안철수", "id": "ahn", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Ahn_Cheol-soo_portrait.jpg/440px-Ahn_Cheol-soo_portrait.jpg"},
+            {"name": "이준석", "id": "jun", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Lee_Jun-seok_%28cropped%29.jpg/440px-Lee_Jun-seok_%28cropped%29.jpg"}
+        ]
     },
     "보수": {
         "title": "자유 시장과 법치",
+        "desc": "당신은 시장의 자유와 튼튼한 안보를 최우선으로 여겼습니다. 기업하기 좋은 나라를 만들고 법과 원칙을 강조했습니다.",
         "models": [
-            {"name": "윤석열", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Yoon_Suk-yeol_in_May_2022.jpg/440px-Yoon_Suk-yeol_in_May_2022.jpg"},
-            {"name": "김문수", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Kim_Moon-soo_in_October_2024.png/440px-Kim_Moon-soo_in_October_2024.png"}
-        ],
-        "desc": "당신은 시장의 자유와 튼튼한 안보를 최우선으로 여겼습니다. 기업하기 좋은 나라를 만들고 법과 원칙을 강조했습니다."
+            {"name": "윤석열", "id": "yoon", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Yoon_Suk-yeol_in_May_2022.jpg/440px-Yoon_Suk-yeol_in_May_2022.jpg"},
+            {"name": "김문수", "id": "kim", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Kim_Moon-soo_in_October_2024.png/440px-Kim_Moon-soo_in_October_2024.png"}
+        ]
     }
 }
 
@@ -348,11 +357,18 @@ if st.session_state.game_over:
     
     st.write("#### 👥 당신과 비슷한 현실 정치인")
     pc1, pc2 = st.columns(2)
+    
+    # [수정] 로컬 이미지 확인 후 출력
     with pc1:
-        st.image(p_data['models'][0]['img'], caption=p_data['models'][0]['name'])
+        m1 = p_data['models'][0]
+        img1 = get_model_image(m1['id'], m1['img'])
+        st.image(img1, caption=m1['name'])
+        
     with pc2:
-        st.image(p_data['models'][1]['img'], caption=p_data['models'][1]['name'])
-
+        m2 = p_data['models'][1]
+        img2 = get_model_image(m2['id'], m2['img'])
+        st.image(img2, caption=m2['name'])
+        
     st.markdown("---")
 
     # 지지층 분석
