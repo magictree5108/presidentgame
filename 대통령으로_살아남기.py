@@ -415,7 +415,7 @@ if st.session_state.game_over:
             final_title = "불명예 퇴진"
             final_score = int(final_score / 2) # 실패 시 점수 반토막
         else:
-            if final_score >= 180: final_title = "전설의 성군"
+            if final_score >= 180: final_title = "전설"
             elif final_score >= 160: final_title = "성공한 지도자"
             elif final_score >= 140: final_title = "노련한 정치가"
             else: final_title = "아쉬운 대통령"
