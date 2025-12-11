@@ -188,6 +188,7 @@ CRISES_POOL = {
 # =============================================================================
 
 # 초기화
+# 상태 초기화
 if 'turn' not in st.session_state:
     st.session_state.turn = 1
     st.session_state.stats = {k: 50 for k in ARCHS}
@@ -195,14 +196,29 @@ if 'turn' not in st.session_state:
     st.session_state.game_over = False
     st.session_state.fail_msg = ""
     st.session_state.logs = []
-    st.session_state.player_name = "성명을 입력하세요\n\n모바일은 좌측 상단 >> 클릭"
-    st.session_state.temp_name = ""
-    st.session_state.current_crisis = random.choice(CRISES_POOL["초기"])
+    
+    # 기본 이름 설정
+    if 'player_name' not in st.session_state:
+        st.session_state.player_name = "성명을 입력하세요"
+    if 'temp_name' not in st.session_state:
+        st.session_state.temp_name = st.session_state.player_name
+    
+    # [중복 방지 핵심] 시기별로 카드를 미리 섞어서 덱(Deck)을 만듭니다.
+    # 이렇게 하면 뽑을 때마다 카드가 줄어들어 중복이 안 나옵니다.
+    st.session_state.decks = {
+        "초기": random.sample(CRISES_POOL["초기"], len(CRISES_POOL["초기"])),
+        "중기": random.sample(CRISES_POOL["중기"], len(CRISES_POOL["중기"])),
+        "말기": random.sample(CRISES_POOL["말기"], len(CRISES_POOL["말기"]))
+    }
+    
+    # 첫 번째 이벤트 뽑기 (초기 덱에서 하나 꺼냄)
+    st.session_state.current_crisis = st.session_state.decks["초기"].pop()
 
 def restart():
     st.session_state.clear()
     st.rerun()
 
+# 턴 넘기기
 def next_turn(idx):
     opt = st.session_state.current_crisis['options'][idx]
     st.session_state.budget += opt['cost']
@@ -235,13 +251,18 @@ def next_turn(idx):
         st.session_state.fail_msg = "🎉 임기 5년 만료"
     else:
         st.session_state.turn += 1
-        # 시기에 맞는 이벤트 선택
-        turn = st.session_state.turn
-        if turn <= 3: pool = CRISES_POOL["초기"]
-        elif turn <= 7: pool = CRISES_POOL["중기"]
-        else: pool = CRISES_POOL["말기"]
         
-        st.session_state.current_crisis = random.choice(pool)
+        # [수정] 시기에 맞는 덱에서 카드 뽑기 (pop 사용 -> 중복 방지)
+        turn = st.session_state.turn
+        if turn <= 3: stage = "초기"
+        elif turn <= 7: stage = "중기"
+        else: stage = "말기"
+        
+        # 덱에 카드가 남아있으면 뽑고, 만약 다 떨어졌으면(그럴 리 없지만) 랜덤 선택
+        if st.session_state.decks[stage]:
+            st.session_state.current_crisis = st.session_state.decks[stage].pop()
+        else:
+            st.session_state.current_crisis = random.choice(CRISES_POOL[stage])
 
 # UI 렌더링
 render_bgm()
@@ -296,11 +317,15 @@ cols[0].metric("국고", f"{st.session_state.budget}조")
 for i, a in enumerate(ARCHS):
     cols[i+1].metric(f"{a} 지지율", f"{st.session_state.stats[a]}%")
 
+# 진행바 (초기/중기/말기 표시)
 if not st.session_state.game_over:
-    st.write(f"### 🗓️ 임기 {st.session_state.turn}년차 / 총 10년 (남은 안건: {11 - st.session_state.turn}개)")
+    turn = st.session_state.turn
+    if turn <= 3: stage_name = "초기"
+    elif turn <= 7: stage_name = "중기"
+    else: stage_name = "말기"
+    
+    st.write(f"### 🗓️ 임기 {stage_name} ({turn}/10)")
     st.progress(min(1.0, (st.session_state.turn - 1) / 10))
-
-st.markdown("---")
 
 # 게임 화면
 if st.session_state.game_over:
