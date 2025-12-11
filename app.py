@@ -518,8 +518,9 @@ if st.session_state.game_over:
         
         # 칭호 결정
         if final_score >= 250: final_title = "전설의 성군"
-        elif final_score >= 200: final_title = "존경받는 지도자"
-        elif final_score >= 150: final_title = "노련한 정치가"
+        elif final_score >= 180: final_title = "존경받는 지도자"
+        elif final_score >= 150: final_title = "성공한 대통령"
+        elif final_score >= 120: final_title = "노련한 정치가"
         else: final_title = "아쉬운 대통령"
         
         # 게임 오버(탄핵/파산)면 칭호 변경 및 점수 패널티
