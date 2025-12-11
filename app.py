@@ -80,6 +80,22 @@ def get_crisis_image(idx, default_url):
     # 3. 그것도 없으면 None
     return None
 
+# [함수] 랭킹 시스템
+def load_ranking():
+    if not os.path.exists(FILE_RANKING):
+        return pd.DataFrame(columns=["이름", "점수", "칭호", "일시"])
+    return pd.read_csv(FILE_RANKING)
+
+def save_ranking(name, score, title):
+    df = load_ranking()
+    now = datetime.now().strftime("%m-%d %H:%M")
+    new_data = pd.DataFrame({"이름": [name], "점수": [score], "칭호": [title], "일시": [now]})
+    df = pd.concat([df, new_data], ignore_index=True)
+    # 점수 높은 순 정렬
+    df = df.sort_values(by="점수", ascending=False)
+    df.to_csv(FILE_RANKING, index=False)
+    return df
+    
 # =============================================================================
 # [3] 게임 데이터 (텍스트 & 이미지 링크)
 # =============================================================================
