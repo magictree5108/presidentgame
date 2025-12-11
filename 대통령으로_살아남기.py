@@ -6,24 +6,23 @@ import os
 from datetime import datetime
 
 # =============================================================================
-# [1] 기본 설정 (맨 처음에 실행)
+# [1] 기본 설정
 # =============================================================================
 st.set_page_config(page_title="대통령으로 살아남기", layout="centered")
 
 # 파일 경로
 FILE_BGM = "bgm.mp3"
-FILE_RANKING = "ranking.csv"
 FILE_BG = "background.jpg"
 FILE_EMBLEM = "emblem.jpg"
+FILE_RANKING = "ranking.csv"
 
 ARCHS = ["자본가", "중산층", "노동자", "빈곤층"]
 
 # =============================================================================
-# [2] 핵심 기능 함수들 (여기에 다 모아둠 - NameError 방지)
+# [2] 핵심 기능 함수
 # =============================================================================
 
 def get_base64_file(bin_file):
-    """파일을 읽어서 웹에서 쓸 수 있는 코드로 변환"""
     if os.path.exists(bin_file):
         try:
             with open(bin_file, 'rb') as f:
@@ -34,7 +33,6 @@ def get_base64_file(bin_file):
     return None
 
 def render_bgm():
-    """배경음악 재생"""
     b64 = get_base64_file(FILE_BGM)
     if b64:
         st.markdown(f"""
@@ -47,7 +45,6 @@ def render_bgm():
         """, unsafe_allow_html=True)
 
 def render_background():
-    """배경화면 설정"""
     b64 = get_base64_file(FILE_BG)
     if b64:
         st.markdown(
@@ -56,56 +53,51 @@ def render_background():
         )
 
 def get_emblem_tag():
-    """명패 이미지 태그 생성"""
     b64 = get_base64_file(FILE_EMBLEM)
     if b64:
         return f'<img src="data:image/jpeg;base64,{b64}" class="phoenix-logo">'
     else:
-        return '<div style="font-size: 60px; margin-bottom: 10px;">🇰🇷</div>'
+        return '<div style="font-size: 60px; margin-bottom: 10px; text-align:center;">🇰🇷</div>'
 
 def update_name():
-    """이름 입력 시 즉시 반영"""
     st.session_state.player_name = st.session_state.temp_name
 
-# ★ [문제 해결] 오류가 났던 함수를 확실하게 정의함
 def get_crisis_image(idx, default_url):
-    """이벤트별 이미지 가져오기 (파일 우선 -> 웹 URL)"""
-    # 1. 사용자가 올린 crisis_0.jpg 같은 파일이 있는지 확인
     local_filename = f"crisis_{idx}.jpg"
     if os.path.exists(local_filename):
         return local_filename
-    
-    # 2. 없으면 기본 웹 이미지 URL 사용
     if default_url:
         return default_url
-    
-    # 3. 그것도 없으면 None
     return None
 
-# -----------------------------------------------------------------------------
-# [추가] 랭킹 시스템 함수
-# -----------------------------------------------------------------------------
+# [랭킹 시스템]
 def load_ranking():
-    """랭킹 파일 불러오기 (없으면 생성)"""
     if not os.path.exists(FILE_RANKING):
         return pd.DataFrame(columns=["이름", "점수", "칭호", "일시"])
     return pd.read_csv(FILE_RANKING)
 
 def save_ranking(name, score, title):
-    """결과 저장하기"""
     df = load_ranking()
     now = datetime.now().strftime("%m-%d %H:%M")
     new_data = pd.DataFrame({"이름": [name], "점수": [score], "칭호": [title], "일시": [now]})
-    # 기존에 같은 이름으로 저장된 기록이 있으면 삭제 (선택사항, 중복 방지용)
-    # df = df[df["이름"] != name] 
-    
     df = pd.concat([df, new_data], ignore_index=True)
-    df = df.sort_values(by="점수", ascending=False) # 점수 높은 순 정렬
+    df = df.sort_values(by="점수", ascending=False)
     df.to_csv(FILE_RANKING, index=False)
     return df
+
+# [정치 성향 분석]
+def get_politician_type(stats):
+    con_score = stats["자본가"] + stats["중산층"]
+    pro_score = stats["노동자"] + stats["빈곤층"]
+    diff = pro_score - con_score
     
+    if diff > 30: return "진보"
+    elif diff > 0: return "중도진보"
+    elif diff > -30: return "중도보수"
+    else: return "보수"
+
 # =============================================================================
-# [3] 게임 데이터 (텍스트 & 이미지 링크)
+# [3] 게임 데이터
 # =============================================================================
 
 ARCH_DESC = {
@@ -113,29 +105,24 @@ ARCH_DESC = {
     **💰 [자본가/기업주]**
     - **성향:** 세금 인상과 규제를 극도로 혐오하며, 시장의 자유를 최우선 가치로 둡니다.
     - **위협:** 지지율이 바닥나면 자본을 해외로 빼돌려(Capital Flight) 국가 경제를 마비시킵니다.
-    - **요구:** 법인세 인하, 노동 유연화, 규제 철폐
     """,
     "중산층": """
     **🏠 [화이트칼라/유주택자]**
     - **성향:** '내 세금이 낭비되는 것'을 가장 싫어하며 부동산과 교육, 물가에 민감합니다.
     - **위협:** 지지율이 바닥나면 대규모 조세 저항 운동과 정권 퇴진 시위를 주도합니다.
-    - **요구:** 자산 가치 보전, 물가 안정, 공정성 확립
     """,
     "노동자": """
     **👷 [블루칼라/임금생활자]**
     - **성향:** 고용 안정과 임금 인상이 생존과 직결됩니다. 쉬운 해고를 두려워합니다.
     - **위협:** 지지율이 바닥나면 국가 기반 시설(철도, 전력)을 멈추는 총파업을 일으킵니다.
-    - **요구:** 고용 보장, 최저임금 인상, 노동권 강화
     """,
     "빈곤층": """
     **🙏 [기초수급/소외계층]**
     - **성향:** 정부의 복지 지원 없이는 생존이 불가능합니다. 공공 서비스에 전적으로 의존합니다.
     - **위협:** 지지율이 바닥나면 생존을 위해 거리로 뛰쳐나와 걷잡을 수 없는 폭동을 일으킵니다.
-    - **요구:** 복지 예산 확대, 현금 지원, 공공요금 동결
     """
 }
 
-# [추가] 정치인 유형 데이터 (사진은 웹 URL 사용, 필요시 파일명으로 교체)
 POLITICIAN_TYPES = {
     "진보": {
         "title": "서민의 벗, 행동하는 양심",
@@ -171,72 +158,6 @@ POLITICIAN_TYPES = {
     }
 }
 
-def get_politician_type(stats):
-    # 단순 로직: 자본가+중산층 점수 vs 노동자+빈곤층 점수
-    conservative_score = stats["자본가"] + stats["중산층"]
-    progressive_score = stats["노동자"] + stats["빈곤층"]
-    
-    diff = progressive_score - conservative_score
-    
-    if diff > 30: return "진보"
-    elif diff > 0: return "중도진보"
-    elif diff > -30: return "중도보수"
-    else: return "보수"
-
-# -----------------------------------------------------------------------------
-# [수정] 4. 시기별 이벤트 데이터 (초기/중기/말기 분리)
-# -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
-# [데이터] 15개 시나리오 (시기별 분리 + 들여쓰기 수정 완료)
-# -----------------------------------------------------------------------------
-# [추가] 정치인 유형 데이터 (사진 및 설명)
-POLITICIAN_TYPES = {
-    "진보": {
-        "title": "서민의 벗, 행동하는 양심",
-        "models": [
-            {"name": "노무현", "img": "https://upload.wikimedia.org/wikipedia/commons/f/f3/Roh_Moo-hyun_Presidential_Portrait.jpg"},
-            {"name": "김대중", "img": "https://upload.wikimedia.org/wikipedia/commons/e/ee/Kim_Dae-jung_Official_Portrait.jpg"}
-        ],
-        "desc": "당신은 서민과 노동자를 위한 정책을 과감하게 펼쳤습니다. 기득권과의 타협보다는 원칙을 중요시하며, 대중의 뜨거운 지지를 받았습니다."
-    },
-    "중도진보": {
-        "title": "원칙과 포용의 리더십",
-        "models": [
-            {"name": "이재명", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Lee_Jae-myung_%28cropped%29.jpg/440px-Lee_Jae-myung_%28cropped%29.jpg"},
-            {"name": "문재인", "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Moon_Jae-in_presidential_portrait.jpg"}
-        ],
-        "desc": "당신은 개혁을 추구하면서도 안정적인 국정 운영을 시도했습니다. 복지와 공정성을 강조하며 탄탄한 지지층을 확보했습니다."
-    },
-    "중도보수": {
-        "title": "실용주의와 혁신",
-        "models": [
-            {"name": "이준석", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Lee_Jun-seok_%28cropped%29.jpg/440px-Lee_Jun-seok_%28cropped%29.jpg"},
-            {"name": "안철수", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Ahn_Cheol-soo_portrait.jpg/440px-Ahn_Cheol-soo_portrait.jpg"}
-        ],
-        "desc": "당신은 이념보다는 실용과 과학, 합리성을 중시했습니다. 기존 정치 문법을 깨는 새로운 시도로 중도층의 호응을 얻었습니다."
-    },
-    "보수": {
-        "title": "자유 시장과 법치",
-        "models": [
-            {"name": "윤석열", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Yoon_Suk-yeol_in_May_2022.jpg/440px-Yoon_Suk-yeol_in_May_2022.jpg"},
-            {"name": "김문수", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Kim_Moon-soo_in_October_2024.png/440px-Kim_Moon-soo_in_October_2024.png"}
-        ],
-        "desc": "당신은 시장의 자유와 튼튼한 안보를 최우선으로 여겼습니다. 기업하기 좋은 나라를 만들고 법과 원칙을 강조했습니다."
-    }
-}
-
-def get_politician_type(stats):
-    # 자본가+중산층(보수) vs 노동자+빈곤층(진보) 점수 비교
-    con_score = stats["자본가"] + stats["중산층"]
-    pro_score = stats["노동자"] + stats["빈곤층"]
-    diff = pro_score - con_score
-    
-    if diff > 30: return "진보"
-    elif diff > 0: return "중도진보"
-    elif diff > -30: return "중도보수"
-    else: return "보수"
-
-# [수정] 15개 시나리오 (초기/중기/말기 분리 + 들여쓰기 수정됨)
 CRISES_POOL = {
     "초기": [
         {"id": 13, "title": "🍔 프랜차이즈 갑질 파동", "img": "https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=800", "desc": "대형 본사의 갑질로 가맹점주가 사망했습니다. 을의 눈물에 국민들이 분노합니다.", "options": [{"name": "규제 3법 통과", "cost": 0, "effect": [-20, 5, 10, 10], "detail": "강력 규제. 재계 반발.", "reason": "자본가-20, 노동자+10"}, {"name": "자율 상생 유도", "cost": 0, "effect": [10, -5, -10, -5], "detail": "기업 자율. 봐주기 논란.", "reason": "자본가+10, 노동자-10"}, {"name": "긴급 대출 지원", "cost": -15, "effect": [-5, 5, 0, 10], "detail": "폐업 방지. 가계부채 증가.", "reason": "빈곤층+10, 국고-15"}]},
@@ -259,16 +180,12 @@ CRISES_POOL = {
         {"id": 1, "title": "🦠 치명적 신종 바이러스", "img": "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?q=80&w=800", "desc": "전염병 확산으로 의료 체계 붕괴.", "options": [{"name": "국가 봉쇄", "cost": -10, "effect": [-5, -10, -15, 5], "detail": "경제 마비.", "reason": "빈곤층+5, 노동자-15"}, {"name": "위드 코로나", "cost": 0, "effect": [10, 5, 0, -25], "detail": "경제 우선.", "reason": "자본가+10, 빈곤층-25"}, {"name": "치료제 무상", "cost": -40, "effect": [-5, 5, 5, 15], "detail": "재정 투입.", "reason": "빈곤층+15, 국고-40"}]}
     ]
 }
-# -----------------------------------------------------------------------------
-# [메인 로직]
-# -----------------------------------------------------------------------------
-# 배경음악/사진 렌더링
-render_bgm()
-render_background()
 
-# 상태 초기화
-# 상태 초기화
-# 상태 초기화
+# =============================================================================
+# [4] 메인 로직
+# =============================================================================
+
+# 초기화
 if 'turn' not in st.session_state:
     st.session_state.turn = 1
     st.session_state.stats = {k: 50 for k in ARCHS}
@@ -278,16 +195,12 @@ if 'turn' not in st.session_state:
     st.session_state.logs = []
     st.session_state.player_name = "성명을 입력하세요"
     st.session_state.temp_name = st.session_state.player_name
-    
-    # [수정] 초기 이벤트는 '초기' 풀에서 랜덤 선택
     st.session_state.current_crisis = random.choice(CRISES_POOL["초기"])
 
-# 재시작 함수
 def restart():
     st.session_state.clear()
     st.rerun()
 
-# 턴 넘기기
 def next_turn(idx):
     opt = st.session_state.current_crisis['options'][idx]
     st.session_state.budget += opt['cost']
@@ -296,6 +209,7 @@ def next_turn(idx):
     
     st.session_state.logs.append(f"Turn {st.session_state.turn}: {opt['name']} 선택")
     
+    # 게임 오버 체크
     if st.session_state.budget < 0:
         st.session_state.game_over = True
         st.session_state.fail_msg = "💸 국가 부도 선언 (국고 고갈)"
@@ -307,72 +221,18 @@ def next_turn(idx):
         st.session_state.fail_msg = "🎉 임기 5년 만료"
     else:
         st.session_state.turn += 1
-        # [수정] 시기에 맞는 이벤트 뽑기 (초기 3번 / 중기 4번 / 말기 3번)
+        # 시기에 맞는 이벤트 선택
         turn = st.session_state.turn
         if turn <= 3: pool = CRISES_POOL["초기"]
         elif turn <= 7: pool = CRISES_POOL["중기"]
         else: pool = CRISES_POOL["말기"]
         
         st.session_state.current_crisis = random.choice(pool)
-    
-    # 게임 오버 체크 (기존과 동일)
-    if st.session_state.budget < 0:
-        st.session_state.game_over = True
-        st.session_state.fail_msg = "💸 국가 부도 선언 (국고 고갈)"
-    elif any(v <= 0 for v in st.session_state.stats.values()):
-        st.session_state.game_over = True
-        st.session_state.fail_msg = "🔥 대규모 폭동 발생 (지지율 0%)"
-    elif st.session_state.turn >= 10:
-        st.session_state.game_over = True
-        st.session_state.fail_msg = "🎉 임기 5년 만료"
-    else:
-        st.session_state.turn += 1
-        # [수정] 시기에 맞는 이벤트 뽑기
-        turn = st.session_state.turn
-        if turn <= 3: pool = CRISES_POOL["초기"]
-        elif turn <= 7: pool = CRISES_POOL["중기"]
-        else: pool = CRISES_POOL["말기"]
-        
-        st.session_state.current_crisis = random.choice(pool)
-        
-        # 랭킹 저장 (기존과 동일)
-        if st.session_state.game_over and "save_ranking" in globals():
-             score = int(sum(st.session_state.stats.values()) / 4 + st.session_state.budget)
-             title = "대통령"
-             save_ranking(st.session_state.player_name, score, title)
-# 턴 넘기기
-def next_turn(idx):
-    opt = st.session_state.current_crisis['options'][idx]
-    st.session_state.budget += opt['cost']
-    for i, a in enumerate(ARCHS):
-        st.session_state.stats[a] = max(0, min(100, st.session_state.stats[a] + opt['effect'][i]))
-    
-    st.session_state.logs.append(f"Turn {st.session_state.turn}: {opt['name']} 선택")
-    
-    # [수정] 게임 오버 로직 고도화 (누구 때문에 망했는지 확인)
-    if st.session_state.budget < 0:
-        st.session_state.game_over = True
-        st.session_state.fail_msg = "💸 국가 부도 선언 (국고 고갈)"
-    elif st.session_state.stats["자본가"] <= 0:
-        st.session_state.game_over = True
-        st.session_state.fail_msg = "📉 자본가들의 대규모 자본 이탈로 경제 붕괴"
-    elif st.session_state.stats["중산층"] <= 0:
-        st.session_state.game_over = True
-        st.session_state.fail_msg = "🕯️ 중산층의 조세 저항 및 대통령 탄핵 시위"
-    elif st.session_state.stats["노동자"] <= 0:
-        st.session_state.game_over = True
-        st.session_state.fail_msg = "✊ 노동자 총파업으로 국가 기능 마비"
-    elif st.session_state.stats["빈곤층"] <= 0:
-        st.session_state.game_over = True
-        st.session_state.fail_msg = "🔥 빈곤층의 생존권 투쟁 및 대규모 폭동"
-    elif st.session_state.turn >= 10:
-        st.session_state.game_over = True
-        st.session_state.fail_msg = "🎉 임기 5년 만료"
-    else:
-        st.session_state.turn += 1
-        st.session_state.current_crisis = CRISES_POOL[st.session_state.event_deck.pop()]
 
-# UI: 명패 및 상태바
+# UI 렌더링
+render_bgm()
+render_background()
+
 st.markdown("""
     <style>
         .nameplate {
@@ -400,12 +260,14 @@ st.title("🏛️ 대통령으로 살아남기")
 # 사이드바
 with st.sidebar:
     st.header("1. 대통령 취임")
-    # 콜백 함수로 엔터 치자마자 업데이트
     st.text_input("성함 입력 (엔터치면 반영):", key="temp_name", on_change=update_name)
     
-    # 초기값 설정
-    if 'temp_name' not in st.session_state:
-        st.session_state.temp_name = st.session_state.player_name
+    if "load_ranking" in globals() and os.path.exists(FILE_RANKING):
+        st.markdown("---")
+        st.subheader("🏆 명예의 전당 (Top 5)")
+        df_rank = load_ranking()
+        if not df_rank.empty:
+            st.dataframe(df_rank[["이름", "점수", "칭호"]].head(5), hide_index=True)
 
     st.markdown("---")
     st.header("ℹ️ 계층 가이드")
@@ -414,32 +276,18 @@ with st.sidebar:
             st.markdown(f"{v}")
             st.markdown("---")
 
-# [추가] 사이드바 맨 아래에 랭킹 표시
-    st.markdown("---")
-    st.subheader("🏆 명예의 전당 (Top 5)")
-    if os.path.exists(FILE_RANKING):
-        df_rank = pd.read_csv(FILE_RANKING)
-        # 1등부터 5등까지만 보여줌
-        st.dataframe(df_rank[["이름", "점수", "칭호"]].head(5), hide_index=True)
-    else:
-        st.caption("아직 등록된 랭킹이 없습니다.")
-
-# HUD (진행 상황 추가)
+# HUD
 cols = st.columns(5)
 cols[0].metric("국고", f"{st.session_state.budget}조")
 for i, a in enumerate(ARCHS):
-    # 지지율이라고 명시
     cols[i+1].metric(f"{a} 지지율", f"{st.session_state.stats[a]}%")
 
-# [수정] 진행바에 텍스트 추가 (남은 안건 수)
 if not st.session_state.game_over:
     st.write(f"### 🗓️ 임기 {st.session_state.turn}년차 / 총 10년 (남은 안건: {11 - st.session_state.turn}개)")
     st.progress(min(1.0, (st.session_state.turn - 1) / 10))
 
 st.markdown("---")
 
-# 게임 화면
-# 게임 화면 (랭킹 저장 기능 추가됨)
 # 게임 화면
 if st.session_state.game_over:
     if "성공" in st.session_state.fail_msg or "만료" in st.session_state.fail_msg:
@@ -453,7 +301,7 @@ if st.session_state.game_over:
     budget = st.session_state.budget
     st.markdown(f"### 📊 최종 성적: 평균 지지율 {avg:.1f}% / 국고 {budget}조")
 
-    # [NEW] 정치인 유형 분석
+    # 정치인 유형 분석
     my_type = get_politician_type(st.session_state.stats)
     p_data = POLITICIAN_TYPES[my_type]
     
@@ -471,7 +319,7 @@ if st.session_state.game_over:
 
     st.markdown("---")
 
-    # [NEW] 지지층/비토층 분석
+    # 지지층 분석
     sorted_stats = sorted(st.session_state.stats.items(), key=lambda x: x[1])
     best = sorted_stats[-1]
     worst = sorted_stats[0]
@@ -480,7 +328,7 @@ if st.session_state.game_over:
     col_a.metric("❤️ 핵심 지지층", f"{best[0]} ({best[1]}%)")
     col_b.metric("💔 최대 비토층", f"{worst[0]} ({worst[1]}%)")
 
-    # [NEW] 명예의 전당 Top 10 (결과창에도 표시)
+    # 랭킹 저장 (Top 10 표시 포함)
     if "load_ranking" in globals() and os.path.exists(FILE_RANKING):
         st.markdown("---")
         st.subheader("🏆 명예의 전당 (Top 10)")
@@ -488,58 +336,24 @@ if st.session_state.game_over:
         if not df_rank.empty:
             st.dataframe(df_rank.head(10), hide_index=True)
 
-    # 랭킹 저장 로직 (기존과 동일)
     if "score_saved" not in st.session_state:
         final_score = int(sum(st.session_state.stats.values()) / 4 + st.session_state.budget)
+        final_title = "대통령"
         if "성공" not in st.session_state.fail_msg and "만료" not in st.session_state.fail_msg:
             final_title = "불명예 퇴진"
-            final_score = 0
-        else:
-            final_title = "대통령"
+            final_score = int(final_score / 2)
         
-        if "save_ranking" in globals():
-            save_ranking(st.session_state.player_name, final_score, final_title)
+        save_ranking(st.session_state.player_name, final_score, final_title)
         st.session_state.score_saved = True
 
-    if st.button("🔄 다시 하기"):
+    if st.button("🔄 다시 하기 (재당선 도전)"):
         restart()
-        
-    with st.expander("📜 지난 기록 보기"):
-        for log in st.session_state.logs:
-            st.write(log)
-    # ---------------------------------------------------------
-    # [랭킹 저장 로직] 여기가 핵심입니다!
-    # ---------------------------------------------------------
-    if "score_saved" not in st.session_state:
-        # 점수 계산: (지지율 평균 * 2) + (국고) -> 지지율 비중을 좀 높임
-        final_score = int((sum(st.session_state.stats.values()) / 4) * 2 + st.session_state.budget)
-        
-        # 칭호 결정
-        if final_score >= 150: final_title = "전설의 성군"
-        elif final_score >= 140: final_title = "존경받는 지도자"
-        elif final_score >= 120: final_title = "성공한 대통령"
-        elif final_score >= 110: final_title = "노련한 정치가"
-        else: final_title = "아쉬운 대통령"
-        
-        # 게임 오버(탄핵/파산)면 칭호 변경 및 점수 패널티
-        if "성공" not in st.session_state.fail_msg and "만료" not in st.session_state.fail_msg:
-             final_title = "불명예 퇴진"
-             final_score = int(final_score / 2) # 점수 반토막
-
-        # 랭킹 파일에 저장
-        save_ranking(st.session_state.player_name, final_score, final_title)
-        st.session_state.score_saved = True # 중복 저장 방지
-    
-    # 다시하기 버튼
-    if st.button("재당선"):
-        restart() # 아까 만든 함수 호출
         
     with st.expander("📜 지난 기록 보기"):
         for log in st.session_state.logs:
             st.write(log)
 
 else:
-    # (게임 진행 중 화면 - 기존 코드 그대로 둠)
     c = st.session_state.current_crisis
     st.error(f"🚨 [속보] {c['title']}")
     
