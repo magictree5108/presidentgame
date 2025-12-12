@@ -481,9 +481,9 @@ if st.session_state.game_over:
         st.balloons()
         st.subheader("📰 [호외] 임기 종료 특별 보도")
         
-        if avg >= 60 and budget >= 60:
+        if avg >= 70 and budget >= 60:
             st.success(f"### 🌟 역사상 가장 위대한 지도자, {st.session_state.player_name} 대통령 퇴임\n\n지지율과 경제 두 마리 토끼를 모두 잡은 '{final_title}'으로 기록될 것")
-        elif avg >= 40:
+        elif avg >= 51:
             st.success(f"### ✅ 성공적인 국정 운영, 박수칠 때 떠나는 {st.session_state.player_name} 대통령\n\n숱한 위기 속에서도 대한민국을 안정적으로 이끌었다는 평가")
         elif budget < 20:
             st.warning(f"### 💸 '인기는 얻었으나 곳간은 비었다'... 포퓰리즘 논란 속 퇴임\n\n차기 정부에 막대한 재정 부담을 넘기게 되어... 국가 신용등급 우려")
