@@ -148,8 +148,22 @@ st.markdown(f'''
 
 # 3. 타이틀 (선택 사항: 명패가 있으니 타이틀은 작게 하거나 지워도 됨)
 # st.title("🏛️ 대통령으로 살아남기")
+# =============================================================================
+# [2] 핵심 기능 함수 (들여쓰기 수정 완료)
+# =============================================================================
 
-b64 = get_base64_file(FILE_BGM)
+def get_base64_file(bin_file):
+    if os.path.exists(bin_file):
+        try:
+            with open(bin_file, 'rb') as f:
+                data = f.read()
+            return base64.b64encode(data).decode()
+        except:
+            return None
+    return None
+
+def render_bgm():
+    b64 = get_base64_file(FILE_BGM)
     if b64:
         st.markdown(f"""
             <div style="margin-bottom: 10px; padding: 10px; background: rgba(0,0,0,0.5); border-radius: 10px;">
@@ -180,8 +194,6 @@ def get_crisis_image(idx, default_url):
         return local_filename
     return default_url
 
-# [추가] 정치인 이미지 로더 (파일 우선 -> 웹 URL)
-# 파일명 규칙: poly_아이디.jpg (예: poly_roh.jpg)
 def get_model_image(model_id, default_url):
     local_filename = f"poly_{model_id}.jpg"
     if os.path.exists(local_filename):
