@@ -547,15 +547,3 @@ else:
             </div>
         </div>
         """, unsafe_allow_html=True)
-    
-    st.subheader("🫡 대통령님, 결단을 내려 주십시오")
-
-    # 3. 선택지 버튼
-    for i, opt in enumerate(c['options']):
-        cost_txt = f"{'+' if opt['cost'] > 0 else ''}{opt['cost']}조"
-        # 버튼에 설명까지 포함해서 보여줌
-        btn_label = f"{opt['name']}\n(💰 {cost_txt} / {opt['detail']})"
-        
-        if st.button(btn_label, key=f"btn_{st.session_state.turn}_{i}"):
-            next_turn(i)
-            st.rerun()
