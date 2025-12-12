@@ -469,7 +469,7 @@ if st.session_state.game_over:
         elif total_score >= 160: final_title = "성공한 지도자"
         elif total_score >= 140: final_title = "노련한 정치가"
         elif total_score >= 120: final_title = "무난한 대통령"
-        else: final_title = "실패한 대통령"
+        else: final_title = "아쉬운 대통령"
     else:
         final_title = "불명예 퇴진"
         total_score = int(total_score / 2) # 실패 시 점수 패널티
