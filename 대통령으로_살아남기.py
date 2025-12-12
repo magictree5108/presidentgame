@@ -144,7 +144,7 @@ st.markdown(f'''
 # 3. 타이틀 (선택 사항: 명패가 있으니 타이틀은 작게 하거나 지워도 됨)
 # st.title("🏛️ 대통령으로 살아남기")
 
-    b64 = get_base64_file(FILE_BGM)
+b64 = get_base64_file(FILE_BGM)
     if b64:
         st.markdown(f"""
             <div style="margin-bottom: 10px; padding: 10px; background: rgba(0,0,0,0.5); border-radius: 10px;">
