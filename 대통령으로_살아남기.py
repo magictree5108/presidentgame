@@ -613,7 +613,6 @@ else:
         st.markdown(f"""
         <div class="detail-box">
             <div style="display:flex; justify-content:space-between; font-weight:bold; margin-bottom:8px; border-bottom:1px solid #ddd; padding-bottom:5px;">
-                <span>💡 예상 결과: {opt['reason']}</span>
                 <span>💰 예산: <span style="color:{cost_color}">{cost_txt}</span></span>
             </div>
             <div style="color: #333333;">
