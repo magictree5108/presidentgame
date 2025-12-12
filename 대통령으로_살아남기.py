@@ -579,24 +579,6 @@ if st.session_state.game_over:
     if st.button("🔄 새로운 대한민국 만들기", type="primary"):
         restart()
 
-st.markdown("---")
-    st.markdown("""
-    <div style="text-align: center; padding: 20px; background-color: #f8f9fa; border-radius: 10px; border: 1px dashed #bbb;">
-        <p style="font-size: 16px; font-weight: bold; margin-bottom: 5px;">🗳️ 개발자를 위한 '정치 후원금' 모금</p>
-        <p style="font-size: 14px; color: #555; margin-bottom: 15px;">
-            보내주신 후원금은 <b>시즌 2 개발과 야근 식대</b>로<br>
-            한 푼도 빼돌리지 않고(?) 투명하게 사용하겠습니다.
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # 링크는 본인 토스 아이디로 수정하세요
-    col_sup1, col_sup2 = st.columns(2)
-    with col_sup1:
-        st.link_button("☕ 커피 한 잔 뇌물 주기", "농협 3521436281053 정호원", use_container_width=True)
-    with col_sup2:
-        st.link_button("🍎 개발자 사과박스 챙겨주기", "농협 3521436281053 정호원", use_container_width=True)
-
 else:
     # =========================================================================
     # 게임 진행 화면 (설명 텍스트 복구)
