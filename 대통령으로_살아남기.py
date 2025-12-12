@@ -536,7 +536,6 @@ else:
         <div class="detail-box">
             <div style="display:flex; justify-content:space-between; font-weight:bold; margin-bottom:5px;">
                 <span>💰 예산: <span style="color:{cost_color}">{cost_txt}</span></span>
-                <span>💡 예상: {opt['reason']}</span>
             </div>
             <div style="font-size:14px; line-height:1.4;">
                 {opt['detail']}
