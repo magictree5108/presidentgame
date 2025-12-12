@@ -125,34 +125,52 @@ ARCH_DESC = {
 }
 
 # [수정] 정치인 데이터 (ID 추가됨)
-POLITICIAN_TYPES = {
+# [수정] 통합 데이터 (공유용 카드 정보 + 실존 인물 정보)
+RULING_STYLES = {
     "진보": {
-        "title": "서민의 벗, 행동하는 양심",
-        "desc": "당신은 서민과 노동자를 위한 정책을 과감하게 펼쳤습니다. 기득권과의 타협보다는 원칙을 중요시하며, 대중의 뜨거운 지지를 받았습니다.",
+        "title": "따뜻한 낭만주의자",
+        "emoji": "🌷",
+        "color": "#FFD700", # 노랑
+        "keywords": ["#사람이먼저다", "#원칙주의", "#감성리더십"],
+        "desc": "당신은 숫자가 떨어져도 사람을 버리지 못하는 낭만파입니다.<br>기득권의 반발을 사더라도, 소외된 이웃을 위한 혁명적인 정책을 밀어붙입니다.<br>때로는 '현실 감각이 없다'는 비판을 듣지만, 열성적인 팬덤을 거느립니다.",
+        "quote": "국고가 비어도 가오는 살아야지!",
+        # 기존 실존 인물 데이터 포함
         "models": [
             {"name": "노무현", "id": "roh", "img": "https://upload.wikimedia.org/wikipedia/commons/f/f3/Roh_Moo-hyun_Presidential_Portrait.jpg"},
             {"name": "김대중", "id": "dj", "img": "https://upload.wikimedia.org/wikipedia/commons/e/ee/Kim_Dae-jung_Official_Portrait.jpg"}
         ]
     },
     "중도진보": {
-        "title": "원칙과 포용의 리더십",
-        "desc": "당신은 개혁을 추구하면서도 안정적인 국정 운영을 시도했습니다. 복지와 공정성을 강조하며 탄탄한 지지층을 확보했습니다.",
+        "title": "줄타기의 귀재",
+        "emoji": "⚖️",
+        "color": "#4B89DC", # 파랑
+        "keywords": ["#쇼통의달인", "#안정적개혁", "#평화주의"],
+        "desc": "당신은 적을 만들지 않는 부드러운 카리스마의 소유자입니다.<br>격렬한 싸움보다는 대화와 타협을 선호하며, 대중적인 인기를 관리하는 능력이 탁월합니다.<br>'좋은 게 좋은 거지'라며 넘어가려다 우유부단하다는 소리를 듣기도 합니다.",
+        "quote": "싸우지 말고 사이좋게 지냅시다, 네?",
         "models": [
             {"name": "문재인", "id": "moon", "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Moon_Jae-in_presidential_portrait.jpg"},
             {"name": "이재명", "id": "lee", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Lee_Jae-myung_%28cropped%29.jpg/440px-Lee_Jae-myung_%28cropped%29.jpg"}
         ]
     },
     "중도보수": {
-        "title": "실용주의와 혁신",
-        "desc": "당신은 이념보다는 실용과 과학, 합리성을 중시했습니다. 기존 정치 문법을 깨는 새로운 시도로 중도층의 호응을 얻었습니다.",
+        "title": "AI 같은 실용주의자",
+        "emoji": "💻",
+        "color": "#A020F0", # 보라
+        "keywords": ["#효율끝판왕", "#팩트폭격", "#능력지상주의"],
+        "desc": "당신에게 이념은 중요하지 않습니다. 오직 '데이터'와 '결과'만 중요할 뿐.<br>비효율적인 관습을 타파하고 스마트한 국가를 꿈꾸지만,<br>가끔은 너무 차가워서 '로봇 아니냐'는 의심을 받기도 합니다.",
+        "quote": "그 정책, 데이터로 증명할 수 있습니까?",
         "models": [
             {"name": "안철수", "id": "ahn", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Ahn_Cheol-soo_portrait.jpg/440px-Ahn_Cheol-soo_portrait.jpg"},
             {"name": "이준석", "id": "jun", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Lee_Jun-seok_%28cropped%29.jpg/440px-Lee_Jun-seok_%28cropped%29.jpg"}
         ]
     },
     "보수": {
-        "title": "자유 시장과 법치",
-        "desc": "당신은 시장의 자유와 튼튼한 안보를 최우선으로 여겼습니다. 기업하기 좋은 나라를 만들고 법과 원칙을 강조했습니다.",
+        "title": "불도저 같은 상남자",
+        "emoji": "🚜",
+        "color": "#E03E3E", # 빨강
+        "keywords": ["#법과원칙", "#기업프렌들리", "#강한대한민국"],
+        "desc": "당신은 목표를 정하면 뒤도 안 돌아보고 돌진하는 불도저입니다.<br>시장의 자유와 튼튼한 안보를 최우선으로 여기며, 반대파의 목소리는 힘으로 제압합니다.<br>성과는 확실하지만, 피로감을 호소하는 국민들도 많습니다.",
+        "quote": "나를 따르라! 불만이 있는 자는 썩 물러가라!",
         "models": [
             {"name": "윤석열", "id": "yoon", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Yoon_Suk-yeol_in_May_2022.jpg/440px-Yoon_Suk-yeol_in_May_2022.jpg"},
             {"name": "김문수", "id": "kim", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Kim_Moon-soo_in_October_2024.png/440px-Kim_Moon-soo_in_October_2024.png"}
@@ -409,6 +427,56 @@ if st.session_state.game_over:
     if "score_saved" not in st.session_state:
         # 점수 계산: (지지율 평균 * 2) + (국고)
         final_score = int((sum(st.session_state.stats.values()) / 4) * 2 + st.session_state.budget)
+
+        # -------------------------------------------------------------------------
+    # 2. [공유용] 통치 스타일 분석 카드 (MBTI 스타일)
+    # -------------------------------------------------------------------------
+    my_type = get_politician_type(st.session_state.stats)
+    style = RULING_STYLES[my_type]
+    
+    st.markdown("---")
+    st.subheader("📸 나의 통치 스타일 (공유용)")
+    
+    st.markdown(f"""
+    <div style="
+        background-color: white; 
+        border: 2px solid {style['color']}; 
+        border-radius: 20px; 
+        padding: 30px; 
+        text-align: center; 
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        margin-bottom: 20px;">
+        
+        <p style="font-size: 14px; color: gray; margin-bottom: 5px;">제21대 대통령 생존 테스트 결과</p>
+        <div style="font-size: 80px; margin-bottom: 10px;">{style['emoji']}</div>
+        
+        <h2 style="color: {style['color']}; margin: 0; font-size: 28px; font-weight: 900;">{style['title']}</h2>
+        <p style="font-size: 18px; font-weight: bold; color: #333; margin-top: 10px;">
+            {style['keywords'][0]} {style['keywords'][1]} {style['keywords'][2]}
+        </p>
+        
+        <hr style="border: 0; border-top: 1px dashed #ddd; margin: 20px 0;">
+        
+        <p style="font-size: 15px; line-height: 1.6; color: #555; word-break: keep-all;">
+            {style['desc']}
+        </p>
+        
+        <div style="background-color: #f8f9fa; border-radius: 10px; padding: 15px; margin-top: 20px;">
+            <p style="font-size: 14px; color: #777; margin: 0;">🗳️ 한 줄 어록</p>
+            <p style="font-size: 18px; font-weight: bold; color: {style['color']}; margin: 5px 0 0 0;">
+                "{style['quote']}"
+            </p>
+        </div>
+
+        <div style="margin-top: 20px; font-size: 14px; color: #333;">
+            <span>📊 평균 지지율 <b>{avg:.1f}%</b></span> | 
+            <span>💰 국고 잔액 <b>{budget}조</b></span>
+        </div>
+        <div style="margin-top: 5px; font-size: 16px; font-weight: bold; color: red;">
+            결과: {final_result_text}
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
         
         # 칭호 결정
         if "성공" not in st.session_state.fail_msg and "만료" not in st.session_state.fail_msg:
