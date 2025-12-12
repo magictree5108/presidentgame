@@ -597,7 +597,7 @@ else:
         </div>
     """, unsafe_allow_html=True)
     
-    st.write("### 🤔 당신의 결단은?")
+    st.write("### 🫡 대통령님, 결단을 내려 주십시오")
 
     # 3. 선택지 버튼
     for i, opt in enumerate(c['options']):
