@@ -157,8 +157,6 @@ st.markdown(f'''
     </div>
 </div>
 ''', unsafe_allow_html=True)
-
-st.title("🏛️ 대통령으로 살아남기")
     
 # [랭킹 시스템]
 def load_ranking():
