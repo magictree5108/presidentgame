@@ -356,14 +356,19 @@ def next_turn(idx):
 # =============================================================================
 # [2] 스타일(CSS) 설정 (배경 유지 + 가독성 확보)
 # =============================================================================
+# =============================================================================
+# [2] 스타일(CSS) 설정 (신문지 스타일 적용)
+# =============================================================================
 st.markdown("""
     <style>
-        /* 버튼 스타일 (제목 강조형 - 흰색 배경에 검정 글씨) */
+        .stApp { background-color: #f8f9fa; }
+        
+        /* 버튼 스타일 */
         .stButton>button {
             width: 100%; height: auto; min-height: 50px; 
             font-size: 18px; font-weight: bold;
             border-radius: 12px; border: 1px solid #c0c0c0;
-            background-color: white; color: #000000 !important; /* 버튼 글씨 무조건 검정 */
+            background-color: white; color: #000000 !important;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             transition: all 0.2s;
         }
@@ -372,23 +377,26 @@ st.markdown("""
             transform: translateY(-2px);
         }
         
-        /* 질문 텍스트 (원래 배경 위에 '흰색 종이'를 깔고 검정 글씨) */
+        /* [수정] 속보 박스 (신문지 회색 + 테두리) */
         .question-text {
             font-size: 22px; font-weight: bold; text-align: center;
-            margin: 20px 0; line-height: 1.5; word-break: keep-all;
-            color: #000000 !important; /* ★ 글자색 검정 */
-            background-color: rgba(255, 255, 255, 0.95); /* ★ 배경 흰색 (약간 투명) */
-            padding: 20px; border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            margin: 20px 0; line-height: 1.6; word-break: keep-all;
+            
+            color: #000000 !important; /* 글자색: 검정 */
+            background-color: #eeeeee !important; /* ★배경색: 신문지 회색 */
+            border: 2px solid #555555; /* ★테두리: 진한 회색 (신문 박스 느낌) */
+            
+            padding: 20px; border-radius: 5px; /* 모서리 덜 둥글게 */
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.2); /* 그림자도 투박하게 */
         }
         
-        /* 상세 설명 박스 (버튼 아래 붙는 설명창) */
+        /* 상세 설명 박스 */
         .detail-box {
             margin-top: -10px; margin-bottom: 20px;
-            background-color: #f8f9fa; /* 아주 연한 회색 배경 */
+            background-color: #f8f9fa; 
             padding: 15px;
             border-radius: 0 0 10px 10px;
-            font-size: 15px; color: #333333; /* 짙은 회색 글씨 */
+            font-size: 15px; color: #333333;
             border: 1px solid #e9ecef; border-top: none;
             line-height: 1.6;
         }
@@ -399,17 +407,7 @@ st.markdown("""
             box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; margin-bottom: 20px;
             color: black;
         }
-        /* 명패 스타일 (부활!) */
-        .nameplate {
-            display: block !important; /* 강제로 보이게 함 */
-            background-color: #003478; /* 청와대 블루 */
-            border: 3px solid #c2a042; /* 금색 테두리 */
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
+        .nameplate { display: none; }
     </style>
 """, unsafe_allow_html=True)
 
