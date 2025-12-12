@@ -132,6 +132,36 @@ def get_model_image(model_id, default_url):
     if os.path.exists(local_filename):
         return local_filename
     return default_url
+
+# =============================================================================
+# [UI] 명패 및 화면 렌더링 (이 부분이 있어야 화면에 나옵니다!)
+# =============================================================================
+
+# 1. 배경음악 실행
+render_bgm() 
+
+# 2. 이름 오류 방지 (없으면 빈칸 처리)
+if 'player_name' not in st.session_state:
+    st.session_state.player_name = ""
+
+# 이름이 없으면 '각하'라고 표시
+display_name = st.session_state.player_name if st.session_state.player_name else "성함입력\n\n모바일은 좌측상단 >> 클릭"
+
+# 3. 명패 그리기 (화면 출력)
+emblem_tag = get_emblem_tag()
+st.markdown(f'''
+<div class="nameplate">
+    {emblem_tag}
+    <div style="color:#c2a042; font-weight:bold; font-size:16px; margin-bottom:5px; letter-spacing:1px;">
+        대한민국 대통령
+    </div>
+    <div style="color:white; font-family:'serif'; font-weight:bold; font-size:32px; text-shadow: 2px 2px 4px black;">
+        {display_name}
+    </div>
+</div>
+''', unsafe_allow_html=True)
+
+st.title("🏛️ 대통령으로 살아남기")
     
 # [랭킹 시스템]
 def load_ranking():
