@@ -454,31 +454,81 @@ if not st.session_state.game_over:
 # [6] 게임 플레이 / 엔딩 화면 (이 부분만 복사해서 덮어쓰세요)
 # =============================================================================
 
-if st.session_state.game_over:
-    # 1. 성공/실패 멘트 및 점수 계산
-    if "성공" in st.session_state.fail_msg or "만료" in st.session_state.fail_msg:
-        st.balloons()
-        st.success("🎉 임기 완주 성공! 당신은 살아남았습니다.")
-        final_result_text = "임기 만료 (생존)"
-    else:
-        st.error(f"💀 GAME OVER: {st.session_state.fail_msg}")
-        final_result_text = "중도 하차 (탄핵/파산)"
-
+# -------------------------------------------------------------------------
+    # 0. 점수 및 칭호 계산 (뉴스 및 랭킹에 쓰임)
+# -------------------------------------------------------------------------
     avg = sum(st.session_state.stats.values()) / 4
     budget = st.session_state.budget
-    total_score = int(avg + budget) # ★오류 해결: 변수 정의 추가
+    total_score = int(avg + budget)
+    
+    # 칭호 결정 (성공/실패에 따라 다름)
+    if "성공" in st.session_state.fail_msg or "만료" in st.session_state.fail_msg:
+     if total_score >= 180: final_title = "전설의 성군"
+        elif total_score >= 170: rank_title = "대통령의 대통령"
+        elif total_score >= 160: final_title = "성공한 지도자"
+        elif total_score >= 140: final_title = "노련한 정치가"
+        elif total_score >= 120: final_title = "무난한 대통령"
+        else: final_title = "실패한 대통령"
+    else:
+        final_title = "불명예 퇴진"
+        total_score = int(total_score / 2) # 실패 시 점수 패널티
 
-    # 2. 통치 스타일 분석
+    # -------------------------------------------------------------------------
+    # 1. 뉴스 헤드라인 (복구됨)
+    # -------------------------------------------------------------------------
+    if "성공" in st.session_state.fail_msg or "만료" in st.session_state.fail_msg:
+        st.balloons()
+        st.subheader("📰 [호외] 임기 종료 특별 보도")
+        
+        if avg >= 60 and budget >= 60:
+            st.success(f"### 🌟 역사상 가장 위대한 지도자, {st.session_state.player_name} 대통령 퇴임\n\n지지율과 경제 두 마리 토끼를 모두 잡은 '{final_title}'으로 기록될 것")
+        elif avg >= 40:
+            st.success(f"### ✅ 성공적인 국정 운영, 박수칠 때 떠나는 {st.session_state.player_name} 대통령\n\n숱한 위기 속에서도 대한민국을 안정적으로 이끌었다는 평가")
+        elif budget < 20:
+            st.warning(f"### 💸 '인기는 얻었으나 곳간은 비었다'... 포퓰리즘 논란 속 퇴임\n\n차기 정부에 막대한 재정 부담을 넘기게 되어... 국가 신용등급 우려")
+        elif avg < 25:
+            st.error(f"### 💀 역대 최저 지지율... {st.session_state.player_name} 대통령의 쓸쓸한 뒷모습\n\n국론 분열과 정책 실패로 얼룩진 5년... '식물 정부' 오명 남겨")
+        else:
+            st.info(f"### ⚖️ '공과 과' 뚜렷... {st.session_state.player_name} 정부 5년의 막을 내리다\n\n위기 관리 능력은 돋보였으나, 계층 간 갈등 해소는 과제로 남아")
+
+    else:
+        st.error(f"💀 GAME OVER: {st.session_state.fail_msg}")
+        # 상세 실패 사유
+        reason = ""
+        if "부도" in st.session_state.fail_msg: reason = "국가 재정이 바닥나 IMF 구제금융을 신청했습니다."
+        elif "자본" in st.session_state.fail_msg: reason = "국내 자본과 기업이 해외로 떠나고 주식 시장이 붕괴되었습니다."
+        elif "중산층" in st.session_state.fail_msg: reason = "조세 저항과 탄핵 시위가 격화되었습니다."
+        elif "노동자" in st.session_state.fail_msg: reason = "총파업으로 국가 기능이 마비되었습니다."
+        elif "빈곤층" in st.session_state.fail_msg: reason = "생존권 투쟁이 폭동으로 번졌습니다."
+        st.markdown(f"**📉 원인: {reason}**")
+
+    # -------------------------------------------------------------------------
+    # 2. 지지층/비토층 & 칭호 분석 (복구됨)
+    # -------------------------------------------------------------------------
+    st.markdown("---")
+    st.write("### 📊 국정 운영 성적표")
+    
+    sorted_stats = sorted(st.session_state.stats.items(), key=lambda x: x[1])
+    best = sorted_stats[-1]
+    worst = sorted_stats[0]
+    
+    col_a, col_b, col_c = st.columns(3)
+    col_c.metric("🏆 최종 칭호", f"{final_title}")
+    col_a.metric("❤️ 핵심 지지층", f"{best[0]} ({best[1]}%)")
+    col_b.metric("💔 최대 비토층", f"{worst[0]} ({worst[1]}%)")
+
+    # -------------------------------------------------------------------------
+    # 3. MBTI 카드 & 사진 (이어서 계속 나오는 부분)
+    # -------------------------------------------------------------------------
     my_type = get_politician_type(st.session_state.stats)
-    style = RULING_STYLES[my_type] # ★오류 해결: 위에서 정의한 변수 사용
+    style = RULING_STYLES[my_type]
     
     st.markdown("---")
     st.subheader("📸 나의 통치 스타일 (공유용)")
+    # ... (아래 카드 코드는 기존 것 유지하거나 여기에 이어서 작성) ...
     
-    # 카드 출력 (HTML)
     st.markdown(f"""
     <div style="background-color: white; border: 2px solid {style['color']}; border-radius: 20px; padding: 30px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px;">
-        <p style="font-size: 14px; color: gray; margin-bottom: 5px;">제21대 대통령 생존 테스트 결과</p>
         <div style="font-size: 80px; margin-bottom: 10px;">{style['emoji']}</div>
         <h2 style="color: {style['color']}; margin: 0; font-size: 28px; font-weight: 900;">{style['title']}</h2>
         <p style="font-size: 18px; font-weight: bold; color: #333; margin-top: 10px;">{style['keywords'][0]} {style['keywords'][1]} {style['keywords'][2]}</p>
@@ -488,14 +538,9 @@ if st.session_state.game_over:
             <p style="font-size: 14px; color: #777; margin: 0;">🗳️ 한 줄 어록</p>
             <p style="font-size: 18px; font-weight: bold; color: {style['color']}; margin: 5px 0 0 0;">"{style['quote']}"</p>
         </div>
-        <div style="margin-top: 20px; font-size: 14px; color: #333;">
-            <span>📊 평균 지지율 <b>{avg:.1f}%</b></span> | <span>💰 국고 잔액 <b>{budget}조</b></span>
-        </div>
-        <div style="margin-top: 5px; font-size: 16px; font-weight: bold; color: red;">결과: {final_result_text}</div>
     </div>
     """, unsafe_allow_html=True)
 
-    # 3. 실존 인물 사진
     st.markdown("---")
     st.subheader("👥 당신과 닮은 현실 정치인")
     pc1, pc2 = st.columns(2)
@@ -508,76 +553,26 @@ if st.session_state.game_over:
         img2 = get_model_image(m2['id'], m2['img'])
         st.image(img2, caption=m2['name'], use_container_width=True)
 
-    # 4. 랭킹 저장 및 재시작
+    # -------------------------------------------------------------------------
+    # 4. 명예의 전당 (클릭 안 해도 보이게 수정됨)
+    # -------------------------------------------------------------------------
+    # 랭킹 저장
     if "score_saved" not in st.session_state:
-        if "성공" not in st.session_state.fail_msg and "만료" not in st.session_state.fail_msg:
-            rank_title = "불명예 퇴진"
-            save_score = int(total_score / 2)
-        else:
-            save_score = total_score
-            if total_score >= 180: rank_title = "전설의 성군"
-            elif total_score >= 170: rank_title = "대통령의 대통령"
-            elif total_score >= 160: rank_title = "성공한 지도자"
-            elif total_score >= 150: rank_title = "정치 9단"
-            elif total_score >= 140: rank_title = "노련한 정치가"
-            elif total_score >= 120: rank_title = "무난한 대통령"
-            else: rank_title = "실패한 대통령"
-            
         if "save_ranking" in globals():
-            save_ranking(st.session_state.player_name if st.session_state.player_name else "익명", save_score, rank_title)
+            save_ranking(st.session_state.player_name if st.session_state.player_name else "익명", total_score, final_title)
         st.session_state.score_saved = True
 
+    # 랭킹 표시 (expander 삭제 -> 항상 보임)
     if "load_ranking" in globals() and os.path.exists(FILE_RANKING):
         st.markdown("---")
-        with st.expander("🏆 명예의 전당 보기"):
-            st.dataframe(load_ranking().head(10), hide_index=True)
+        st.subheader("🏆 명예의 전당 (Top 10)")
+        df_rank = load_ranking()
+        if not df_rank.empty:
+            st.dataframe(df_rank.head(10), hide_index=True)
+        else:
+            st.info("아직 랭킹이 없습니다.")
 
+    # 재시작 버튼
     st.markdown("---")
     if st.button("🔄 새로운 대한민국 만들기", type="primary"):
         restart()
-        
-    # 로그 확인
-    with st.expander("📜 나의 5년 통치 기록 보기"):
-        for log in st.session_state.logs:
-            st.write(log)
-
-else:
-    # =========================================================================
-    # 게임 진행 화면 (가독성 및 버튼 분리 수정)
-    # =========================================================================
-    c = st.session_state.current_crisis
-    
-    # 1. 이미지
-    img_url = get_crisis_image(c.get('id', 99), c.get('img'))
-    if img_url:
-        st.image(img_url, use_container_width=True)
-    
-    # 2. 질문 (상황 설명)
-    # CSS에서 .question-text 색상을 검정으로 바꿨으므로 이제 잘 보입니다.
-    st.markdown(f"<div class='question-text'>{c['desc']}</div>", unsafe_allow_html=True)
-    
-    st.write("### 🫡 대통령님, 결단을 내려주십시오")
-
-    # 3. 선택지 (버튼 분리형)
-    for i, opt in enumerate(c['options']):
-        # 예산 색상 처리
-        cost_txt = f"{'+' if opt['cost'] > 0 else ''}{opt['cost']}조"
-        cost_color = "red" if opt['cost'] < 0 else "blue"
-        
-        # [1] 메인 버튼 (타이틀만 강조)
-        # use_container_width=True로 꽉 차게 만듦
-        if st.button(f"{i+1}. {opt['name']}", key=f"btn_{st.session_state.turn}_{i}", use_container_width=True):
-            next_turn(i)
-            st.rerun()
-            
-        # [2] 상세 설명 (버튼 바로 아래에 붙는 설명창)
-        st.markdown(f"""
-        <div class="detail-box">
-            <div style="display:flex; justify-content:space-between; font-weight:bold; margin-bottom:5px;">
-                <span>💰 예산: <span style="color:{cost_color}">{cost_txt}</span></span>
-            </div>
-            <div style="font-size:14px; line-height:1.4;">
-                {opt['detail']}
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
