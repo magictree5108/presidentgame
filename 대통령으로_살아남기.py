@@ -95,6 +95,32 @@ def get_base64_file(bin_file):
     return None
 
 def render_bgm():
+    # =============================================================================
+# [UI] 명패 렌더링 (여기에 붙여넣으세요)
+# =============================================================================
+# 배경음악 실행
+render_bgm() 
+
+# 1. 이름이 없으면 '각하'라고 표시
+display_name = st.session_state.player_name if st.session_state.player_name else "성함입력\n\n모바일은 좌측상단 >> 클릭"
+
+# 2. 명패 그리기
+emblem_tag = get_emblem_tag()
+st.markdown(f'''
+<div class="nameplate">
+    {emblem_tag}
+    <div style="color:#c2a042; font-weight:bold; font-size:16px; margin-bottom:5px; letter-spacing:1px;">
+        대한민국 제21대 대통령
+    </div>
+    <div style="color:white; font-family:'serif'; font-weight:bold; font-size:32px; text-shadow: 2px 2px 4px black;">
+        {display_name}
+    </div>
+</div>
+''', unsafe_allow_html=True)
+
+# 3. 타이틀 (선택 사항: 명패가 있으니 타이틀은 작게 하거나 지워도 됨)
+# st.title("🏛️ 대통령으로 살아남기")
+
     b64 = get_base64_file(FILE_BGM)
     if b64:
         st.markdown(f"""
@@ -375,7 +401,17 @@ st.markdown("""
             box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; margin-bottom: 20px;
             color: black;
         }
-        .nameplate { display: none; }
+        /* 명패 스타일 (부활!) */
+        .nameplate {
+            display: block !important; /* 강제로 보이게 함 */
+            background-color: #003478; /* 청와대 블루 */
+            border: 3px solid #c2a042; /* 금색 테두리 */
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
     </style>
 """, unsafe_allow_html=True)
 
