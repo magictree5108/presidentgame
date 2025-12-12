@@ -451,19 +451,20 @@ if not st.session_state.game_over:
     st.progress(min(1.0, (st.session_state.turn - 1) / 10))
 
 # =============================================================================
-# [6] 게임 플레이 / 엔딩 화면 (이 부분만 복사해서 덮어쓰세요)
+# [6] 게임 플레이 / 엔딩 화면 (들여쓰기 수정 + 모든 기능 포함)
 # =============================================================================
 
-# -------------------------------------------------------------------------
-    # 0. 점수 및 칭호 계산 (뉴스 및 랭킹에 쓰임)
-# -------------------------------------------------------------------------
+if st.session_state.game_over:
+    # -------------------------------------------------------------------------
+    # 0. 점수 및 칭호 계산 (여기가 들여쓰기 오류 났던 곳 - 수정됨)
+    # -------------------------------------------------------------------------
     avg = sum(st.session_state.stats.values()) / 4
     budget = st.session_state.budget
     total_score = int(avg + budget)
     
-    # 칭호 결정 (성공/실패에 따라 다름)
+    # 칭호 결정 (사용자 원본 기준 복구: 180/160/140)
     if "성공" in st.session_state.fail_msg or "만료" in st.session_state.fail_msg:
-     if total_score >= 180: final_title = "전설의 성군"
+        if total_score >= 180: final_title = "전설의 성군"
         elif total_score >= 170: rank_title = "대통령의 대통령"
         elif total_score >= 160: final_title = "성공한 지도자"
         elif total_score >= 140: final_title = "노련한 정치가"
@@ -474,7 +475,7 @@ if not st.session_state.game_over:
         total_score = int(total_score / 2) # 실패 시 점수 패널티
 
     # -------------------------------------------------------------------------
-    # 1. 뉴스 헤드라인 (복구됨)
+    # 1. 뉴스 헤드라인 (사라졌던 뉴스 복구)
     # -------------------------------------------------------------------------
     if "성공" in st.session_state.fail_msg or "만료" in st.session_state.fail_msg:
         st.balloons()
@@ -516,16 +517,17 @@ if not st.session_state.game_over:
     col_c.metric("🏆 최종 칭호", f"{final_title}")
     col_a.metric("❤️ 핵심 지지층", f"{best[0]} ({best[1]}%)")
     col_b.metric("💔 최대 비토층", f"{worst[0]} ({worst[1]}%)")
+    
+    st.caption(f"종합 점수: {total_score}점 (지지율 {avg:.1f} + 국고 {budget})")
 
     # -------------------------------------------------------------------------
-    # 3. MBTI 카드 & 사진 (이어서 계속 나오는 부분)
+    # 3. MBTI 카드 (이어서 계속 나오는 부분)
     # -------------------------------------------------------------------------
     my_type = get_politician_type(st.session_state.stats)
     style = RULING_STYLES[my_type]
     
     st.markdown("---")
     st.subheader("📸 나의 통치 스타일 (공유용)")
-    # ... (아래 카드 코드는 기존 것 유지하거나 여기에 이어서 작성) ...
     
     st.markdown(f"""
     <div style="background-color: white; border: 2px solid {style['color']}; border-radius: 20px; padding: 30px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px;">
@@ -554,7 +556,7 @@ if not st.session_state.game_over:
         st.image(img2, caption=m2['name'], use_container_width=True)
 
     # -------------------------------------------------------------------------
-    # 4. 명예의 전당 (클릭 안 해도 보이게 수정됨)
+    # 4. 명예의 전당 (항상 펼침 상태)
     # -------------------------------------------------------------------------
     # 랭킹 저장
     if "score_saved" not in st.session_state:
@@ -562,7 +564,7 @@ if not st.session_state.game_over:
             save_ranking(st.session_state.player_name if st.session_state.player_name else "익명", total_score, final_title)
         st.session_state.score_saved = True
 
-    # 랭킹 표시 (expander 삭제 -> 항상 보임)
+    # 랭킹 표시 (조건 없이 바로 보여줌)
     if "load_ranking" in globals() and os.path.exists(FILE_RANKING):
         st.markdown("---")
         st.subheader("🏆 명예의 전당 (Top 10)")
@@ -576,3 +578,46 @@ if not st.session_state.game_over:
     st.markdown("---")
     if st.button("🔄 새로운 대한민국 만들기", type="primary"):
         restart()
+
+else:
+    # =========================================================================
+    # 게임 진행 화면 (설명 텍스트 복구)
+    # =========================================================================
+    c = st.session_state.current_crisis
+    
+    # 1. 이미지
+    img_url = get_crisis_image(c.get('id', 99), c.get('img'))
+    if img_url:
+        st.image(img_url, use_container_width=True)
+    
+    # 2. 질문 (상황 설명)
+    st.markdown(f"""
+        <div class='question-text'>
+            {c['desc']}
+        </div>
+    """, unsafe_allow_html=True)
+    
+    st.write("### 🤔 당신의 결단은?")
+
+    # 3. 선택지 버튼
+    for i, opt in enumerate(c['options']):
+        cost_txt = f"{'+' if opt['cost'] > 0 else ''}{opt['cost']}조"
+        cost_color = "#d9534f" if opt['cost'] < 0 else "#0275d8"
+        
+        # 버튼 (제목만)
+        if st.button(f"{i+1}. {opt['name']}", key=f"btn_{st.session_state.turn}_{i}", use_container_width=True):
+            next_turn(i)
+            st.rerun()
+            
+        # 설명 (아래 박스)
+        st.markdown(f"""
+        <div class="detail-box">
+            <div style="display:flex; justify-content:space-between; font-weight:bold; margin-bottom:8px; border-bottom:1px solid #ddd; padding-bottom:5px;">
+                <span>💡 예상 결과: {opt['reason']}</span>
+                <span>💰 예산: <span style="color:{cost_color}">{cost_txt}</span></span>
+            </div>
+            <div style="color: #333333;">
+                {opt['detail']}
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
