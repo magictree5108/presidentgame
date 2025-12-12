@@ -326,27 +326,53 @@ def next_turn(idx):
 render_bgm()
 render_background()
 
+# =============================================================================
+# [2] 스타일(CSS) 설정 (가독성 수정판)
+# =============================================================================
 st.markdown("""
     <style>
-        .nameplate {
-            background-color: #003478; border: 4px solid #c2a042;
-            padding: 15px; border-radius: 10px; text-align: center;
-            margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            display: flex; flex-direction: column; align-items: center;
+        /* 전체 배경 및 텍스트 색상 강제 */
+        .stApp { background-color: #f8f9fa; }
+        
+        /* 버튼 스타일 (제목 강조형) */
+        .stButton>button {
+            width: 100%; height: auto; min-height: 50px; 
+            font-size: 18px; font-weight: bold;
+            border-radius: 12px; border: 1px solid #c0c0c0;
+            background-color: white; color: #000000; /* 버튼 글씨 검정 */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.2s;
         }
-        .nameplate h3 { color: #c2a042 !important; margin: 0; font-weight: bold; font-size: 1.5rem; letter-spacing: 2px; }
-        .nameplate h1 { color: white !important; margin: 5px 0 0 0; font-family: 'serif'; font-size: 2.8rem; font-weight: bold; text-shadow: 2px 2px 4px black; }
+        .stButton>button:hover {
+            border-color: #007bff; color: #007bff; background-color: #eef6ff;
+            transform: translateY(-2px);
+        }
+        
+        /* 질문 텍스트 (흰색 배경 위 검정 글씨) */
+        .question-text {
+            font-size: 22px; font-weight: bold; text-align: center;
+            margin: 20px 0; line-height: 1.5; word-break: keep-all;
+            color: #333333 !important; /* ★ 핵심: 글자색 진한 검정으로 변경 */
+            background-color: white; padding: 20px; border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        /* 상세 설명 박스 (버튼 아래) */
+        .detail-box {
+            margin-top: -10px; margin-bottom: 20px;
+            background-color: #f1f3f5; padding: 12px;
+            border-radius: 0 0 10px 10px;
+            font-size: 14px; color: #555;
+            border: 1px solid #e9ecef; border-top: none;
+        }
+        
+        .result-card {
+            background-color: white; padding: 30px; border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; margin-bottom: 20px;
+        }
+        .nameplate { display: none; }
     </style>
 """, unsafe_allow_html=True)
-
-emblem_tag = get_emblem_tag()
-st.markdown(f'''
-<div class="nameplate">
-    {emblem_tag}
-    <h3>대한민국 대통령</h3>
-    <h1>{st.session_state.player_name}</h1>
-</div>
-''', unsafe_allow_html=True)
 
 st.title("🏛️ 대통령으로 살아남기")
 
@@ -478,7 +504,7 @@ if st.session_state.game_over:
 
 else:
     # =========================================================================
-    # 게임 진행 화면 (설명 텍스트 복구)
+    # 게임 진행 화면 (가독성 및 버튼 분리 수정)
     # =========================================================================
     c = st.session_state.current_crisis
     
@@ -487,13 +513,36 @@ else:
     if img_url:
         st.image(img_url, use_container_width=True)
     
-    # 2. 질문 (상황 설명) - ★여기가 빠져서 추가함★
-    st.markdown(f"""
-        <div class='question-box' style="background-color:white; padding:20px; border-radius:15px; box-shadow:0 4px 10px rgba(0,0,0,0.05); margin-bottom:20px;">
-            <h3 style="margin-top:0;">{c['title']}</h3>
-            <p style="font-size:18px; line-height:1.6; color:#333;">{c['desc']}</p>
+    # 2. 질문 (상황 설명)
+    # CSS에서 .question-text 색상을 검정으로 바꿨으므로 이제 잘 보입니다.
+    st.markdown(f"<div class='question-text'>{c['desc']}</div>", unsafe_allow_html=True)
+    
+    st.write("### 🤔 당신의 결단은?")
+
+    # 3. 선택지 (버튼 분리형)
+    for i, opt in enumerate(c['options']):
+        # 예산 색상 처리
+        cost_txt = f"{'+' if opt['cost'] > 0 else ''}{opt['cost']}조"
+        cost_color = "red" if opt['cost'] < 0 else "blue"
+        
+        # [1] 메인 버튼 (타이틀만 강조)
+        # use_container_width=True로 꽉 차게 만듦
+        if st.button(f"{i+1}. {opt['name']}", key=f"btn_{st.session_state.turn}_{i}", use_container_width=True):
+            next_turn(i)
+            st.rerun()
+            
+        # [2] 상세 설명 (버튼 바로 아래에 붙는 설명창)
+        st.markdown(f"""
+        <div class="detail-box">
+            <div style="display:flex; justify-content:space-between; font-weight:bold; margin-bottom:5px;">
+                <span>💰 예산: <span style="color:{cost_color}">{cost_txt}</span></span>
+                <span>💡 예상: {opt['reason']}</span>
+            </div>
+            <div style="font-size:14px; line-height:1.4;">
+                {opt['detail']}
+            </div>
         </div>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
     
     st.subheader("🫡 대통령님, 결단을 내려 주십시오")
 
