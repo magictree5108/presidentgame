@@ -329,46 +329,51 @@ render_background()
 # =============================================================================
 # [2] 스타일(CSS) 설정 (가독성 수정판)
 # =============================================================================
+# =============================================================================
+# [2] 스타일(CSS) 설정 (배경 유지 + 가독성 확보)
+# =============================================================================
 st.markdown("""
     <style>
-        /* 전체 배경 및 텍스트 색상 강제 */
-        .stApp { background-color: #f8f9fa; }
-        
-        /* 버튼 스타일 (제목 강조형) */
+        /* 버튼 스타일 (제목 강조형 - 흰색 배경에 검정 글씨) */
         .stButton>button {
             width: 100%; height: auto; min-height: 50px; 
             font-size: 18px; font-weight: bold;
             border-radius: 12px; border: 1px solid #c0c0c0;
-            background-color: white; color: #000000; /* 버튼 글씨 검정 */
+            background-color: white; color: #000000 !important; /* 버튼 글씨 무조건 검정 */
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             transition: all 0.2s;
         }
         .stButton>button:hover {
-            border-color: #007bff; color: #007bff; background-color: #eef6ff;
+            border-color: #007bff; color: #007bff !important; background-color: #eef6ff;
             transform: translateY(-2px);
         }
         
-        /* 질문 텍스트 (흰색 배경 위 검정 글씨) */
+        /* 질문 텍스트 (원래 배경 위에 '흰색 종이'를 깔고 검정 글씨) */
         .question-text {
             font-size: 22px; font-weight: bold; text-align: center;
             margin: 20px 0; line-height: 1.5; word-break: keep-all;
-            color: #333333 !important; /* ★ 핵심: 글자색 진한 검정으로 변경 */
-            background-color: white; padding: 20px; border-radius: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            color: #000000 !important; /* ★ 글자색 검정 */
+            background-color: rgba(255, 255, 255, 0.95); /* ★ 배경 흰색 (약간 투명) */
+            padding: 20px; border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
         
-        /* 상세 설명 박스 (버튼 아래) */
+        /* 상세 설명 박스 (버튼 아래 붙는 설명창) */
         .detail-box {
             margin-top: -10px; margin-bottom: 20px;
-            background-color: #f1f3f5; padding: 12px;
+            background-color: #f8f9fa; /* 아주 연한 회색 배경 */
+            padding: 15px;
             border-radius: 0 0 10px 10px;
-            font-size: 14px; color: #555;
+            font-size: 15px; color: #333333; /* 짙은 회색 글씨 */
             border: 1px solid #e9ecef; border-top: none;
+            line-height: 1.6;
         }
         
+        /* 결과 카드 */
         .result-card {
             background-color: white; padding: 30px; border-radius: 20px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; margin-bottom: 20px;
+            color: black;
         }
         .nameplate { display: none; }
     </style>
