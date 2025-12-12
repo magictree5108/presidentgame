@@ -81,75 +81,7 @@ FILE_RANKING = "ranking.csv"
 ARCHS = ["자본가", "중산층", "노동자", "빈곤층"]
 
 # =============================================================================
-# [2] 핵심 기능 함수
-# =============================================================================
-
-# =============================================================================
-# [2] 유틸리티 함수 (들여쓰기 수정됨)
-# =============================================================================
-
-def render_bgm():
-    b64 = get_base64_file(FILE_BGM)
-    if b64:
-        st.markdown(f"""
-            <audio controls autoplay loop style="display:none;">
-                <source src="data:audio/mp3;base64,{b64}" type="audio/mp3">
-            </audio>
-        """, unsafe_allow_html=True)
-
-def render_background():
-    b64 = get_base64_file(FILE_BG)
-    if b64:
-        st.markdown(
-            f'<img src="data:image/jpeg;base64,{b64}" style="width:100%; border-radius:10px; margin-bottom:20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">',
-            unsafe_allow_html=True
-        )
-
-# =============================================================================
-# [UI] 명패 및 화면 렌더링
-# =============================================================================
-
-# 배경음악 실행 (왼쪽 벽에 딱 붙여야 함)
-render_bgm() 
-
-# 1. 이름이 없으면 '각하'라고 표시
-if 'player_name' not in st.session_state:
-    st.session_state.player_name = ""
-
-display_name = st.session_state.player_name if st.session_state.player_name else "각하"
-
-# 2. 명패 그리기
-emblem_tag = get_emblem_tag()
-st.markdown(f'''
-<div class="nameplate">
-    {emblem_tag}
-    <div style="color:#c2a042; font-weight:bold; font-size:16px; margin-bottom:5px; letter-spacing:1px;">
-        대한민국 제21대 대통령
-    </div>
-    <div style="color:white; font-family:'serif'; font-weight:bold; font-size:32px; text-shadow: 2px 2px 4px black;">
-        {display_name}
-    </div>
-</div>
-''', unsafe_allow_html=True)
-
-# 2. 명패 그리기 (CSS 스타일 적용)
-emblem_tag = get_emblem_tag()
-st.markdown(f'''
-<div class="nameplate">
-    {emblem_tag}
-    <div style="color:#c2a042; font-weight:bold; font-size:16px; margin-bottom:5px; letter-spacing:1px;">
-        대한민국 제21대 대통령
-    </div>
-    <div style="color:white; font-family:'serif'; font-weight:bold; font-size:32px; text-shadow: 2px 2px 4px black;">
-        {display_name}
-    </div>
-</div>
-''', unsafe_allow_html=True)
-
-# 3. 타이틀 (선택 사항: 명패가 있으니 타이틀은 작게 하거나 지워도 됨)
-# st.title("🏛️ 대통령으로 살아남기")
-# =============================================================================
-# [2] 핵심 기능 함수 (들여쓰기 수정 완료)
+# [2] 핵심 기능 함수 (순서 중요: get_base64_file이 맨 위로 와야 함)
 # =============================================================================
 
 def get_base64_file(bin_file):
@@ -163,6 +95,7 @@ def get_base64_file(bin_file):
     return None
 
 def render_bgm():
+    # 위에서 정의한 get_base64_file을 여기서 사용합니다.
     b64 = get_base64_file(FILE_BGM)
     if b64:
         st.markdown(f"""
@@ -199,7 +132,7 @@ def get_model_image(model_id, default_url):
     if os.path.exists(local_filename):
         return local_filename
     return default_url
-
+    
 # [랭킹 시스템]
 def load_ranking():
     if not os.path.exists(FILE_RANKING):
