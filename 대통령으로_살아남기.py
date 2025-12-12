@@ -16,36 +16,36 @@ RULING_STYLES = {
         "title": "따뜻한 낭만주의자",
         "emoji": "🌷",
         "color": "#FFD700",
-        "keywords": ["#사람이먼저다", "#원칙주의", "#개혁"],
+        "keywords": ["#원칙과 상식", "#약자와의 동행", "#진보"],
         "desc": "당신은 숫자가 떨어져도 사람을 버리지 못하는 낭만파입니다.<br>기득권의 반발을 사더라도, 소외된 이웃을 위한 혁명적인 정책을 밀어붙입니다.<br>때로는 '현실 감각이 없다'는 비판을 듣지만, 열성적인 팬덤을 거느립니다.",
-        "quote": "국고가 비어도 가오는 살아야지!",
+        "quote": "국가의 존재 이유는 숫자가 아니라 사람입니다.",
         "models": [{"name": "노무현", "id": "roh", "img": "https://upload.wikimedia.org/wikipedia/commons/f/f3/Roh_Moo-hyun_Presidential_Portrait.jpg"}, {"name": "김대중", "id": "dj", "img": "https://upload.wikimedia.org/wikipedia/commons/e/ee/Kim_Dae-jung_Official_Portrait.jpg"}]
     },
     "중도진보": {
         "title": "줄타기의 귀재",
         "emoji": "⚖️",
         "color": "#4B89DC",
-        "keywords": ["#쇼통의달인", "#이미지메이킹", "#평화주의"],
-        "desc": "당신은 적을 만들지 않는 부드러운 카리스마의 소유자입니다.<br>격렬한 싸움보다는 대화와 타협을 선호하며, 대중적인 인기를 관리하는 능력이 탁월합니다.<br>'좋은 게 좋은 거지'라며 넘어가려다 우유부단하다는 소리를 듣기도 합니다.",
-        "quote": "싸우지 말고 사이좋게 지냅시다, 네?",
+        "keywords": ["#소통의 달인", "#공정사회", "#중도진보"],
+        "desc": "당신은 '사람'과 '공정'을 최우선 가치로 두는 리더입니다..<br>격렬한 싸움보다는 대화와 타협을 선호하며, 대중적인 인기를 관리하는 능력이 탁월합니다.<br>'좋은 게 좋은 거지'라며 넘어가려다 우유부단하다는 소리를 듣기도 합니다.",
+        "quote": "특권과 반칙이 없는 세상, 억울한 사람이 없는 나라를 만들겠습니다.",
         "models": [{"name": "문재인", "id": "moon", "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Moon_Jae-in_presidential_portrait.jpg"}, {"name": "이재명", "id": "lee", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Lee_Jae-myung_%28cropped%29.jpg/440px-Lee_Jae-myung_%28cropped%29.jpg"}]
     },
     "중도보수": {
         "title": "AI 같은 실용주의자",
         "emoji": "💻",
         "color": "#A020F0",
-        "keywords": ["#효율끝판왕", "#팩트폭격", "#능력지상주의"],
-        "desc": "당신에게 이념은 중요하지 않습니다. 오직 '데이터'와 '결과'만 중요할 뿐.<br>비효율적인 관습을 타파하고 스마트한 국가를 꿈꾸지만,<br>가끔은 너무 차가워서 '로봇 아니냐'는 의심을 받기도 합니다.",
+        "keywords": ["#효율 끝판왕", "#능력지상주의", "#중도보수"],
+        "desc": "탁상공론식 이념논쟁보단 '데이터'와 '결과'를 숭배합니다.<br>비효율적인 관습을 타파하고 스마트한 국가를 꿈꾸지만,<br>가끔은 너무 차가워서 '로봇 아니냐'는 의심을 받기도 합니다.",
         "quote": "그 정책, 데이터로 증명할 수 있습니까?",
         "models": [{"name": "안철수", "id": "ahn", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Ahn_Cheol-soo_portrait.jpg/440px-Ahn_Cheol-soo_portrait.jpg"}, {"name": "이준석", "id": "jun", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Lee_Jun-seok_%28cropped%29.jpg/440px-Lee_Jun-seok_%28cropped%29.jpg"}]
     },
     "보수": {
-        "title": "불도저 같은 상남자",
+        "title": "인간 불도저",
         "emoji": "🚜",
         "color": "#E03E3E",
-        "keywords": ["#법과원칙", "#기업프렌들리", "#강한대한민국"],
-        "desc": "당신은 목표를 정하면 뒤도 안 돌아보고 돌진하는 불도저입니다.<br>시장의 자유와 튼튼한 안보를 최우선으로 여기며, 반대파의 목소리는 힘으로 제압합니다.<br>성과는 확실하지만, 피로감을 호소하는 국민들도 많습니다.",
-        "quote": "나를 따르라! 불만이 있는 자는 썩 물러가라!",
+        "keywords": ["#강한 대한민국", "#자유시장경제", "#보수"],
+        "desc": "당신은 목표를 정하면 뒤도 안 돌아보고 돌진하는 불도저입니다.<br>시장의 자유와 튼튼한 안보를 최우선으로 여기며, 타협보다는 '법과 원칙'을 엄격하게 적용합니다.<br>강력한 추진력에 환호하는 지지층과, 소통 부재를 우려하는 목소리가 공존합니다.", # 수정됨
+        "quote": "자유와 원칙을 무너뜨리는 세력과는 타협하지 않습니다!",
         "models": [{"name": "윤석열", "id": "yoon", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Yoon_Suk-yeol_in_May_2022.jpg/440px-Yoon_Suk-yeol_in_May_2022.jpg"}, {"name": "김문수", "id": "kim", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Kim_Moon-soo_in_October_2024.png/440px-Kim_Moon-soo_in_October_2024.png"}]
     }
 }
