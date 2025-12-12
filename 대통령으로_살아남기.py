@@ -495,7 +495,7 @@ else:
         </div>
     """, unsafe_allow_html=True)
     
-    st.subheader("대통령님, 결단을 내려 주십시오")
+    st.subheader("🫡 대통령님, 결단을 내려 주십시오")
 
     # 3. 선택지 버튼
     for i, opt in enumerate(c['options']):
