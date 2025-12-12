@@ -423,76 +423,27 @@ if st.session_state.game_over:
     col_a.metric("❤️ 핵심 지지층", f"{best[0]} ({best[1]}%)")
     col_b.metric("💔 최대 비토층", f"{worst[0]} ({worst[1]}%)")
 
-    # [복구] 랭킹 저장 로직 (점수 계산 및 칭호 부여)
-    if "score_saved" not in st.session_state:
-        # 점수 계산: (지지율 평균 * 2) + (국고)
-        final_score = int((sum(st.session_state.stats.values()) / 4) * 2 + st.session_state.budget)
-
-        # -------------------------------------------------------------------------
-    # 2. [공유용] 통치 스타일 분석 카드 (MBTI 스타일)
+# -------------------------------------------------------------------------
+    # 4. 랭킹 저장 및 재시작 (이 부분만 덮어쓰기하세요)
     # -------------------------------------------------------------------------
-    my_type = get_politician_type(st.session_state.stats)
-    style = RULING_STYLES[my_type]
-    
-    st.markdown("---")
-    st.subheader("📸 나의 통치 스타일 (공유용)")
-    
-    st.markdown(f"""
-    <div style="
-        background-color: white; 
-        border: 2px solid {style['color']}; 
-        border-radius: 20px; 
-        padding: 30px; 
-        text-align: center; 
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        margin-bottom: 20px;">
-        
-        <p style="font-size: 14px; color: gray; margin-bottom: 5px;">제21대 대통령 생존 테스트 결과</p>
-        <div style="font-size: 80px; margin-bottom: 10px;">{style['emoji']}</div>
-        
-        <h2 style="color: {style['color']}; margin: 0; font-size: 28px; font-weight: 900;">{style['title']}</h2>
-        <p style="font-size: 18px; font-weight: bold; color: #333; margin-top: 10px;">
-            {style['keywords'][0]} {style['keywords'][1]} {style['keywords'][2]}
-        </p>
-        
-        <hr style="border: 0; border-top: 1px dashed #ddd; margin: 20px 0;">
-        
-        <p style="font-size: 15px; line-height: 1.6; color: #555; word-break: keep-all;">
-            {style['desc']}
-        </p>
-        
-        <div style="background-color: #f8f9fa; border-radius: 10px; padding: 15px; margin-top: 20px;">
-            <p style="font-size: 14px; color: #777; margin: 0;">🗳️ 한 줄 어록</p>
-            <p style="font-size: 18px; font-weight: bold; color: {style['color']}; margin: 5px 0 0 0;">
-                "{style['quote']}"
-            </p>
-        </div>
-
-        <div style="margin-top: 20px; font-size: 14px; color: #333;">
-            <span>📊 평균 지지율 <b>{avg:.1f}%</b></span> | 
-            <span>💰 국고 잔액 <b>{budget}조</b></span>
-        </div>
-        <div style="margin-top: 5px; font-size: 16px; font-weight: bold; color: red;">
-            결과: {final_result_text}
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-        
-        # 칭호 결정
+    if "score_saved" not in st.session_state:
+        # 점수 및 칭호 계산
         if "성공" not in st.session_state.fail_msg and "만료" not in st.session_state.fail_msg:
             final_title = "불명예 퇴진"
-            final_score = int(final_score / 2) # 실패 시 점수 반토막
+            final_score = int(total_score / 2) # 실패 시 점수 반토막
         else:
-            if final_score >= 180: final_title = "전설의 성군"
-            elif final_score >= 170: final_title = "대통령의 대통령"
-            elif final_score >= 160: final_title = "성공한 지도자"
-            elif final_score >= 150: final_title = "정치 9단"
-            elif final_score >= 140: final_title = "노련한 정치가"
-            elif final_score >= 120: final_title = "무난한 대통령"
+            if total_score >= 180: final_title = "전설의 성군"
+            elif total_score >= 170: final_title = "대통령의 대통령"
+            elif total_score >= 160: final_title = "성공한 지도자"
+            elif total_score >= 150: final_title = "정치 9단"
+            elif total_score >= 140: final_title = "노련한 정치가"
+            elif total_score >= 120: final_title = "무난한 대통령"
             else: final_title = "실패한 대통령"
         
+        # 파일 저장 실행
         if "save_ranking" in globals():
             save_ranking(st.session_state.player_name, final_score, final_title)
+        
         st.session_state.score_saved = True
 
     # 명예의 전당 Top 10 (결과창)
