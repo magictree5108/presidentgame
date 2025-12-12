@@ -137,9 +137,6 @@ def get_model_image(model_id, default_url):
 # [UI] 명패 및 화면 렌더링 (이 부분이 있어야 화면에 나옵니다!)
 # =============================================================================
 
-# 1. 배경음악 실행
-render_bgm() 
-
 # 2. 이름 오류 방지 (없으면 빈칸 처리)
 if 'player_name' not in st.session_state:
     st.session_state.player_name = ""
