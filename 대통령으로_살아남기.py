@@ -94,7 +94,7 @@ def get_base64_file(bin_file):
             return None
     return None
 
-# [함수] 정치인 이미지 로더 (여기 내용이 없어서 에러가 났을 수 있습니다)
+# [함수] 정치인 이미지 로더
 def get_model_image(model_id, default_url):
     local_filename = f"poly_{model_id}.jpg"
     if os.path.exists(local_filename):
@@ -102,29 +102,18 @@ def get_model_image(model_id, default_url):
     return default_url
 
 # =============================================================================
-# [UI] 명패 및 화면 렌더링 (여기가 실행 코드의 시작입니다)
+# [UI] 명패 및 화면 렌더링
 # =============================================================================
 # 배경음악 실행
 render_bgm() 
 
-# 1. 이름이 없으면 '각하'라고 표시
-display_name = st.session_state.player_name if st.session_state.player_name else "# [함수] 정치인 이미지 로더 (여기 내용이 없어서 에러가 났을 수 있습니다)
-def get_model_image(model_id, default_url):
-    local_filename = f"poly_{model_id}.jpg"
-    if os.path.exists(local_filename):
-        return local_filename
-    return default_url
+# 1. 이름이 없으면 '각하'라고 표시 (오류 해결됨)
+if 'player_name' not in st.session_state:
+    st.session_state.player_name = ""
 
-# =============================================================================
-# [UI] 명패 및 화면 렌더링 (여기가 실행 코드의 시작입니다)
-# =============================================================================
-# 배경음악 실행
-render_bgm() 
+display_name = st.session_state.player_name if st.session_state.player_name else "각하"
 
-# 1. 이름이 없으면 '각하'라고 표시
-display_name = st.session_state.player_name if st.session_state.player_name else "성함입력\n\n모바일은 좌측상단 >> 클릭"
-
-# 2. 명패 그리기 (CSS 스타일 적용)
+# 2. 명패 그리기
 emblem_tag = get_emblem_tag()
 st.markdown(f'''
 <div class="nameplate">
@@ -136,7 +125,7 @@ st.markdown(f'''
         {display_name}
     </div>
 </div>
-''', unsafe_allow_html=True)"
+''', unsafe_allow_html=True)
 
 # 2. 명패 그리기 (CSS 스타일 적용)
 emblem_tag = get_emblem_tag()
