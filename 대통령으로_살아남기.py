@@ -85,17 +85,8 @@ ARCHS = ["자본가", "중산층", "노동자", "빈곤층"]
 # =============================================================================
 
 # =============================================================================
-# [2] 유틸리티 함수 (함수 정의 부분)
+# [2] 유틸리티 함수 (들여쓰기 수정됨)
 # =============================================================================
-def get_base64_file(bin_file):
-    if os.path.exists(bin_file):
-        try:
-            with open(bin_file, 'rb') as f:
-                data = f.read()
-            return base64.b64encode(data).decode()
-        except:
-            return None
-    return None
 
 def render_bgm():
     b64 = get_base64_file(FILE_BGM)
@@ -106,20 +97,13 @@ def render_bgm():
             </audio>
         """, unsafe_allow_html=True)
 
-def update_name():
-    st.session_state.player_name = st.session_state.temp_name
-
-def get_crisis_image(idx, default_url):
-    local_filename = f"crisis_{idx}.jpg"
-    if os.path.exists(local_filename):
-        return local_filename
-    return default_url
-
-def get_model_image(model_id, default_url):
-    local_filename = f"poly_{model_id}.jpg"
-    if os.path.exists(local_filename):
-        return local_filename
-    return default_url
+def render_background():
+    b64 = get_base64_file(FILE_BG)
+    if b64:
+        st.markdown(
+            f'<img src="data:image/jpeg;base64,{b64}" style="width:100%; border-radius:10px; margin-bottom:20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">',
+            unsafe_allow_html=True
+        )
 
 # =============================================================================
 # [UI] 명패 및 화면 렌더링
