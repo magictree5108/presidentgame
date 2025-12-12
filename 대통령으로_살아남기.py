@@ -137,6 +137,10 @@ def get_model_image(model_id, default_url):
 # [UI] 명패 및 화면 렌더링 (이 부분이 있어야 화면에 나옵니다!)
 # =============================================================================
 
+# UI 렌더링
+render_bgm()
+render_background()
+    
 # 2. 이름 오류 방지 (없으면 빈칸 처리)
 if 'player_name' not in st.session_state:
     st.session_state.player_name = ""
@@ -345,10 +349,6 @@ def next_turn(idx):
             st.session_state.current_crisis = st.session_state.decks[stage].pop()
         else:
             st.session_state.current_crisis = random.choice(CRISES_POOL[stage])
-
-# UI 렌더링
-render_bgm()
-render_background()
 
 # =============================================================================
 # [2] 스타일(CSS) 설정 (가독성 수정판)
