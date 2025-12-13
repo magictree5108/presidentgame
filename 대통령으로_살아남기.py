@@ -26,7 +26,7 @@ RULING_STYLES = {
         "emoji": "⚖️",
         "color": "#4B89DC",
         "keywords": ["#소통의 달인", "#공정사회", "#중도진보"],
-        "desc": "당신은 '통합'과 '공정'을 최우선 가치로 두는 리더입니다..<br>격렬한 싸움보다는 대화와 타협을 선호하며, 대중적인 인기를 관리하는 능력이 탁월합니다.<br>'좋은 게 좋은 거지'라며 넘어가려다 우유부단하다는 소리를 듣기도 합니다.",
+        "desc": "당신은 '통합'과 '공정'을 최우선 가치로 두는 리더입니다..<br>격렬한 싸움보다는 대화와 타협을 선호하며, 대중적인 인기를 관리하는 능력이 탁월합니다.<br>'좋은 게 좋은 거다'며 중립 행보를 하며 우유부단하다는 비판을 듣기도 합니다.",
         "quote": "특권과 반칙이 없는 세상, 억울한 사람이 없는 나라를 만들겠습니다.",
         "models": [{"name": "문재인", "id": "moon", "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Moon_Jae-in_presidential_portrait.jpg"}, {"name": "이재명", "id": "lee", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Lee_Jae-myung_%28cropped%29.jpg/440px-Lee_Jae-myung_%28cropped%29.jpg"}]
     },
