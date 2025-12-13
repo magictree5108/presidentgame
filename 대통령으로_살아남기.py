@@ -183,9 +183,9 @@ def get_politician_type(stats):
     pro_score = stats["노동자"] + stats["빈곤층"]
     diff = pro_score - con_score
     
-    if diff > 30: return "진보"
+    if diff > 20: return "진보"
     elif diff > 0: return "중도진보"
-    elif diff > -30: return "중도보수"
+    elif diff > -20: return "중도보수"
     else: return "보수"
 
 # =============================================================================
