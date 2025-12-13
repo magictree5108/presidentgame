@@ -50,29 +50,6 @@ RULING_STYLES = {
     }
 }
 
-# [SNS 공유 로직]
-    # 배포 후 실제 주소로 변경하세요
-    import urllib.parse
-    game_url = "https://share.streamlit.io/본인아이디/presidentgame" 
-    share_text = f"🏛️ [대통령으로 살아남기] 제 생존 점수는 {total_score}점입니다!\n칭호: {final_title}\n유형: {style['title']}\n"
-    
-    encoded_text = urllib.parse.quote(share_text)
-    encoded_url = urllib.parse.quote(game_url)
-    twitter_link = f"https://twitter.com/intent/tweet?text={encoded_text}&url={encoded_url}"
-    facebook_link = f"https://www.facebook.com/sharer/sharer.php?u={encoded_url}"
-    
-    st.caption("📣 친구들에게 결과 자랑하기")
-    col_sns1, col_sns2, col_sns3 = st.columns(3)
-    with col_sns1:
-        st.link_button("🐦 X (트위터)", twitter_link, use_container_width=True)
-    with col_sns2:
-        st.link_button("📘 페이스북", facebook_link, use_container_width=True)
-    with col_sns3:
-        st.link_button("📸 인스타 (캡처)", "https://www.instagram.com/", use_container_width=True)
-    
-    with st.expander("🔗 링크 복사 (인스타 스토리용)"):
-        st.code(game_url, language=None)
-
 CRISES_POOL = {
     "초기": [
         {"id": 13, "title": "🍔 프랜차이즈 갑질 파동", "img": "https://images.unsplash.com/photo-1550547660-d9450f859349", "desc": "🚨속보\n\n대형 본사의 갑질로 가맹점주가 사망하는 비극이 발생했습니다. '을의 눈물'에 공감한 국민들의 분노가 들끓고 있으며, 강력한 경제 민주화를 요구하는 목소리가 높습니다.", "options": [{"name": "규제 3법 통과", "cost": 0, "effect": [-20, 5, 10, 10], "detail": "대기업의 횡포를 막을 강력한 법안을 만듭니다. 을(乙)들은 환호하지만, 재계는 '기업 죽이기'라며 투자 축소를 경고합니다.", "reason": "자본가-20 (규제), 노동자+10 (보호)"}, {"name": "자율 상생 유도", "cost": 0, "effect": [10, -5, -10, -5], "detail": "기업의 자정에 맡기기로 했습니다. 시장 자유는 지켰으나, 국민들은 '기업 봐주기'라며 정부가 로비에 넘어갔다고 의심합니다.", "reason": "자본가+10 (자유), 노동자-10 (실망)"}, {"name": "긴급 대출 지원", "cost": -15, "effect": [-5, 5, 0, 10], "detail": "피해 입은 자영업자에게 돈을 빌려줍니다. 당장 폐업은 막았지만 근본적인 구조는 그대로이며, 가계 부채만 늘리는 꼴이 되었습니다.", "reason": "빈곤층+10 (생존), 국고-15 (지출)"}]},
