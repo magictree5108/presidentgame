@@ -37,7 +37,7 @@ RULING_STYLES = {
         "keywords": ["#효율 끝판왕", "#능력지상주의", "#중도보수"],
         "desc": "탁상공론식 이념논쟁보단 '데이터'와 '결과'를 숭배합니다.<br>비효율적인 관습을 타파하고 스마트한 국가를 꿈꾸지만,<br>가끔은 너무 차가워서 '로봇 아니냐'는 의심을 받기도 합니다.",
         "quote": "그 정책, 데이터로 증명할 수 있습니까?",
-        "models": [{"name": "안철수", "id": "ahn", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Ahn_Cheol-soo_portrait.jpg/440px-Ahn_Cheol-soo_portrait.jpg"}, {"name": "이준석", "id": "jun", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Lee_Jun-seok_%28cropped%29.jpg/440px-Lee_Jun-seok_%28cropped%29.jpg"}]
+        "models": [{"name": "이준석", "id": "jun", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Lee_Jun-seok_%28cropped%29.jpg/440px-Lee_Jun-seok_%28cropped%29.jpg"}, {"name": "안철수", "id": "ahn", "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Ahn_Cheol-soo_portrait.jpg/440px-Ahn_Cheol-soo_portrait.jpg"}]
     },
     "보수": {
         "title": "인간 불도저",
