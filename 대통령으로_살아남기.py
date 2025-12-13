@@ -51,14 +51,19 @@ RULING_STYLES = {
 }
 
 # -------------------------------------------------------------------------
-    # [SNS 공유 기능] (인스타 설명 추가)
+    # [SNS 공유 기능] (들여쓰기 4칸 적용됨)
     # -------------------------------------------------------------------------
     
     # 1. 공유할 텍스트와 링크
-    game_url = "https://share.streamlit.io/본인아이디/presidentgame" # 실제 배포 주소로 수정!
+    # ※ 실제 배포 후에는 아래 주소를 본인의 스트림릿 앱 주소로 바꿔야 합니다.
+    game_url = "https://share.streamlit.io/본인아이디/presidentgame"
     share_text = f"🏛️ [대통령으로 살아남기] 제 생존 점수는 {total_score}점입니다!\n칭호: {final_title}\n유형: {style['title']}\n"
     
-    # URL 인코딩
+    # URL 인코딩 (한글 깨짐 방지)
+    # (주의: 파일 맨 위에 import urllib.parse 가 있어야 작동합니다)
+    if 'urllib' not in globals():
+        import urllib.parse
+        
     encoded_text = urllib.parse.quote(share_text)
     encoded_url = urllib.parse.quote(game_url)
     
