@@ -475,22 +475,30 @@ if st.session_state.game_over:
         total_score = int(total_score / 2) # 실패 시 점수 패널티
 
     # -------------------------------------------------------------------------
-    # 1. 뉴스 헤드라인 (사라졌던 뉴스 복구)
+    # 1. 뉴스 헤드라인 (수정됨: 총점이 높으면 무조건 칭찬)
     # -------------------------------------------------------------------------
     if "성공" in st.session_state.fail_msg or "만료" in st.session_state.fail_msg:
         st.balloons()
         st.subheader("📰 [호외] 임기 종료 특별 보도")
         
-        if avg >= 70 and budget >= 60:
-            st.success(f"### 🌟 역사상 가장 위대한 지도자, {st.session_state.player_name} 대통령 퇴임\n\n지지율과 경제 두 마리 토끼를 모두 잡은 '{final_title}'으로 기록될 것")
-        elif avg >= 51 and budget >= 40:
+        # [1순위] 총점이 180점 이상이면 무조건 '전설' (조건 따지지 않음)
+        if total_score >= 180:
+             st.success(f"### 🌟 역사상 가장 위대한 지도자, {st.session_state.player_name} 대통령 퇴임\n\n압도적인 국정 운영 능력으로 대한민국을 황금기로 이끈 '{final_title}'(으)로 기록될 것")
+
+        # [2순위] 총점이 150점 이상이면 '성공' (지지율 과락만 없으면)
+        elif total_score >= 150 and avg >= 30:
             st.success(f"### ✅ 성공적인 국정 운영, 박수칠 때 떠나는 {st.session_state.player_name} 대통령\n\n숱한 위기 속에서도 대한민국을 안정적으로 이끌었다는 평가")
+
+        # [3순위] 여기서부터는 점수가 낮을 때의 특수 상황들
         elif budget < 20:
             st.warning(f"### 💸 '인기는 얻었으나 곳간은 비었다'... 포퓰리즘 논란 속 퇴임\n\n차기 정부에 막대한 재정 부담을 넘기게 되어... 국가 신용등급 우려")
+            
         elif avg <= 25 and budget >= 50:
             st.error(f"### 😡 곳간은 찼으나 민심은 비었다... {st.session_state.player_name} 긴축 재정에 지친 국민들은 '돈 아껴서 무덤에 싸갈 거냐'는 비판")
+            
         elif avg < 25 and budget < 50:
             st.error(f"### 💀 역대 최저 지지율... {st.session_state.player_name} 대통령의 쓸쓸한 뒷모습\n\n국론 분열과 정책 실패로 얼룩진 5년... '식물 정부' 오명 남겨")
+            
         else:
             st.info(f"### ⚖️ '공과 과' 뚜렷... {st.session_state.player_name} 정부 5년의 막을 내리다\n\n위기 관리 능력은 돋보였으나, 계층 간 갈등 해소는 과제로 남아")
 
