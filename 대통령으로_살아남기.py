@@ -460,7 +460,7 @@ if st.session_state.game_over:
     # -------------------------------------------------------------------------
     avg = sum(st.session_state.stats.values()) / 4
     budget = st.session_state.budget
-    total_score = int(avg + budget)
+    total_score = int(avg * 2 + budget)
     
     # 칭호 결정 (사용자 원본 기준 복구: 180/160/140)
     if "성공" in st.session_state.fail_msg or "만료" in st.session_state.fail_msg:
