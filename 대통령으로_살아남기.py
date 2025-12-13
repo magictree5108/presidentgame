@@ -50,47 +50,28 @@ RULING_STYLES = {
     }
 }
 
-# -------------------------------------------------------------------------
-    # [SNS 공유 기능] (들여쓰기 4칸 적용됨)
-    # -------------------------------------------------------------------------
-    
-    # 1. 공유할 텍스트와 링크
-    # ※ 실제 배포 후에는 아래 주소를 본인의 스트림릿 앱 주소로 바꿔야 합니다.
-    game_url = "https://share.streamlit.io/본인아이디/presidentgame"
+# [SNS 공유 로직]
+    # 배포 후 실제 주소로 변경하세요
+    import urllib.parse
+    game_url = "https://share.streamlit.io/본인아이디/presidentgame" 
     share_text = f"🏛️ [대통령으로 살아남기] 제 생존 점수는 {total_score}점입니다!\n칭호: {final_title}\n유형: {style['title']}\n"
     
-    # URL 인코딩 (한글 깨짐 방지)
-    # (주의: 파일 맨 위에 import urllib.parse 가 있어야 작동합니다)
-    if 'urllib' not in globals():
-        import urllib.parse
-        
     encoded_text = urllib.parse.quote(share_text)
     encoded_url = urllib.parse.quote(game_url)
-    
-    # 2. SNS 링크 생성
     twitter_link = f"https://twitter.com/intent/tweet?text={encoded_text}&url={encoded_url}"
     facebook_link = f"https://www.facebook.com/sharer/sharer.php?u={encoded_url}"
     
-    # 3. 버튼 보여주기
-    st.write("")
-    st.caption("📣 친구들에게 내 성향 자랑하기")
-    
+    st.caption("📣 친구들에게 결과 자랑하기")
     col_sns1, col_sns2, col_sns3 = st.columns(3)
-    
     with col_sns1:
         st.link_button("🐦 X (트위터)", twitter_link, use_container_width=True)
-        
     with col_sns2:
         st.link_button("📘 페이스북", facebook_link, use_container_width=True)
-
     with col_sns3:
-        # 인스타는 버튼 공유가 안되므로 캡처 유도
         st.link_button("📸 인스타 (캡처)", "https://www.instagram.com/", use_container_width=True)
-
-    # 4. 링크 복사 기능 (인스타 스토리용)
-    with st.expander("🔗 링크 복사해서 인스타 스토리에 올리기"):
+    
+    with st.expander("🔗 링크 복사 (인스타 스토리용)"):
         st.code(game_url, language=None)
-        st.caption("👆 위 주소를 복사해서 인스타그램 스토리 '링크 스티커'에 붙여넣으세요!")
 
 CRISES_POOL = {
     "초기": [
