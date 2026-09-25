@@ -110,7 +110,7 @@ export function jsonError(e: unknown): Response {
   if (e instanceof HttpError) {
     return Response.json({ error: e.message, ...(e.extra ?? {}) }, { status: e.status });
   }
+  // 내부 오류 메시지(테이블·버킷·프로바이더 세부)는 서버 로그에만 남기고 클라이언트에는 일반 문구만 준다.
   console.error(e);
-  const msg = e instanceof Error ? e.message : "알 수 없는 오류";
-  return Response.json({ error: msg }, { status: 500 });
+  return Response.json({ error: "서버 오류가 발생했어요. 잠시 후 다시 시도해 주세요." }, { status: 500 });
 }

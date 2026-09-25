@@ -1,3 +1,4 @@
+import crypto from "node:crypto";
 import { getStore } from "@/lib/store";
 
 /**
@@ -7,7 +8,9 @@ import { getStore } from "@/lib/store";
 async function run(req: Request) {
   const secret = process.env.CRON_SECRET;
   const auth = req.headers.get("authorization") ?? "";
-  if (!secret || auth !== `Bearer ${secret}`) return Response.json({ error: "unauthorized" }, { status: 401 });
+  const expected = `Bearer ${secret}`;
+  const ok = !!secret && auth.length === expected.length && crypto.timingSafeEqual(Buffer.from(auth), Buffer.from(expected));
+  if (!ok) return Response.json({ error: "unauthorized" }, { status: 401 });
   const store = await getStore();
   const report = await store.cleanupExpired(new Date());
   return Response.json({ ok: true, report });

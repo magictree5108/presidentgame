@@ -217,7 +217,8 @@ export async function refreshGeneration(gen: Generation): Promise<Generation> {
   if (st.state === "failed") {
     await refundFor(gen);
     await store.logEvent({ sessionId: gen.sessionId, name: `${gen.kind}_failed`, props: { error: st.error ?? null } });
-    return store.updateGeneration(gen.id, { status: "failed", error: st.error ?? "생성에 실패했어요." });
+    console.error("provider reported failure", gen.id, st.error);
+    return store.updateGeneration(gen.id, { status: "failed", error: "생성에 실패했어요. 크레딧은 돌려드렸어요." });
   }
   if (st.state === "queued") return gen.status === "queued" || gen.status === "processing" ? gen : store.updateGeneration(gen.id, { status: "queued" });
   if (st.state === "running") return gen.status === "running" || gen.status === "processing" ? gen : store.updateGeneration(gen.id, { status: "running" });
@@ -249,9 +250,9 @@ export async function refreshGeneration(gen: Generation): Promise<Generation> {
       params: { ...claimed.params, cleanPaths, seed: result.seed ?? null },
     });
   } catch (e) {
-    console.error("result processing failed", e);
+    console.error("result processing failed", gen.id, e);
     await refundFor(gen);
-    return store.updateGeneration(gen.id, { status: "failed", error: e instanceof Error ? e.message : "결과 처리에 실패했어요." });
+    return store.updateGeneration(gen.id, { status: "failed", error: "결과를 처리하지 못했어요. 크레딧은 돌려드렸어요." });
   }
 }
 

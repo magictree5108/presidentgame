@@ -63,6 +63,8 @@ async function withLock<T>(fn: (db: Db) => Promise<T>): Promise<T> {
 }
 
 const now = () => new Date().toISOString();
+/** 쿠키 값이 "constructor" 같은 프로토타입 키여도 잘못 매칭되지 않게 own property 만 본다. */
+const own = <T,>(obj: Record<string, T> | undefined, key: string): T | null => (obj && Object.hasOwn(obj, key) ? obj[key] : null);
 const uuid = () => crypto.randomUUID();
 
 function sign(bucket: string, p: string, exp: number) {
@@ -84,7 +86,7 @@ function blobPath(bucket: Bucket, p: string) {
 export class LocalStore implements Store {
   async getSession(id: string) {
     const db = await load();
-    return db.sessions[id] ?? null;
+    return own(db.sessions, id);
   }
   async createSession(id: string, init: { ageConfirmedAt: string; consentAt: string; faceCredits: number; photoCredits: number }) {
     return withLock(async (db) => {
@@ -106,7 +108,7 @@ export class LocalStore implements Store {
   }
   async updateSession(id: string, patch: Partial<Session>) {
     return withLock(async (db) => {
-      const s = db.sessions[id];
+      const s = own(db.sessions, id);
       if (!s) throw new Error("session not found");
       Object.assign(s, patch);
       return s;
@@ -114,7 +116,7 @@ export class LocalStore implements Store {
   }
   async consumeCredits(sessionId: string, kind: CreditKind, amount: number) {
     return withLock(async (db) => {
-      const s = db.sessions[sessionId];
+      const s = own(db.sessions, sessionId);
       if (!s) return false;
       const key = kind === "face" ? "faceCredits" : "photoCredits";
       if (s[key] < amount) return false;
@@ -124,7 +126,7 @@ export class LocalStore implements Store {
   }
   async refundCredits(sessionId: string, kind: CreditKind, amount: number) {
     await withLock(async (db) => {
-      const s = db.sessions[sessionId];
+      const s = own(db.sessions, sessionId);
       if (!s) return;
       const key = kind === "face" ? "faceCredits" : "photoCredits";
       s[key] += amount;
@@ -154,7 +156,7 @@ export class LocalStore implements Store {
     });
   }
   async getUpload(id: string) {
-    return (await load()).uploads[id] ?? null;
+    return own((await load()).uploads, id);
   }
   async listUploads(sessionId: string) {
     return Object.values((await load()).uploads).filter((u) => u.sessionId === sessionId);
@@ -172,11 +174,11 @@ export class LocalStore implements Store {
     });
   }
   async getGeneration(id: string) {
-    return (await load()).generations[id] ?? null;
+    return own((await load()).generations, id);
   }
   async updateGeneration(id: string, patch: Partial<Generation>) {
     return withLock(async (db) => {
-      const g2 = db.generations[id];
+      const g2 = own(db.generations, id);
       if (!g2) throw new Error("generation not found");
       Object.assign(g2, patch, { updatedAt: now() });
       return g2;
@@ -184,7 +186,7 @@ export class LocalStore implements Store {
   }
   async claimGeneration(id: string, staleBefore: string) {
     return withLock(async (db) => {
-      const g2 = db.generations[id];
+      const g2 = own(db.generations, id);
       if (!g2) return null;
       const claimable = g2.status === "queued" || g2.status === "running" || (g2.status === "processing" && g2.updatedAt < staleBefore);
       if (!claimable) return null;
@@ -203,7 +205,7 @@ export class LocalStore implements Store {
     });
   }
   async getShare(id: string) {
-    return (await load()).shares[id] ?? null;
+    return own((await load()).shares, id);
   }
   async listShares(sessionId: string) {
     return Object.values((await load()).shares).filter((x) => x.sessionId === sessionId);
@@ -216,10 +218,10 @@ export class LocalStore implements Store {
     });
   }
   async getVote(shareId: string, voterKey: string) {
-    return (await load()).votes?.[shareId]?.[voterKey] ?? null;
+    return own(own((await load()).votes, shareId) ?? undefined, voterKey);
   }
   async getVoteTally(shareId: string): Promise<VoteTally> {
-    const v = (await load()).votes?.[shareId] ?? {};
+    const v = own((await load()).votes, shareId) ?? {};
     const tally: VoteTally = {};
     for (const c of Object.values(v)) tally[c] = (tally[c] ?? 0) + 1;
     return tally;
