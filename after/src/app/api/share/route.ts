@@ -2,7 +2,9 @@ import { jsonError, requireSession, HttpError } from "@/lib/session";
 import { getStore } from "@/lib/store";
 import { privateGenerationPaths } from "@/lib/store/paths";
 import { newShareId } from "@/lib/ids";
-import { composeBeforeAfterStory, composeOg, composePhotoStory } from "@/lib/image/sharecard";
+import { composeBeforeAfterStory, composeOg, composePhotoStory, composeVariantsStory } from "@/lib/image/sharecard";
+import { chosenIndex } from "@/lib/generation";
+import { voteQuestion } from "@/lib/vote";
 import { POLICY } from "@/lib/config";
 import { appUrl } from "@/lib/brand";
 import { describeSelection, type SurgerySelection } from "../../../../prompts/surgery";
@@ -35,13 +37,18 @@ export async function POST() {
     const photoClean = privateGenerationPaths(photos);
     const readGen = async (cleanPath: string | undefined, publicPath: string) =>
       (cleanPath ? await store.getBlob("private", cleanPath) : null) ?? store.getBlob("public", publicPath);
-    const [beforeBuf, afterBuf, ...photoBufs] = await Promise.all([
+    const idx = chosenIndex(face);
+    const [beforeBuf, afterBuf, ...rest] = await Promise.all([
       front ? store.getBlob("private", front.path) : null,
-      readGen(faceClean[0], face.outputPaths[0]),
+      readGen(faceClean[idx], face.outputPaths[idx]),
       ...photos.outputPaths.map((p, i) => readGen(photoClean[i], p)),
+      ...face.outputPaths.map((p, i) => readGen(faceClean[i], p)),
     ]);
     if (!afterBuf) throw new HttpError(500, "얼굴 이미지를 읽지 못했어요.");
-    const photoBuffers = photoBufs.filter((b): b is Buffer => !!b);
+    const photoBuffers = rest.slice(0, photos.outputPaths.length).filter((b): b is Buffer => !!b);
+    const variantBuffers = rest.slice(photos.outputPaths.length).filter((b): b is Buffer => !!b);
+    const variantLabels = Array.isArray(face.params.variantLabels) ? (face.params.variantLabels as string[]) : [];
+    const isCompare = face.outputPaths.length >= 2 && variantLabels.length === face.outputPaths.length;
 
     const selection = (face.params.selection ?? session.selection) as SurgerySelection | null;
     const faceLabel = selection ? describeSelection(selection) : "";
@@ -55,9 +62,16 @@ export async function POST() {
     await store.putBlob("public", ogPath, og, "image/jpeg");
 
     const storyPaths: string[] = [];
+    if (isCompare && variantBuffers.length === face.outputPaths.length) {
+      // 약·중·강 비교 슬라이드: "어디까지 할까? 투표해 줘" 훅. 원본이 없으므로 안전하지만 다른 슬라이드와 같이 private 에 둔다.
+      const sv = await composeVariantsStory({ variants: variantBuffers, labels: variantLabels, caption: faceLabel, question: voteQuestion(variantLabels.length) });
+      const p = `${session.id}/share/${id}/story-1.jpg`;
+      await store.putBlob("private", p, sv, "image/jpeg");
+      storyPaths.push(p);
+    }
     if (beforeBuf) {
       const s1 = await composeBeforeAfterStory({ before: beforeBuf, after: afterBuf, caption: faceLabel });
-      const p = `${session.id}/share/${id}/story-1.jpg`;
+      const p = `${session.id}/share/${id}/story-${storyPaths.length + 1}.jpg`;
       await store.putBlob("private", p, s1, "image/jpeg");
       storyPaths.push(p);
     }
@@ -73,13 +87,17 @@ export async function POST() {
       sessionId: session.id,
       faceGenerationId: face.id,
       photoGenerationId: photos.id,
-      afterPath: face.outputPaths[0],
+      afterPath: face.outputPaths[idx],
+      variantPaths: isCompare ? face.outputPaths : [face.outputPaths[idx]],
+      variantLabels: isCompare ? variantLabels : [faceLabel],
+      chosenIndex: isCompare ? idx : 0,
       photoPaths: photos.outputPaths,
       ogPath,
       storyPaths,
       caption: `${faceLabel} · ${photoLabel}`,
       expiresAt: new Date(Date.now() + POLICY.generatedRetentionHours * 3600_000).toISOString(),
     });
+    await store.logEvent({ sessionId: session.id, name: "share_created", props: { shareId: id, compare: isCompare } });
     return Response.json({ share: shareView(id) });
   } catch (e) {
     return jsonError(e);

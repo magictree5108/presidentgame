@@ -1,5 +1,6 @@
 "use client";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { Suspense, useState } from "react";
 import { Shell } from "@/components/Shell";
 import { BRAND } from "@/lib/brand";
@@ -41,15 +42,15 @@ function Landing() {
       ) : null}
       <section className="pt-6">
         <h1 className="text-3xl leading-tight font-bold tracking-tight">
-          성형 후 내 얼굴,
+          성형, <span className="text-accent">어디까지</span> 할까?
           <br />
-          미리 보고 <span className="text-accent">인생샷</span>까지.
+          친구한테 물어봐.
         </h1>
-        <p className="mt-3 text-base leading-relaxed text-muted">{BRAND.tagline}</p>
+        <p className="mt-3 text-base leading-relaxed text-muted">{BRAND.subline}</p>
       </section>
 
       <ol className="grid grid-cols-3 gap-2 text-center text-xs text-muted">
-        {["셀카 올리기", "부위·강도 고르기", "인생샷 4장 받기"].map((t, i) => (
+        {["셀카 올리기", "약·중·강 3장 비교", "인생샷 + 친구 투표"].map((t, i) => (
           <li key={t} className="card py-3">
             <span className="block text-lg font-bold text-ink">{i + 1}</span>
             {t}
@@ -87,7 +88,12 @@ function Landing() {
       <button onClick={start} disabled={busy || !age || !consent} className="btn btn-primary">
         {busy ? "준비 중…" : "시작하기"}
       </button>
-      <p className="text-center text-xs text-muted">무료로 성형 후 얼굴 1회, 인생샷 4장을 만들 수 있어요.</p>
+      <p className="text-center text-xs text-muted">
+        무료로 성형 후 얼굴 3버전 1회, 인생샷 4장을 만들 수 있어요. ·{" "}
+        <Link href="/privacy" className="underline underline-offset-2">
+          사진 처리 안내
+        </Link>
+      </p>
       <p className="mt-auto pt-6 text-xs leading-relaxed text-muted">{DISCLAIMER.long}</p>
     </Shell>
   );

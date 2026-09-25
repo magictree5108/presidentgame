@@ -7,7 +7,8 @@ import { LoadingSteps } from "@/components/LoadingSteps";
 import { DisclaimerBanner } from "@/components/Disclaimer";
 import { PaywallModal } from "@/components/PaywallModal";
 import { DeleteDataButton } from "@/components/DeleteDataButton";
-import { usePollGeneration, useSession, type GenerationView } from "@/lib/client/session";
+import { usePollGeneration, useSession, type GenerationView, type ShareView } from "@/lib/client/session";
+import { VoteTally } from "@/components/VoteTally";
 import { MOODS, MOOD_IDS, PLACES, PLACE_IDS, type MoodId, type PlaceId } from "../../../prompts/lifeshot";
 
 function Photos() {
@@ -24,7 +25,8 @@ function Photos() {
   const [paywall, setPaywall] = useState(false);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
-  const [share, setShare] = useState<{ url: string; storyUrl: string } | null>(null);
+  const [madeShare, setMadeShare] = useState<ShareView | null>(null);
+  const share = madeShare ?? (genId && session?.photos?.id === genId ? session?.share ?? null : null);
   const [slides, setSlides] = useState<string[] | null>(null);
   const [copied, setCopied] = useState(false);
 
@@ -39,7 +41,7 @@ function Photos() {
   const generate = async () => {
     setBusy(true);
     setErr("");
-    setShare(null);
+    setMadeShare(null);
     setSlides(null);
     const res = await fetch("/api/generate/photos", {
       method: "POST",
@@ -62,8 +64,15 @@ function Photos() {
     const data = await res.json().catch(() => ({}));
     setBusy(false);
     if (!res.ok) return setErr(data.error ?? "공유 카드를 만들지 못했어요.");
-    setShare(data.share);
+    const fresh = await reload();
+    setMadeShare(fresh?.share ?? { ...data.share, question: "", choices: [], tally: {}, total: 0 });
     const s = await fetch(data.share.storyUrl).then((r) => r.json()).catch(() => null);
+    if (s?.slides) setSlides(s.slides);
+  };
+
+  const loadSlides = async () => {
+    if (!share) return;
+    const s = await fetch(share.storyUrl).then((r) => r.json()).catch(() => null);
     if (s?.slides) setSlides(s.slides);
   };
 
@@ -71,7 +80,7 @@ function Photos() {
     if (!share) return;
     try {
       if (navigator.share) {
-        await navigator.share({ title: "성형 후 내 모습 · 애프터", url: share.url });
+        await navigator.share({ title: `${share.question || "성형 후 내 모습"} · 애프터`, text: share.question ? `${share.question} 링크에서 투표해 줘!` : undefined, url: share.url });
         return;
       }
       await navigator.clipboard.writeText(share.url);
@@ -152,10 +161,13 @@ function Photos() {
 
           {!share ? (
             <button onClick={makeShare} disabled={busy} className="btn btn-accent">
-              {busy ? "공유 카드 만드는 중…" : "공유 링크 + 스토리 카드 만들기"}
+              {busy ? "공유 카드 만드는 중…" : "친구한테 물어보기 (공유 링크 만들기)"}
             </button>
           ) : (
             <div className="card flex flex-col gap-3">
+              {share.choices.length ? (
+                <VoteTally question={share.question} choices={share.choices} tally={share.tally} total={share.total} onRefresh={() => reload()} />
+              ) : null}
               <p className="text-sm font-semibold">공유 링크</p>
               <div className="flex items-center gap-2 rounded-xl bg-surface px-3 py-2 text-xs">
                 <span className="flex-1 truncate">{share.url}</span>
@@ -163,7 +175,7 @@ function Photos() {
                   {copied ? "복사됨" : "공유"}
                 </button>
               </div>
-              <p className="text-xs text-muted">공유 페이지에는 성형 후 얼굴과 인생샷만 보여요. 원본 사진은 절대 노출되지 않아요. 링크는 7일 뒤 만료돼요.</p>
+              <p className="text-xs text-muted">공유 페이지에는 성형 후 얼굴과 인생샷만 보여요. 원본 사진은 절대 노출되지 않아요. 친구들은 로그인 없이 투표할 수 있고, 링크는 7일 뒤 만료돼요.</p>
               <p className="pt-1 text-sm font-semibold">인스타 스토리용 카드 (1080×1920)</p>
               {slides ? (
                 <div className="flex gap-2 overflow-x-auto pb-1">
@@ -175,9 +187,9 @@ function Photos() {
                   ))}
                 </div>
               ) : (
-                <p className="text-xs text-muted">카드를 준비하는 중…</p>
+                <button onClick={loadSlides} className="rounded-xl border border-line py-2 text-sm">스토리 카드 불러오기</button>
               )}
-              <p className="text-xs text-muted">첫 장은 비포/애프터라서 나에게만 보여요. 저장해서 직접 올리세요.</p>
+              <p className="text-xs text-muted">비포/애프터가 들어간 카드는 나에게만 보여요. 저장해서 직접 올리세요.</p>
             </div>
           )}
 
@@ -185,7 +197,7 @@ function Photos() {
             <button
               onClick={() => {
                 setGenId(null);
-                setShare(null);
+                setMadeShare(null);
                 router.replace("/photos");
               }}
               className="btn btn-secondary"

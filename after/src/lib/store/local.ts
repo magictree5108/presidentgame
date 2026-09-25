@@ -4,7 +4,7 @@ import crypto from "node:crypto";
 import { appUrl } from "@/lib/brand";
 import type { CreditKind } from "@/lib/config";
 import { privateGenerationPaths } from "./paths";
-import type { Bucket, CleanupReport, Generation, RateLimitResult, Session, Share, Store, Upload } from "./types";
+import type { Bucket, CleanupReport, EventRow, Generation, RateLimitResult, Session, Share, Store, Upload, VoteTally } from "./types";
 
 /**
  * 파일 기반 로컬 저장소. Supabase 키 없이 개발할 때만 쓴다 (STORE_DRIVER=local).
@@ -18,6 +18,8 @@ type Db = {
   shares: Record<string, Share>;
   waitlist: Array<{ email: string; sessionId: string | null; createdAt: string }>;
   rateLimits: Record<string, { windowStart: number; count: number }>;
+  votes?: Record<string, Record<string, string>>; // shareId → voterKey → choice
+  events?: EventRow[];
 };
 
 const ROOT = path.join(process.cwd(), ".local-data");
@@ -196,6 +198,29 @@ export class LocalStore implements Store {
   async listShares(sessionId: string) {
     return Object.values((await load()).shares).filter((x) => x.sessionId === sessionId);
   }
+  async castVote(shareId: string, voterKey: string, choice: string) {
+    await withLock(async (db) => {
+      db.votes ??= {};
+      db.votes[shareId] ??= {};
+      db.votes[shareId][voterKey] = choice;
+    });
+  }
+  async getVote(shareId: string, voterKey: string) {
+    return (await load()).votes?.[shareId]?.[voterKey] ?? null;
+  }
+  async getVoteTally(shareId: string): Promise<VoteTally> {
+    const v = (await load()).votes?.[shareId] ?? {};
+    const tally: VoteTally = {};
+    for (const c of Object.values(v)) tally[c] = (tally[c] ?? 0) + 1;
+    return tally;
+  }
+  async logEvent(e: Omit<EventRow, "createdAt">) {
+    await withLock(async (db) => {
+      db.events ??= [];
+      db.events.push({ ...e, createdAt: now() });
+      if (db.events.length > 5000) db.events.splice(0, db.events.length - 5000);
+    });
+  }
   async addToWaitlist(email: string, sessionId: string | null) {
     await withLock(async (db) => {
       if (!db.waitlist.some((w) => w.email === email)) db.waitlist.push({ email, sessionId, createdAt: now() });
@@ -228,7 +253,10 @@ export class LocalStore implements Store {
     await withLock(async (db) => {
       for (const u of uploads) delete db.uploads[u.id];
       for (const g2 of gens) delete db.generations[g2.id];
-      for (const s of shares) delete db.shares[s.id];
+      for (const s of shares) {
+        delete db.shares[s.id];
+        if (db.votes) delete db.votes[s.id];
+      }
       if (resetSession) {
         for (const s of Object.values(db.sessions)) {
           if (uploads.some((u) => u.sessionId === s.id) || gens.some((g2) => g2.sessionId === s.id)) {

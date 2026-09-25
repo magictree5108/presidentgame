@@ -63,7 +63,11 @@ export type Share = {
   sessionId: string;
   faceGenerationId: string;
   photoGenerationId: string;
-  afterPath: string; // public
+  afterPath: string; // public (선택된 강도)
+  /** 비교 모드일 때 약·중·강 3장 (public). 투표 화면에 쓴다. 단일 모드면 afterPath 하나. */
+  variantPaths: string[];
+  variantLabels: string[];
+  chosenIndex: number;
   photoPaths: string[]; // public
   ogPath: string; // public
   storyPaths: string[]; // private (원본이 포함된 슬라이드가 있으므로)
@@ -71,6 +75,12 @@ export type Share = {
   createdAt: string;
   expiresAt: string;
 };
+
+/** 공유 페이지 투표 */
+export type VoteTally = Record<string, number>;
+
+/** 퍼널 이벤트 */
+export type EventRow = { sessionId: string | null; name: string; props: Record<string, unknown>; createdAt: string };
 
 export type RateLimitResult = { allowed: boolean; retryAfterSeconds: number };
 
@@ -110,6 +120,14 @@ export interface Store {
   createShare(s: Omit<Share, "createdAt">): Promise<Share>;
   getShare(id: string): Promise<Share | null>;
   listShares(sessionId: string): Promise<Share[]>;
+
+  // 투표 (voterKey 당 공유 1개에 1표, 다시 누르면 변경)
+  castVote(shareId: string, voterKey: string, choice: string): Promise<void>;
+  getVote(shareId: string, voterKey: string): Promise<string | null>;
+  getVoteTally(shareId: string): Promise<VoteTally>;
+
+  // 퍼널 이벤트 (분석용, 실패해도 흐름을 막지 않는다)
+  logEvent(e: Omit<EventRow, "createdAt">): Promise<void>;
 
   // 대기 리스트
   addToWaitlist(email: string, sessionId: string | null): Promise<void>;

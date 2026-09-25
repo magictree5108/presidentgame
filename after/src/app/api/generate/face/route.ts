@@ -6,6 +6,8 @@ import { INTENSITIES, SURGERY_PARTS, type SurgerySelection } from "../../../../.
 const PartSchema = z.object({ enabled: z.boolean(), intensity: z.enum(INTENSITIES) });
 const Body = z.object({
   selection: z.object(Object.fromEntries(SURGERY_PARTS.map((p) => [p, PartSchema])) as Record<(typeof SURGERY_PARTS)[number], typeof PartSchema>),
+  /** true 면 켜진 부위를 약·중·강으로 각각 생성해 3장 비교 (기본값) */
+  compare: z.boolean().optional().default(true),
 });
 
 export async function POST(req: Request) {
@@ -17,7 +19,7 @@ export async function POST(req: Request) {
     if (!SURGERY_PARTS.some((p) => selection[p].enabled)) {
       return Response.json({ error: "바꿀 부위를 하나 이상 골라 주세요." }, { status: 400 });
     }
-    const gen = await startFaceGeneration(session, selection);
+    const gen = await startFaceGeneration(session, selection, { compare: parsed.data.compare });
     return Response.json({ generation: await publicGeneration(gen) });
   } catch (e) {
     return jsonError(e);

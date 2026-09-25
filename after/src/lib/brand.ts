@@ -7,7 +7,9 @@ export const BRAND = {
   /** 영문 표기 (워터마크, OG 등에서 보조로 사용) */
   nameEn: "AFTER",
   /** 한 줄 설명 (랜딩, OG description) */
-  tagline: "성형 후 내 얼굴을 AI로 미리 보고, 그 얼굴로 인생샷까지.",
+  tagline: "성형 후 내 얼굴, 어디까지 할지 친구한테 물어봐.",
+  /** 랜딩 보조 설명 */
+  subline: "약·중·강 세 가지 버전을 AI로 미리 보고, 그 얼굴로 찍은 인생샷까지. 링크 하나로 친구 투표.",
   /** 강조색 하나. Tailwind 토큰 --color-accent 와 같은 값 */
   accent: "#ff4d6d",
   /** 워터마크 하단 고정 문구 (지울 수 없게 이미지에 굽는다) */

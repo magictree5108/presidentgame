@@ -57,6 +57,9 @@ create table if not exists public.shares (
   face_generation_id uuid not null,
   photo_generation_id uuid not null,
   after_path text not null,
+  variant_paths text[] not null default '{}',
+  variant_labels text[] not null default '{}',
+  chosen_index int not null default 0,
   photo_paths text[] not null default '{}',
   og_path text not null,
   story_paths text[] not null default '{}',
@@ -74,6 +77,25 @@ create table if not exists public.waitlist (
   created_at timestamptz not null default now()
 );
 
+-- 공유 페이지 투표. voter_key 는 방문자 브라우저 쿠키(익명). shares 삭제 시 함께 삭제.
+create table if not exists public.votes (
+  share_id text not null references public.shares(id) on delete cascade,
+  voter_key text not null,
+  choice text not null,
+  created_at timestamptz not null default now(),
+  primary key (share_id, voter_key)
+);
+
+-- 퍼널 이벤트 (분석용)
+create table if not exists public.events (
+  id bigint generated always as identity primary key,
+  session_id uuid,
+  name text not null,
+  props jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now()
+);
+create index if not exists events_name_time_idx on public.events(name, created_at);
+
 create table if not exists public.rate_limits (
   session_id uuid not null,
   key text not null,
@@ -88,6 +110,8 @@ alter table public.generations enable row level security;
 alter table public.shares enable row level security;
 alter table public.waitlist enable row level security;
 alter table public.rate_limits enable row level security;
+alter table public.votes enable row level security;
+alter table public.events enable row level security;
 
 -- 크레딧 차감 (원자적). 부족하면 false.
 create or replace function public.consume_credits(p_session uuid, p_kind text, p_amount int)

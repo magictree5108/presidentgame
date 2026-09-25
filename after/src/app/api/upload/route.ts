@@ -47,6 +47,7 @@ export async function POST(req: Request) {
       currentPhotoGenerationId: null,
     });
 
+    await store.logEvent({ sessionId: session.id, name: "upload_done", props: { sides: sideUps.length } });
     return Response.json({
       ok: true,
       uploads: [frontUp, ...sideUps].map((u) => ({ id: u.id, kind: u.kind, url: `/api/uploads/${u.id}` })),

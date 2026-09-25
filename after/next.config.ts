@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
   // 서버에서 텍스트를 그릴 때 쓰는 한글 폰트를 서버리스 번들에 포함시킨다.
   outputFileTracingIncludes: {
     "/api/**": ["./src/assets/fonts/*", "./node_modules/harfbuzzjs/**", "./node_modules/yoga-layout/**"],
+    "/opengraph-image": ["./src/assets/fonts/*"],
   },
   images: {
     // 생성 이미지는 Supabase 공개 버킷 또는 로컬 라우트에서 온다. next/image 최적화는 쓰지 않고 <img> 를 쓴다.

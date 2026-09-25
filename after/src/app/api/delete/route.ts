@@ -7,6 +7,7 @@ export async function POST() {
     const session = await requireSession();
     const store = await getStore();
     const report = await store.deleteSessionData(session.id);
+    await store.logEvent({ sessionId: session.id, name: "data_deleted", props: report as unknown as Record<string, unknown> });
     return Response.json({ ok: true, report });
   } catch (e) {
     return jsonError(e);

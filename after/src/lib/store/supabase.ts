@@ -1,7 +1,7 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { CreditKind } from "@/lib/config";
 import { privateGenerationPaths } from "./paths";
-import type { Bucket, CleanupReport, Generation, RateLimitResult, Session, Share, Store, Upload } from "./types";
+import type { Bucket, CleanupReport, EventRow, Generation, RateLimitResult, Session, Share, Store, Upload, VoteTally } from "./types";
 
 /**
  * Supabase 저장소. service role 키로 서버에서만 접근한다.
@@ -98,6 +98,9 @@ const shareFromRow = (r: Row): Share => ({
   faceGenerationId: r.face_generation_id as string,
   photoGenerationId: r.photo_generation_id as string,
   afterPath: r.after_path as string,
+  variantPaths: (r.variant_paths as string[]) ?? [],
+  variantLabels: (r.variant_labels as string[]) ?? [],
+  chosenIndex: (r.chosen_index as number) ?? 0,
   photoPaths: (r.photo_paths as string[]) ?? [],
   ogPath: r.og_path as string,
   storyPaths: (r.story_paths as string[]) ?? [],
@@ -208,6 +211,9 @@ export class SupabaseStore implements Store {
         face_generation_id: s.faceGenerationId,
         photo_generation_id: s.photoGenerationId,
         after_path: s.afterPath,
+        variant_paths: s.variantPaths,
+        variant_labels: s.variantLabels,
+        chosen_index: s.chosenIndex,
         photo_paths: s.photoPaths,
         og_path: s.ogPath,
         story_paths: s.storyPaths,
@@ -227,6 +233,26 @@ export class SupabaseStore implements Store {
     const { data, error } = await this.db.from("shares").select("*").eq("session_id", sessionId);
     if (error) throw new Error(error.message);
     return (data ?? []).map(shareFromRow);
+  }
+  async castVote(shareId: string, voterKey: string, choice: string) {
+    const { error } = await this.db.from("votes").upsert({ share_id: shareId, voter_key: voterKey, choice }, { onConflict: "share_id,voter_key" });
+    if (error) throw new Error(error.message);
+  }
+  async getVote(shareId: string, voterKey: string) {
+    const { data, error } = await this.db.from("votes").select("choice").eq("share_id", shareId).eq("voter_key", voterKey).maybeSingle();
+    if (error) throw new Error(error.message);
+    return (data?.choice as string) ?? null;
+  }
+  async getVoteTally(shareId: string): Promise<VoteTally> {
+    const { data, error } = await this.db.from("votes").select("choice").eq("share_id", shareId);
+    if (error) throw new Error(error.message);
+    const tally: VoteTally = {};
+    for (const r of data ?? []) tally[r.choice as string] = (tally[r.choice as string] ?? 0) + 1;
+    return tally;
+  }
+  async logEvent(e: Omit<EventRow, "createdAt">) {
+    const { error } = await this.db.from("events").insert({ session_id: e.sessionId, name: e.name, props: e.props });
+    if (error) console.error("logEvent", error.message);
   }
   async addToWaitlist(email: string, sessionId: string | null) {
     const { error } = await this.db.from("waitlist").upsert({ email, session_id: sessionId }, { onConflict: "email", ignoreDuplicates: true });

@@ -9,7 +9,19 @@ export type GenerationView = {
   error: string | null;
   params: Record<string, unknown>;
   outputs: string[];
+  chosen: number | null;
   createdAt: string;
+};
+
+export type VoteChoiceView = { id: string; label: string; emoji: string };
+export type ShareView = {
+  id: string;
+  url: string;
+  storyUrl: string;
+  question: string;
+  choices: VoteChoiceView[];
+  tally: Record<string, number>;
+  total: number;
 };
 
 export type SessionView = {
@@ -20,6 +32,7 @@ export type SessionView = {
   selection: unknown | null;
   face: GenerationView | null;
   photos: GenerationView | null;
+  share: ShareView | null;
   provider: { provider: string; face: string; photo: string };
 };
 

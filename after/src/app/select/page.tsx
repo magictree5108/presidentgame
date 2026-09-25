@@ -29,6 +29,7 @@ export default function SelectPage() {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
   const [paywall, setPaywall] = useState(false);
+  const [compare, setCompare] = useState(true);
 
   useEffect(() => {
     if (session === null) router.replace("/");
@@ -56,7 +57,7 @@ export default function SelectPage() {
     const res = await fetch("/api/generate/face", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ selection: sel }),
+      body: JSON.stringify({ selection: sel, compare }),
     });
     const data = await res.json().catch(() => ({}));
     setBusy(false);
@@ -116,14 +117,25 @@ export default function SelectPage() {
         })}
       </ul>
 
+      <label className={`card flex cursor-pointer items-start gap-3 ${compare ? "border-ink" : ""}`}>
+        <input type="checkbox" checked={compare} onChange={(e) => setCompare(e.target.checked)} className="mt-1 h-5 w-5 accent-[var(--color-accent)]" />
+        <span>
+          <span className="block text-sm font-semibold">약·중·강 세 장을 한 번에 비교하기 <span className="ml-1 rounded-full bg-accent-soft px-2 py-0.5 text-[11px] text-accent">추천</span></span>
+          <span className="mt-0.5 block text-xs leading-relaxed text-muted">
+            켠 부위를 세 강도로 각각 만들어요. 크레딧은 1회만 써요. 친구 투표로 어디까지 할지 물어볼 수 있어요.
+            {compare ? " 위에서 고른 강도는 무시돼요." : ""}
+          </span>
+        </span>
+      </label>
+
       <div className="rounded-xl bg-surface px-4 py-3 text-sm">
         <span className="text-muted">선택: </span>
-        <span className="font-semibold">{describeSelection(sel)}</span>
+        <span className="font-semibold">{compare ? SURGERY_PARTS.filter((p) => sel[p].enabled).map((p) => PART_LABELS[p]).join(" · ") + " · 약/중/강 비교" : describeSelection(sel)}</span>
       </div>
 
       {err ? <p className="text-sm font-medium text-accent">{err}</p> : null}
       <button onClick={generate} disabled={!anyEnabled || busy} className="btn btn-accent">
-        {busy ? "시작하는 중…" : "성형 후 얼굴 만들기"}
+        {busy ? "시작하는 중…" : compare ? "세 가지 버전 만들기" : "성형 후 얼굴 만들기"}
       </button>
       <p className="text-center text-xs text-muted">
         남은 무료 얼굴 생성 {session?.credits.face ?? "-"}회 · 결과는 AI 시뮬레이션이에요
