@@ -68,6 +68,12 @@ export function chosenIndex(gen: Generation): number {
   return n === 3 ? 1 : 0;
 }
 
+/** 얼굴 생성물의 강도 라벨 (비교 모드가 아니면 빈 문자열) */
+export function variantLabelOf(gen: Generation, index: number): string {
+  const labels = Array.isArray(gen.params.variantLabels) ? (gen.params.variantLabels as string[]) : [];
+  return gen.outputPaths.length >= 2 ? (labels[index] ?? "") : "";
+}
+
 export type FaceOptions = { compare: boolean };
 
 export async function startFaceGeneration(session: Session, selection: SurgerySelection, opts: FaceOptions = { compare: true }): Promise<Generation> {
@@ -155,7 +161,7 @@ export async function startPhotoGeneration(session: Session, place: PlaceId, moo
     const refs: string[] = [store.publicUrl(face.outputPaths[idx])];
     // public 버킷 URL 은 워터마크가 있는 이미지다. 모델이 워터마크를 따라 그리지 않도록 워터마크 없는 얼굴을 임시 서명 URL 로 준다.
     const cleanPaths = Array.isArray(face.params.cleanPaths) ? (face.params.cleanPaths as string[]) : [];
-    const cleanFacePath = cleanPaths[idx] ?? (face.params.cleanPath as string | undefined) ?? null;
+    const cleanFacePath = cleanPaths[idx] ?? null;
     if (cleanFacePath) refs[0] = await store.signedUrl("private", cleanFacePath, SIGNED_URL_TTL);
     if (front) refs.push(await store.signedUrl("private", front.path, SIGNED_URL_TTL));
     for (const s of sides) refs.push(await store.signedUrl("private", s.path, SIGNED_URL_TTL));
@@ -168,7 +174,7 @@ export async function startPhotoGeneration(session: Session, place: PlaceId, moo
       externalJobId: jobId,
       status: "queued",
       prompt,
-      params: { place, mood },
+      params: { place, mood, variantIndex: idx, variantLabel: variantLabelOf(face, idx) },
       inputUploadIds: uploads.map((u) => u.id),
       inputGenerationId: face.id,
       outputPaths: [],
@@ -188,11 +194,17 @@ export async function startPhotoGeneration(session: Session, place: PlaceId, moo
  * 폴링 한 번. 프로바이더 상태를 확인하고 끝났으면 결과를 처리한다.
  * 결과 처리(다운로드 → 워터마크 → 저장)는 한 번만 일어나야 하므로 status 를 processing 으로 먼저 바꾼다.
  */
+/** processing 상태가 이 시간보다 오래 갱신되지 않으면 선점한 요청이 죽은 것으로 보고 다시 처리한다. */
+const PROCESSING_LEASE_MS = 90_000;
+
 export async function refreshGeneration(gen: Generation): Promise<Generation> {
-  if (gen.status === "done" || gen.status === "failed" || gen.status === "processing") return gen;
+  if (gen.status === "done" || gen.status === "failed") return gen;
   if (!gen.externalJobId) return gen;
   const store = await getStore();
   const provider = getProvider(gen.kind === "face" ? "face" : "photo");
+  const staleBefore = new Date(Date.now() - PROCESSING_LEASE_MS).toISOString();
+  // 다른 요청이 처리 중이고 아직 리스가 살아 있으면 기다린다.
+  if (gen.status === "processing" && gen.updatedAt >= staleBefore) return gen;
 
   let st: JobStatus;
   try {
@@ -207,11 +219,12 @@ export async function refreshGeneration(gen: Generation): Promise<Generation> {
     await store.logEvent({ sessionId: gen.sessionId, name: `${gen.kind}_failed`, props: { error: st.error ?? null } });
     return store.updateGeneration(gen.id, { status: "failed", error: st.error ?? "생성에 실패했어요." });
   }
-  if (st.state === "queued") return gen.status === "queued" ? gen : store.updateGeneration(gen.id, { status: "queued" });
-  if (st.state === "running") return gen.status === "running" ? gen : store.updateGeneration(gen.id, { status: "running" });
+  if (st.state === "queued") return gen.status === "queued" || gen.status === "processing" ? gen : store.updateGeneration(gen.id, { status: "queued" });
+  if (st.state === "running") return gen.status === "running" || gen.status === "processing" ? gen : store.updateGeneration(gen.id, { status: "running" });
 
-  // done → 결과 처리
-  const claimed = await store.updateGeneration(gen.id, { status: "processing" });
+  // done → 결과 처리. 동시에 폴링하는 요청이 여러 개여도 하나만 선점한다.
+  const claimed = await store.claimGeneration(gen.id, staleBefore);
+  if (!claimed) return (await store.getGeneration(gen.id)) ?? gen;
   try {
     const result = await multiResult(provider, gen.externalJobId);
     const outputPaths: string[] = [];
@@ -233,7 +246,7 @@ export async function refreshGeneration(gen: Generation): Promise<Generation> {
     return store.updateGeneration(gen.id, {
       status: "done",
       outputPaths,
-      params: { ...claimed.params, cleanPath: cleanPaths[0], cleanPaths, seed: result.seed ?? null },
+      params: { ...claimed.params, cleanPaths, seed: result.seed ?? null },
     });
   } catch (e) {
     console.error("result processing failed", e);
@@ -256,7 +269,7 @@ export async function publicGeneration(gen: Generation) {
     kind: gen.kind,
     status: gen.status,
     error: gen.error,
-    params: { ...gen.params, cleanPath: undefined, cleanPaths: undefined },
+    params: { ...gen.params, cleanPaths: undefined },
     outputs: gen.outputPaths.map((p) => store.publicUrl(p)),
     chosen: gen.status === "done" ? chosenIndex(gen) : null,
     createdAt: gen.createdAt,

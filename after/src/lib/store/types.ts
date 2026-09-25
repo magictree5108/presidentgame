@@ -114,6 +114,11 @@ export interface Store {
   createGeneration(g: Omit<Generation, "id" | "createdAt" | "updatedAt">): Promise<Generation>;
   getGeneration(id: string): Promise<Generation | null>;
   updateGeneration(id: string, patch: Partial<Omit<Generation, "id" | "createdAt">>): Promise<Generation>;
+  /**
+   * 결과 처리 선점 (원자적). status 가 queued/running 이거나, processing 인데 staleBefore 이전에 갱신됐으면
+   * processing 으로 바꾸고 행을 돌려준다. 다른 요청이 이미 선점했으면 null.
+   */
+  claimGeneration(id: string, staleBefore: string): Promise<Generation | null>;
   listGenerations(sessionId: string): Promise<Generation[]>;
 
   // 공유

@@ -45,7 +45,7 @@ export function VotePanel({ shareId, question, choices }: { shareId: string; que
       {!revealed ? (
         <>
           <p className="text-base font-bold">{q}</p>
-          <div className={`grid gap-2 ${cs.length > 2 ? "grid-cols-2" : "grid-cols-2"}`}>
+          <div className="grid grid-cols-2 gap-2">
             {cs.map((c) => (
               <button key={c.id} onClick={() => vote(c.id)} disabled={busy} className="btn btn-secondary py-3 text-sm">
                 <span className="mr-1.5">{c.emoji}</span>

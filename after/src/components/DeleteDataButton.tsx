@@ -6,16 +6,30 @@ import { useState } from "react";
 export function DeleteDataButton() {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
   const onClick = async () => {
     if (!confirm("원본 사진, 생성 이미지, 공유 링크가 모두 즉시 삭제돼요. 계속할까요?")) return;
     setBusy(true);
-    await fetch("/api/delete", { method: "POST" });
-    setBusy(false);
-    router.push("/?deleted=1");
+    setErr("");
+    try {
+      const res = await fetch("/api/delete", { method: "POST" });
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}));
+        throw new Error(d.error ?? `삭제 실패 (${res.status})`);
+      }
+      router.push("/?deleted=1");
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "삭제에 실패했어요. 잠시 후 다시 시도해 주세요.");
+    } finally {
+      setBusy(false);
+    }
   };
   return (
-    <button onClick={onClick} disabled={busy} className="py-2 text-xs text-muted underline underline-offset-2">
-      {busy ? "삭제 중…" : "내 데이터 즉시 삭제"}
-    </button>
+    <div className="flex flex-col items-center">
+      <button onClick={onClick} disabled={busy} className="py-2 text-xs text-muted underline underline-offset-2">
+        {busy ? "삭제 중…" : "내 데이터 즉시 삭제"}
+      </button>
+      {err ? <p className="text-xs text-accent">{err}</p> : null}
+    </div>
   );
 }

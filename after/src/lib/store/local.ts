@@ -182,6 +182,16 @@ export class LocalStore implements Store {
       return g2;
     });
   }
+  async claimGeneration(id: string, staleBefore: string) {
+    return withLock(async (db) => {
+      const g2 = db.generations[id];
+      if (!g2) return null;
+      const claimable = g2.status === "queued" || g2.status === "running" || (g2.status === "processing" && g2.updatedAt < staleBefore);
+      if (!claimable) return null;
+      Object.assign(g2, { status: "processing", updatedAt: now() });
+      return g2;
+    });
+  }
   async listGenerations(sessionId: string) {
     return Object.values((await load()).generations).filter((x) => x.sessionId === sessionId);
   }

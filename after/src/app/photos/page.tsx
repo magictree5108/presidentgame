@@ -35,7 +35,7 @@ function Photos() {
     if (session && (!session.face || session.face.status !== "done")) router.replace("/face");
   }, [session, router]);
 
-  const gen = usePollGeneration(genId, (_g: GenerationView, c) => c && setCredits(c));
+  const { gen, error: pollError } = usePollGeneration(genId, (_g: GenerationView, c) => c && setCredits(c));
   const photosPerSet = session?.policy.photosPerSet ?? 4;
 
   const generate = async () => {
@@ -91,8 +91,8 @@ function Photos() {
     }
   };
 
-  const showPicker = !genId || gen?.status === "failed";
-  const loading = genId && (!gen || (gen.status !== "done" && gen.status !== "failed"));
+  const showPicker = !genId || gen?.status === "failed" || !!pollError;
+  const loading = genId && !pollError && (!gen || (gen.status !== "done" && gen.status !== "failed"));
   const done = gen?.status === "done";
   const placeLabel = gen ? PLACES[gen.params.place as PlaceId]?.label : "";
   const moodLabel = gen ? MOODS[gen.params.mood as MoodId]?.label : "";
@@ -110,6 +110,7 @@ function Photos() {
           {gen?.status === "failed" ? (
             <p className="rounded-xl bg-accent-soft px-3 py-2 text-xs">이전 생성에 실패했어요: {gen.error}. 크레딧은 돌려드렸어요.</p>
           ) : null}
+          {pollError ? <p className="rounded-xl bg-accent-soft px-3 py-2 text-xs">{pollError}</p> : null}
           <div>
             <h2 className="mb-2 text-sm font-semibold">장소</h2>
             <div className="grid grid-cols-3 gap-2">
@@ -147,6 +148,7 @@ function Photos() {
             <h1 className="text-2xl font-bold tracking-tight">인생샷 {gen.outputs.length}장</h1>
             <p className="mt-1 text-sm text-muted">
               {placeLabel} · {moodLabel}
+              {gen.params.variantLabel ? ` · ${String(gen.params.variantLabel)} 강도 얼굴` : ""}
             </p>
           </section>
           <div className="grid grid-cols-2 gap-2">

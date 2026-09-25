@@ -22,24 +22,34 @@ export async function POST(req: Request) {
     }
 
     const store = await getStore();
-    // 이전 업로드 정리
+
+    // 1) 먼저 전부 디코딩·정규화한다. 하나라도 실패하면 이전 업로드를 건드리지 않는다.
+    const normalize = async (file: File, kind: "front" | "side") => {
+      try {
+        return { kind, ...(await normalizeUpload(Buffer.from(await file.arrayBuffer()))) };
+      } catch {
+        throw new HttpError(400, `${kind === "front" ? "정면" : "측면"} 사진을 읽을 수 없어요. JPG나 PNG로 다시 올려 주세요.`);
+      }
+    };
+    const prepared = [await normalize(front, "front"), ...(await Promise.all(sides.map((f) => normalize(f, "side"))))];
+
+    // 2) 이전 업로드 정리
     const old = await store.listUploads(session.id);
     if (old.length) {
       await store.deleteBlobs("private", old.map((u) => u.path));
       await store.deleteUploads(old.map((u) => u.id));
     }
 
+    // 3) 저장
     const expiresAt = new Date(Date.now() + POLICY.originalRetentionHours * 3600_000).toISOString();
-    const saveOne = async (file: File, kind: "front" | "side") => {
-      const { buffer, width, height } = await normalizeUpload(Buffer.from(await file.arrayBuffer()));
+    const saved = [];
+    for (const { kind, buffer, width, height } of prepared) {
       const path = `${session.id}/uploads/${crypto.randomUUID()}.jpg`;
       await store.putBlob("private", path, buffer, "image/jpeg");
-      return store.createUpload({ sessionId: session.id, kind, path, width, height, expiresAt });
-    };
-
-    const frontUp = await saveOne(front, "front");
-    const sideUps = [];
-    for (const s of sides) sideUps.push(await saveOne(s, "side"));
+      saved.push(await store.createUpload({ sessionId: session.id, kind, path, width, height, expiresAt }));
+    }
+    const frontUp = saved[0];
+    const sideUps = saved.slice(1);
 
     await store.updateSession(session.id, {
       currentUploadId: frontUp.id,

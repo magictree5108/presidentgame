@@ -160,7 +160,7 @@ export async function composeOg(opts: { after: Buffer; photos: Buffer[]; caption
 }
 
 /** 슬라이드: 약·중·강 3장 나란히 + "어디까지 할까? 투표해 줘" 훅. 원본은 들어가지 않는다. */
-export async function composeVariantsStory(opts: { variants: Buffer[]; labels: string[]; caption: string; question: string }): Promise<Buffer> {
+export async function composeVariantsStory(opts: { variants: Buffer[]; labels: string[]; caption: string; question: string; chosenIndex: number }): Promise<Buffer> {
   const n = opts.variants.length;
   const gap = 18;
   const side = 60;
@@ -174,8 +174,8 @@ export async function composeVariantsStory(opts: { variants: Buffer[]; labels: s
       <Header title={opts.question} subtitle={opts.caption} />
       {opts.labels.map((label, i) => (
         <Box key={label} style={{ position: "absolute", top: top - 60, left: side + i * (imgW + gap), width: imgW, justifyContent: "center" }}>
-          <Box style={{ background: i === 1 ? BRAND.accent : "#111", borderRadius: 999, paddingLeft: 22, paddingRight: 22, paddingTop: 8, paddingBottom: 8 }}>
-            <span style={{ fontSize: 30, fontWeight: 700, color: "#fff" }}>{label}</span>
+          <Box style={{ background: i === opts.chosenIndex ? BRAND.accent : "#111", borderRadius: 999, paddingLeft: 22, paddingRight: 22, paddingTop: 8, paddingBottom: 8 }}>
+            <span style={{ fontSize: 30, fontWeight: 700, color: "#fff" }}>{i === opts.chosenIndex ? `${label} · 본인 픽` : label}</span>
           </Box>
         </Box>
       ))}

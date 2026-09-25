@@ -197,6 +197,16 @@ export class SupabaseStore implements Store {
     const res = await this.db.from("generations").update(genToRow(patch)).eq("id", id).select("*").single();
     return genFromRow(must(res, "updateGeneration"));
   }
+  async claimGeneration(id: string, staleBefore: string) {
+    const nowIso = new Date().toISOString();
+    // 조건부 UPDATE 두 번: (queued|running) 또는 (processing 이면서 오래됨). 둘 다 0행이면 다른 요청이 선점한 것.
+    const a = await this.db.from("generations").update({ status: "processing", updated_at: nowIso }).eq("id", id).in("status", ["queued", "running"]).select("*").maybeSingle();
+    if (a.error) throw new Error(a.error.message);
+    if (a.data) return genFromRow(a.data);
+    const b = await this.db.from("generations").update({ status: "processing", updated_at: nowIso }).eq("id", id).eq("status", "processing").lt("updated_at", staleBefore).select("*").maybeSingle();
+    if (b.error) throw new Error(b.error.message);
+    return b.data ? genFromRow(b.data) : null;
+  }
   async listGenerations(sessionId: string) {
     const { data, error } = await this.db.from("generations").select("*").eq("session_id", sessionId).order("created_at");
     if (error) throw new Error(error.message);
@@ -265,10 +275,11 @@ export class SupabaseStore implements Store {
       this.listShares(sessionId),
     ]);
     const report = await this.purge(uploads, gens, shares);
-    await this.db
+    const { error } = await this.db
       .from("sessions")
       .update({ current_upload_id: null, current_face_generation_id: null, current_photo_generation_id: null })
       .eq("id", sessionId);
+    if (error) throw new Error(`deleteSessionData: ${error.message}`);
     return report;
   }
   async cleanupExpired(now: Date): Promise<CleanupReport> {
@@ -285,11 +296,14 @@ export class SupabaseStore implements Store {
     // 만료된 항목을 가리키는 세션 포인터를 정리한다.
     const upIds = (u.data ?? []).map((r) => r.id as string);
     const genIds = (g.data ?? []).map((r) => r.id as string);
-    if (upIds.length) await this.db.from("sessions").update({ current_upload_id: null }).in("current_upload_id", upIds);
-    if (genIds.length) {
-      await this.db.from("sessions").update({ current_face_generation_id: null }).in("current_face_generation_id", genIds);
-      await this.db.from("sessions").update({ current_photo_generation_id: null }).in("current_photo_generation_id", genIds);
-    }
+    const unlink = async (col: string, ids: string[]) => {
+      if (!ids.length) return;
+      const { error } = await this.db.from("sessions").update({ [col]: null }).in(col, ids);
+      if (error) throw new Error(`cleanupExpired ${col}: ${error.message}`);
+    };
+    await unlink("current_upload_id", upIds);
+    await unlink("current_face_generation_id", genIds);
+    await unlink("current_photo_generation_id", genIds);
     return report;
   }
   private async purge(uploads: Upload[], gens: Generation[], shares: Share[]): Promise<CleanupReport> {
@@ -297,9 +311,14 @@ export class SupabaseStore implements Store {
     const pub = [...gens.flatMap((x) => x.outputPaths), ...shares.map((x) => x.ogPath)];
     await this.deleteBlobs("private", priv);
     await this.deleteBlobs("public", pub);
-    if (shares.length) await this.db.from("shares").delete().in("id", shares.map((x) => x.id));
-    if (gens.length) await this.db.from("generations").delete().in("id", gens.map((x) => x.id));
-    if (uploads.length) await this.db.from("uploads").delete().in("id", uploads.map((x) => x.id));
+    const del = async (table: string, ids: string[]) => {
+      if (!ids.length) return;
+      const { error } = await this.db.from(table).delete().in("id", ids);
+      if (error) throw new Error(`purge ${table}: ${error.message}`);
+    };
+    await del("shares", shares.map((x) => x.id));
+    await del("generations", gens.map((x) => x.id));
+    await del("uploads", uploads.map((x) => x.id));
     return { uploads: uploads.length, generations: gens.length, shares: shares.length, blobs: priv.length + pub.length };
   }
   async putBlob(bucket: Bucket, path: string, data: Buffer, contentType: string) {

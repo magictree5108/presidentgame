@@ -61,24 +61,35 @@ export function useSession() {
 export function usePollGeneration(
   id: string | null,
   onUpdate?: (g: GenerationView, credits: { face: number; photo: number } | null) => void,
-) {
+): { gen: GenerationView | null; error: string | null } {
   const [gen, setGen] = useState<GenerationView | null>(null);
+  const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     if (!id) return;
     let stop = false;
     let timer: ReturnType<typeof setTimeout>;
+    let netFailures = 0;
     const tick = async () => {
       try {
         const res = await fetch(`/api/generations/${id}`, { cache: "no-store" });
         const data = await res.json();
         if (stop) return;
         if (data.generation) {
+          netFailures = 0;
           setGen(data.generation);
           onUpdate?.(data.generation, data.credits ?? null);
           if (data.generation.status === "done" || data.generation.status === "failed") return;
+        } else {
+          // 401/404 등: 세션이 끝났거나 생성물이 삭제됐다. 더 폴링하지 않는다.
+          setError(data.error ?? "생성 기록을 찾을 수 없어요. 처음부터 다시 시작해 주세요.");
+          return;
         }
       } catch {
-        // 네트워크 오류는 다음 틱에서 재시도
+        // 네트워크 오류는 몇 번 재시도하고 포기한다.
+        if (++netFailures >= 12) {
+          setError("네트워크 연결을 확인해 주세요.");
+          return;
+        }
       }
       timer = setTimeout(tick, 2500);
     };
@@ -89,5 +100,5 @@ export function usePollGeneration(
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
-  return gen;
+  return { gen, error };
 }

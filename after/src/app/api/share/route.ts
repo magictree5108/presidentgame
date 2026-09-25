@@ -37,7 +37,8 @@ export async function POST() {
     const photoClean = privateGenerationPaths(photos);
     const readGen = async (cleanPath: string | undefined, publicPath: string) =>
       (cleanPath ? await store.getBlob("private", cleanPath) : null) ?? store.getBlob("public", publicPath);
-    const idx = chosenIndex(face);
+    // "본인 픽" = 인생샷을 찍을 때 쓴 강도. 그 뒤에 얼굴 화면에서 다른 강도를 눌러도 이 공유는 인생샷과 일관되게 유지된다.
+    const idx = typeof photos.params.variantIndex === "number" ? (photos.params.variantIndex as number) : chosenIndex(face);
     const [beforeBuf, afterBuf, ...rest] = await Promise.all([
       front ? store.getBlob("private", front.path) : null,
       readGen(faceClean[idx], face.outputPaths[idx]),
@@ -61,26 +62,16 @@ export async function POST() {
     const og = await composeOg({ after: afterBuf, photos: photoBuffers, caption: photoLabel });
     await store.putBlob("public", ogPath, og, "image/jpeg");
 
-    const storyPaths: string[] = [];
+    // 스토리 슬라이드: [약·중·강 비교] → [비포/애프터(원본 포함)] → 인생샷 4장. 병렬로 합성한다.
+    const slideJobs: Array<() => Promise<Buffer>> = [];
     if (isCompare && variantBuffers.length === face.outputPaths.length) {
-      // 약·중·강 비교 슬라이드: "어디까지 할까? 투표해 줘" 훅. 원본이 없으므로 안전하지만 다른 슬라이드와 같이 private 에 둔다.
-      const sv = await composeVariantsStory({ variants: variantBuffers, labels: variantLabels, caption: faceLabel, question: voteQuestion(variantLabels.length) });
-      const p = `${session.id}/share/${id}/story-1.jpg`;
-      await store.putBlob("private", p, sv, "image/jpeg");
-      storyPaths.push(p);
+      slideJobs.push(() => composeVariantsStory({ variants: variantBuffers, labels: variantLabels, caption: faceLabel, question: voteQuestion(variantLabels.length), chosenIndex: idx }));
     }
-    if (beforeBuf) {
-      const s1 = await composeBeforeAfterStory({ before: beforeBuf, after: afterBuf, caption: faceLabel });
-      const p = `${session.id}/share/${id}/story-${storyPaths.length + 1}.jpg`;
-      await store.putBlob("private", p, s1, "image/jpeg");
-      storyPaths.push(p);
-    }
-    for (let i = 0; i < photoBuffers.length; i++) {
-      const s = await composePhotoStory({ photo: photoBuffers[i], caption: photoLabel, index: i + 1, total: photoBuffers.length });
-      const p = `${session.id}/share/${id}/story-${storyPaths.length + 1}.jpg`;
-      await store.putBlob("private", p, s, "image/jpeg");
-      storyPaths.push(p);
-    }
+    if (beforeBuf) slideJobs.push(() => composeBeforeAfterStory({ before: beforeBuf, after: afterBuf, caption: faceLabel }));
+    photoBuffers.forEach((photo, i) => slideJobs.push(() => composePhotoStory({ photo, caption: photoLabel, index: i + 1, total: photoBuffers.length })));
+    const slides = await Promise.all(slideJobs.map((job) => job()));
+    const storyPaths = slides.map((_, i) => `${session.id}/share/${id}/story-${i + 1}.jpg`);
+    await Promise.all(slides.map((buf, i) => store.putBlob("private", storyPaths[i], buf, "image/jpeg")));
 
     await store.createShare({
       id,
@@ -95,7 +86,8 @@ export async function POST() {
       ogPath,
       storyPaths,
       caption: `${faceLabel} · ${photoLabel}`,
-      expiresAt: new Date(Date.now() + POLICY.generatedRetentionHours * 3600_000).toISOString(),
+      // 공유는 참조하는 생성물보다 오래 살 수 없다 (생성물이 먼저 지워지면 이미지가 깨진다).
+      expiresAt: [face.expiresAt, photos.expiresAt, new Date(Date.now() + POLICY.generatedRetentionHours * 3600_000).toISOString()].sort()[0],
     });
     await store.logEvent({ sessionId: session.id, name: "share_created", props: { shareId: id, compare: isCompare } });
     return Response.json({ share: shareView(id) });

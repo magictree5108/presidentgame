@@ -29,18 +29,23 @@ function FaceResult() {
     if (session && !genId) router.replace("/select");
   }, [session, genId, router]);
 
-  const gen = usePollGeneration(genId, (_g: GenerationView, c) => c && setCredits(c));
+  const { gen, error: pollError } = usePollGeneration(genId, (_g: GenerationView, c) => c && setCredits(c));
   const front = session?.uploads.find((u) => u.kind === "front");
   const variantLabels = (gen?.params.variantLabels as string[] | undefined) ?? [];
   const isCompare = !!gen && gen.outputs.length >= 2 && variantLabels.length === gen.outputs.length;
   const idx = pickedIdx ?? gen?.chosen ?? (isCompare ? 1 : 0);
 
   const pick = async (i: number) => {
+    const prev = pickedIdx;
     setPickedIdx(i);
     if (!isCompare) return;
     setChoosing(true);
-    await fetch("/api/generate/face/choose", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ index: i }) });
+    const res = await fetch("/api/generate/face/choose", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ index: i }) }).catch(() => null);
     setChoosing(false);
+    if (!res || !res.ok) {
+      setPickedIdx(prev);
+      setErr("선택을 저장하지 못했어요. 다시 눌러 주세요.");
+    }
   };
 
   const regenerate = async () => {
@@ -57,6 +62,7 @@ function FaceResult() {
     if (res.status === 402) return setPaywall(true);
     if (!res.ok) return setErr(data.error ?? "재생성을 시작하지 못했어요.");
     await reload();
+    setPickedIdx(null); // 새 생성물에는 아직 선택이 없다 (서버 기본값 "중")
     router.replace(`/face?g=${data.generation.id}`);
     setGenId(data.generation.id);
   };
@@ -64,7 +70,15 @@ function FaceResult() {
   return (
     <Shell step="2 / 3 결과">
       <DisclaimerBanner />
-      {!gen || (gen.status !== "done" && gen.status !== "failed") ? (
+      {pollError ? (
+        <div className="card flex flex-col gap-3">
+          <p className="font-semibold">결과를 불러올 수 없어요</p>
+          <p className="text-sm text-muted">{pollError}</p>
+          <Link href="/" className="btn btn-primary">
+            처음으로
+          </Link>
+        </div>
+      ) : !gen || (gen.status !== "done" && gen.status !== "failed") ? (
         <LoadingSteps kind="face" stage={gen?.status ?? "queued"} />
       ) : gen.status === "failed" ? (
         <div className="card flex flex-col gap-3">
