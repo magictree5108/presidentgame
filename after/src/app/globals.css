@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+/* 밝은 배경, 검정 글씨, 강조색 하나. 값은 src/lib/brand.ts 의 accent 와 맞춘다. */
+@theme {
+  --color-accent: #ff4d6d;
+  --color-accent-soft: #fff0f3;
+  --color-ink: #111111;
+  --color-muted: #6b7280;
+  --color-line: #e5e7eb;
+  --color-surface: #f7f7f8;
+  --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo",
+    "Noto Sans KR", "Malgun Gothic", sans-serif;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  background: #ffffff;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-tap-highlight-color: transparent;
+  word-break: keep-all;
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex w-full items-center justify-center rounded-2xl px-5 py-4 text-base font-semibold transition active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-40;
+  }
+  /* 마크업에서는 "btn btn-primary" 처럼 base 클래스와 함께 쓴다 (Tailwind v4 는 @apply 로 커스텀 클래스를 중첩할 수 없다) */
+  .btn-primary {
+    @apply bg-ink text-white;
+  }
+  .btn-accent {
+    @apply bg-accent text-white;
+  }
+  .btn-secondary {
+    @apply border border-line bg-white text-ink;
+  }
+  .card {
+    @apply rounded-2xl border border-line bg-white p-4;
+  }
+  .chip {
+    @apply rounded-full border border-line bg-white px-3 py-1.5 text-sm font-medium text-ink transition;
+  }
+  .chip-on {
+    @apply border-ink bg-ink text-white;
+  }
+}
