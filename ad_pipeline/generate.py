@@ -5,6 +5,7 @@
 
 사용법:
     export GEMINI_API_KEY="your-key"
+    python generate.py script                # 씬별 대사를 화자별로 출력 (수정은 scenes.json 의 dialogue)
     python generate.py refs                  # 레퍼런스 이미지만 생성
     python generate.py refs A_ajae --force   # 특정 레퍼런스만 다시 생성
     python generate.py frames                # 씬별 9:16 시작 장면 이미지 생성
@@ -30,7 +31,7 @@ CONFIG = "scenes.json"
 REF_DIR = Path("refs")
 OUT_DIR = Path("output")
 FRAME_DIR = Path("frames")
-COST_LOG = OUT_DIR / "cost_log.json"
+COST_LOG = Path("cost_log.json")
 IMAGE_MODEL = "gemini-3-pro-image-preview"
 
 KRW_PER_USD = 1400  # 가정 환율. 실제와 다를 수 있음
@@ -62,6 +63,44 @@ def client():
     if not key:
         sys.exit("GEMINI_API_KEY 환경변수가 없습니다.")
     return genai.Client(api_key=key)
+
+
+def render_line(d):
+    """dialogue 항목 하나를 영상 프롬프트용 영어 문장으로 만든다."""
+    manner = f" {d['manner']}" if d.get("manner") else ""
+    lang = "" if d.get("animal") else " in Korean"
+    dialect = " with Gyeongsang dialect" if d.get("dialect") else ""
+    return f'{d["en"]}{manner}{lang}{dialect}: "{d["line"]}"'
+
+
+def build_prompt(scene, cfg):
+    prompt = scene["prompt"]
+    for i, d in enumerate(scene.get("dialogue", []), 1):
+        token = f"[[{i}]]"
+        sentence = render_line(d)
+        prompt = prompt.replace(token, sentence) if token in prompt else f"{prompt} {sentence}"
+    return f"{prompt} {cfg['negative_suffix']}"
+
+
+def print_script(cfg, only=None):
+    print("\n씬별 대사 (수정하려면 scenes.json 의 dialogue 항목의 line 을 고치세요)")
+    for s in cfg["scenes"]:
+        if only and only not in s["id"]:
+            continue
+        print(f"\n  [{s['id']}] {s['duration']}초")
+        for d in s.get("dialogue", []):
+            print(f"    {d['speaker']}: \"{d['line']}\"")
+
+
+def frame_matches(path, aspect):
+    """시작 장면 이미지의 가로세로 비율이 설정과 같은지 확인한다. PIL 이 없으면 통과."""
+    try:
+        from PIL import Image
+    except ImportError:
+        return True
+    w, h = Image.open(path).size
+    aw, ah = (int(x) for x in aspect.split(":"))
+    return abs(w / h - aw / ah) < 0.05
 
 
 def make_refs(cli, cfg, only=None, force=False):
@@ -104,7 +143,7 @@ def make_frames(cli, cfg, only=None, force=False):
         if only and only not in scene["id"]:
             continue
         path = FRAME_DIR / f"{scene['id']}.png"
-        if path.exists() and not force:
+        if path.exists() and not force and frame_matches(path, cfg["aspect_ratio"]):
             print(f"  [건너뜀] {scene['id']}: 이미 있음 (다시 만들려면 --force)")
             continue
 
@@ -164,7 +203,7 @@ def print_plan(cfg, plan):
         print(f"\n  [{s['id']}] {p['secs']}초, {won(p['secs'] * rate)}, 첫 프레임 {p['frame']}")
         if not p["frame"].exists():
             print("    경고: 시작 장면 이미지 없음. 먼저 frames 모드를 실행하세요")
-        print(f"    프롬프트: {s['prompt']} {cfg['negative_suffix']}")
+        print(f"    프롬프트: {build_prompt(s, cfg)}")
     print(f"\n  이번 실행 합계: {total_secs}초, {won(total_secs * rate)} (환율 {KRW_PER_USD}원 가정)")
     return total_secs, total_secs * rate
 
@@ -196,8 +235,11 @@ def make_videos(cli, cfg, plan):
         if not p["frame"].exists():
             print(f"  [건너뜀] {scene['id']}: 시작 장면 없음 ({p['frame']})")
             continue
+        if not frame_matches(p["frame"], cfg["aspect_ratio"]):
+            print(f"  [건너뜀] {scene['id']}: 시작 장면 비율이 {cfg['aspect_ratio']} 가 아닙니다. frames --force 로 다시 만드세요")
+            continue
         first_frame = types.Image(image_bytes=p["frame"].read_bytes(), mime_type="image/png")
-        prompt = f"{scene['prompt']} {cfg['negative_suffix']}"
+        prompt = build_prompt(scene, cfg)
         print(f"  [생성중] {scene['id']} ({secs}초, 첫 프레임 방식) ...")
 
         try:
@@ -263,7 +305,7 @@ def concat_clips(cfg):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("mode", nargs="?", default="all", choices=["refs", "frames", "video", "concat", "all"])
+    ap.add_argument("mode", nargs="?", default="all", choices=["script", "refs", "frames", "video", "concat", "all"])
     ap.add_argument("target", nargs="?", help="refs: 레퍼런스 이름 / video: 씬 id 일부")
     ap.add_argument("--dry", action="store_true", help="API 호출 없이 계획과 금액만 출력")
     ap.add_argument("--test", action="store_true", help="4초 시험 클립")
@@ -277,6 +319,13 @@ def main():
     if args.model:
         cfg["model"] = args.model
     print(f"\n[{cfg['project']}] 모델: {cfg['model']}")
+
+    if args.mode == "script":
+        print_script(cfg, args.target)
+        return
+
+    if args.mode in ("video", "all"):
+        print_script(cfg, args.target if args.mode == "video" else None)
 
     if args.mode in ("refs", "all") and not args.dry:
         print("\n레퍼런스 이미지")
