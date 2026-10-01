@@ -178,5 +178,11 @@
     "scene": "03_baram",
     "seconds": 6,
     "won": 420
+  },
+  {
+    "time": "2026-10-01T08:50:32",
+    "scene": "04_byeonsin",
+    "seconds": 8,
+    "won": 560
   }
 ]
