@@ -14,7 +14,10 @@
       "file": "refs/B_fatpig.png"
     },
     "C_slimpig": {
-      "prompt": "Full body side view of a sleek slim pink pig, elegant long legs, glossy smooth skin, delicate face, healthy and graceful. Plain white studio background, even lighting, photorealistic, animal reference sheet. No text anywhere.",
+      "prompt": "The very same pig as in the attached image, after losing a lot of weight and becoming pretty: a sleek slim body, elegant long legs, glossy smooth skin, a delicate cute face with long eyelashes and a soft blush. Keep the same ears, face shape and skin tone so it is clearly the same individual. Plain white studio background, full body side view, photorealistic, character reference sheet. No text anywhere.",
+      "from": [
+        "B_fatpig"
+      ],
       "file": "refs/C_slimpig.png"
     },
     "D_farm": {
@@ -112,11 +115,11 @@
       "duration": 8,
       "refs": [
         "A_ajae",
-        "C_slimpig",
+        "B_fatpig",
         "D_farm"
       ],
-      "prompt": "Pig pen, 16:9. Light shifts rapidly to show time passing as the pig becomes slimmer. Upbeat K-pop synth music. The slim pink pig stands in a sunbeam, glossy skin, wind blowing, doing a slow-motion shampoo-commercial head turn with sparkles and soft glow. [[1]] Absurd glamorous comedy.",
-      "frame_prompt": "Pig pen with mud and hay, a sunbeam falling on a sleek slim pink pig with glossy smooth skin that stands elegantly in the light, sparkles and soft glow. In the background a very fat middle-aged Korean man with a huge round belly in a stained white tank top stares at the pig with his mouth open. Glamorous commercial look. Horizontal 16:9 cinematic photorealistic still photograph, the opening frame of a video. Use the attached reference images for the exact face and outfit of the man, the animals and the location. No text, no captions, no logos anywhere in the image.",
+      "prompt": "Pig pen, 16:9. Fixed camera. A swirl of sparkles and glowing light wraps around the fat pink pig as the light shifts rapidly to show time passing, and its body smoothly slims down into the sleek slim pretty pig of the last frame. Upbeat K-pop synth music. The slim pig then does a slow-motion shampoo-commercial head turn with sparkles and soft glow. [[1]] Absurd glamorous comedy.",
+      "frame_prompt": "Opening frame of a video. Pig pen with mud and hay, a sunbeam falling on a very fat pink pig standing in the pen looking toward the camera. In the background a very fat middle-aged Korean man with a huge round belly in a stained white tank top stares at the pig with his mouth open. Horizontal 16:9 cinematic photorealistic still photograph. Use the attached reference images for the exact face and outfit of the man, the animals and the location. No text, no captions, no logos anywhere in the image.",
       "dialogue": [
         {
           "speaker": "아저씨",
@@ -126,7 +129,13 @@
           "dialect": true,
           "animal": false
         }
-      ]
+      ],
+      "end_frame": {
+        "refs": [
+          "C_slimpig"
+        ],
+        "prompt": "Closing frame of the same shot. Keep exactly the same camera angle, composition, background and man as the first attached image, but the fat pig has been replaced by the sleek slim pretty pink pig from the pig reference, standing elegantly in the same sunbeam with soft sparkles and a glamorous glow, head turned gracefully. The man is unchanged and still stares in disbelief. Horizontal 16:9 cinematic photorealistic still photograph. Use the attached reference images for the exact face and outfit of the man, the animals and the location. No text, no captions, no logos anywhere in the image."
+      }
     },
     {
       "id": "05_dochuk",

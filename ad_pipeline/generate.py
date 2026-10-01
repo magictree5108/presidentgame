@@ -121,9 +121,16 @@ def make_refs(cli, cfg, only=None, force=False):
             continue
 
         print(f"  [생성중] {name} ...")
+        from google.genai import types
+
+        contents = []
+        for src_name in ref.get("from", []):  # 같은 개체/인물을 유지하려면 원본 이미지를 입력으로 준다
+            sp = Path(cfg["references"][src_name]["file"])
+            contents.append(types.Part.from_bytes(data=sp.read_bytes(), mime_type="image/png"))
+        contents.append(ref["prompt"])
         resp = cli.models.generate_content(
             model=IMAGE_MODEL,
-            contents=ref["prompt"],
+            contents=contents,
         )
         saved = False
         for part in resp.candidates[0].content.parts:
@@ -135,85 +142,115 @@ def make_refs(cli, cfg, only=None, force=False):
         print(f"  [완료] {path}" if saved else f"  [실패] {name}")
 
 
-def make_frames(cli, cfg, only=None, force=False):
-    """씬별 9:16 시작 장면 이미지를 만든다. 영상의 첫 프레임으로 쓰인다."""
+def _gen_image(cli, parts, aspect):
     from google.genai import types
+
+    resp = cli.models.generate_content(
+        model=IMAGE_MODEL,
+        contents=parts,
+        config=types.GenerateContentConfig(
+            response_modalities=["IMAGE"],
+            image_config=types.ImageConfig(aspect_ratio=aspect),
+        ),
+    )
+    for part in resp.candidates[0].content.parts:
+        if getattr(part, "inline_data", None):
+            return part.inline_data.data
+    return None
+
+
+def make_frames(cli, cfg, only=None, force=False):
+    """씬별 시작 장면(그리고 변화가 있는 씬은 끝 장면) 이미지를 만든다."""
+    from google.genai import types
+
+    def img(p):
+        return types.Part.from_bytes(data=Path(p).read_bytes(), mime_type="image/png")
 
     FRAME_DIR.mkdir(exist_ok=True)
     for scene in cfg["scenes"]:
         if only and only not in scene["id"]:
             continue
-        path = FRAME_DIR / f"{scene['id']}.png"
-        if path.exists() and not force and frame_matches(path, cfg["aspect_ratio"]):
-            print(f"  [건너뜀] {scene['id']}: 이미 있음 (다시 만들려면 --force)")
-            continue
+        start = FRAME_DIR / f"{scene['id']}.png"
+        jobs = [(start, scene["refs"][:3], scene["frame_prompt"], False)]
+        end = scene.get("end_frame")
+        if end:
+            jobs.append((FRAME_DIR / f"{scene['id']}_end.png", end["refs"], end["prompt"], True))
 
-        parts = []
-        for k in scene["refs"][:3]:
-            p = Path(cfg["references"][k]["file"])
-            if p.exists():
-                parts.append(types.Part.from_bytes(data=p.read_bytes(), mime_type="image/png"))
+        for path, refs, prompt, is_end in jobs:
+            label = "끝 장면" if is_end else "시작 장면"
+            if path.exists() and not force and frame_matches(path, cfg["aspect_ratio"]):
+                print(f"  [건너뜀] {scene['id']} {label}: 이미 있음 (다시 만들려면 --force)")
+                continue
+            parts = []
+            if is_end:
+                if not start.exists():
+                    print(f"  [건너뜀] {scene['id']} 끝 장면: 시작 장면이 먼저 필요합니다")
+                    continue
+                parts.append(img(start))  # 같은 구도/배경을 유지하기 위한 기준 이미지
+            for k in refs:
+                p = Path(cfg["references"][k]["file"])
+                if p.exists():
+                    parts.append(img(p))
+                else:
+                    print(f"    경고: 레퍼런스 없음 {k}")
+            parts.append(prompt)
+
+            print(f"  [생성중] {scene['id']} {label} (입력 이미지 {len(parts) - 1}장, 약 {won(IMAGE_USD)}) ...")
+            data = _gen_image(cli, parts, cfg["aspect_ratio"])
+            if data:
+                path.write_bytes(data)
+                print(f"  [완료] {path}")
+                log_cost(f"frame_{path.stem}", 0, IMAGE_USD)
             else:
-                print(f"    경고: 레퍼런스 없음 {k}")
-        parts.append(scene["frame_prompt"])
-
-        print(f"  [생성중] {scene['id']} 시작 장면 (레퍼 {len(parts) - 1}장, 약 {won(IMAGE_USD)}) ...")
-        resp = cli.models.generate_content(
-            model=IMAGE_MODEL,
-            contents=parts,
-            config=types.GenerateContentConfig(
-                response_modalities=["IMAGE"],
-                image_config=types.ImageConfig(aspect_ratio=cfg["aspect_ratio"]),
-            ),
-        )
-        saved = False
-        for part in resp.candidates[0].content.parts:
-            if getattr(part, "inline_data", None):
-                path.write_bytes(part.inline_data.data)
-                saved = True
-                break
-        print(f"  [완료] {path}" if saved else f"  [실패] {scene['id']}")
-        if saved:
-            log_cost(f"frame_{scene['id']}", 0, IMAGE_USD)
+                print(f"  [실패] {scene['id']} {label}")
 
 
 def plan_videos(cfg, only, test, duration):
-    """이번 실행에서 만들 씬 목록과 각 씬의 길이/출력 경로를 계산한다."""
+    """이번 실행에서 만들 씬 목록과 각 씬의 길이/모델/출력 경로를 계산한다."""
     plan = []
     for scene in cfg["scenes"]:
         if only and only not in scene["id"]:
             continue
+        model = cfg["model"] if cfg.get("_force_model") else scene.get("model", cfg["model"])
         secs = duration or (4 if test else scene["duration"])
-        tag = "_lite" if "lite" in cfg["model"] else ""
+        tag = "_lite" if "lite" in model else ""
         name = f"test_{scene['id']}_{secs}s{tag}" if test else scene["id"]
-        out = OUT_DIR / f"{name}.mp4"
         frame = FRAME_DIR / f"{scene['id']}.png"
-        plan.append({"scene": scene, "secs": secs, "out": out, "frame": frame})
+        end = FRAME_DIR / f"{scene['id']}_end.png" if scene.get("end_frame") else None
+        plan.append(
+            {"scene": scene, "secs": secs, "out": OUT_DIR / f"{name}.mp4",
+             "frame": frame, "end": end, "model": model}
+        )
     return plan
 
 
 def print_plan(cfg, plan):
-    rate = RATES.get(cfg["model"], 0.10)
-    total_secs = 0
+    total_secs, total_usd = 0, 0.0
     for p in plan:
         s = p["scene"]
         if p["out"].exists():
             print(f"  [건너뜀] {s['id']}: {p['out'].name} 이미 있음")
             continue
+        usd = p["secs"] * RATES.get(p["model"], 0.10)
         total_secs += p["secs"]
-        print(f"\n  [{s['id']}] {p['secs']}초, {won(p['secs'] * rate)}, 첫 프레임 {p['frame']}")
-        if not p["frame"].exists():
-            print("    경고: 시작 장면 이미지 없음. 먼저 frames 모드를 실행하세요")
+        total_usd += usd
+        ends = f", 끝 프레임 {p['end']}" if p["end"] else ""
+        print(f"\n  [{s['id']}] {p['secs']}초, {won(usd)}, 모델 {p['model']}, 첫 프레임 {p['frame']}{ends}")
+        for f in (p["frame"], p["end"]):
+            if f and not f.exists():
+                print(f"    경고: {f} 없음. 먼저 frames 모드를 실행하세요")
         print(f"    프롬프트: {build_prompt(s, cfg)}")
-    print(f"\n  이번 실행 합계: {total_secs}초, {won(total_secs * rate)} (환율 {KRW_PER_USD}원 가정)")
-    return total_secs, total_secs * rate
+    print(f"\n  이번 실행 합계: {total_secs}초, {won(total_usd)} (환율 {KRW_PER_USD}원 가정)")
+    return total_secs, total_usd
 
 
 def frames_needed(cfg, plan):
-    return sum(
-        1 for p in plan
-        if not p["frame"].exists() or not frame_matches(p["frame"], cfg["aspect_ratio"])
-    )
+    n = 0
+    for p in plan:
+        for f in (p["frame"], p["end"]):
+            if f and (not f.exists() or not frame_matches(f, cfg["aspect_ratio"])):
+                n += 1
+    return n
 
 
 def check_budget(cfg, plan, video_usd, over_ok):
@@ -246,9 +283,9 @@ def log_cost(scene_id, secs, usd):
 def make_videos(cli, cfg, plan):
     from google.genai import types
 
-    rate = RATES.get(cfg["model"], 0.10)
     for p in plan:
         scene, secs, out = p["scene"], p["secs"], p["out"]
+        rate = RATES.get(p["model"], 0.10)
         if out.exists():
             continue
 
@@ -258,19 +295,26 @@ def make_videos(cli, cfg, plan):
         if not frame_matches(p["frame"], cfg["aspect_ratio"]):
             print(f"  [건너뜀] {scene['id']}: 시작 장면 비율이 {cfg['aspect_ratio']} 가 아닙니다. frames --force 로 다시 만드세요")
             continue
+        if p["end"] and not p["end"].exists():
+            print(f"  [건너뜀] {scene['id']}: 끝 프레임 없음 ({p['end']})")
+            continue
         first_frame = types.Image(image_bytes=p["frame"].read_bytes(), mime_type="image/png")
+        last_frame = (
+            types.Image(image_bytes=p["end"].read_bytes(), mime_type="image/png") if p["end"] else None
+        )
         prompt = build_prompt(scene, cfg)
         print(f"  [생성중] {scene['id']} ({secs}초, 첫 프레임 방식) ...")
 
         try:
             op = cli.models.generate_videos(
-                model=cfg["model"],
+                model=p["model"],
                 prompt=prompt,
                 image=first_frame,
                 config=types.GenerateVideosConfig(
                     aspect_ratio=cfg["aspect_ratio"],
                     resolution=cfg["resolution"],
                     duration_seconds=secs,
+                    last_frame=last_frame,
                 ),
             )
             waited = 0
@@ -342,6 +386,7 @@ def main():
     IMAGE_USD = cfg.get("image_usd", IMAGE_USD)
     if args.model:
         cfg["model"] = args.model
+        cfg["_force_model"] = True
     print(f"\n[{cfg['project']}] 모델: {cfg['model']}")
 
     if args.mode == "script":
