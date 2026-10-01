@@ -82,5 +82,11 @@
     "scene": "06_ending",
     "seconds": 8,
     "won": 1120
+  },
+  {
+    "time": "2026-10-01T08:35:54",
+    "scene": "02_gyeolsim",
+    "seconds": 4,
+    "won": 280
   }
 ]

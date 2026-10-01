@@ -144,7 +144,8 @@ def plan_videos(cfg, only, test, duration):
         if only and only not in scene["id"]:
             continue
         secs = duration or (4 if test else scene["duration"])
-        name = f"test_{scene['id']}_{secs}s" if test else scene["id"]
+        tag = "_lite" if "lite" in cfg["model"] else ""
+        name = f"test_{scene['id']}_{secs}s{tag}" if test else scene["id"]
         out = OUT_DIR / f"{name}.mp4"
         frame = FRAME_DIR / f"{scene['id']}.png"
         plan.append({"scene": scene, "secs": secs, "out": out, "frame": frame})
@@ -268,10 +269,13 @@ def main():
     ap.add_argument("--test", action="store_true", help="4초 시험 클립")
     ap.add_argument("--duration", type=int, help="길이(초) 직접 지정")
     ap.add_argument("--force", action="store_true", help="이미 있는 레퍼런스도 다시 생성")
+    ap.add_argument("--model", help="영상 모델 덮어쓰기. 예: veo-3.1-lite-generate-preview")
     ap.add_argument("--yes", action="store_true", help="금액 확인 질문 생략")
     args = ap.parse_args()
 
     cfg = load_config()
+    if args.model:
+        cfg["model"] = args.model
     print(f"\n[{cfg['project']}] 모델: {cfg['model']}")
 
     if args.mode in ("refs", "all") and not args.dry:
