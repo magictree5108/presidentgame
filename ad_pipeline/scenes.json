@@ -14,7 +14,7 @@
       "file": "refs/B_fatpig.png"
     },
     "C_slimpig": {
-      "prompt": "The very same pig as in the attached image, after losing a lot of weight and becoming pretty: a sleek slim body, elegant long legs, glossy smooth skin, a delicate cute face with long eyelashes and a soft blush. Keep the same ears, face shape and skin tone so it is clearly the same individual. Plain white studio background, full body side view, photorealistic, character reference sheet. No text anywhere.",
+      "prompt": "The very same pig as in the attached image, but dramatically thinner: a lean, slender, athletic pig with a very narrow body, less than half as wide as the attached fat pig, a tucked-up slim waist, a flat belly, long thin elegant legs, like a fashion model or a greyhound physique. Pretty cute face with long eyelashes and a soft blush, glossy smooth skin. Keep the same ears, face shape and skin tone so it is clearly the same individual. Plain white studio background, full body side view, photorealistic, character reference sheet. No text anywhere.",
       "from": [
         "B_fatpig"
       ],
@@ -119,7 +119,7 @@
         "D_farm"
       ],
       "prompt": "Pig pen, 16:9. Fixed camera. A swirl of sparkles and glowing light wraps around the fat pink pig as the light shifts rapidly to show time passing, and its body smoothly slims down into the sleek slim pretty pig of the last frame. Upbeat K-pop synth music. The slim pig then does a slow-motion shampoo-commercial head turn with sparkles and soft glow. [[1]] Absurd glamorous comedy.",
-      "frame_prompt": "Opening frame of a video. Pig pen with mud and hay, a sunbeam falling on a very fat pink pig standing in the pen looking toward the camera. In the background a very fat middle-aged Korean man with a huge round belly in a stained white tank top stares at the pig with his mouth open. Horizontal 16:9 cinematic photorealistic still photograph. Use the attached reference images for the exact face and outfit of the man, the animals and the location. No text, no captions, no logos anywhere in the image.",
+      "frame_prompt": "Opening frame of a video. Pig pen with mud and hay, a sunbeam falling on a very fat pink pig standing in the pen looking toward the camera. On the right side, at medium distance and in natural human scale, a very fat middle-aged Korean man with a big round belly in a stained white tank top and rubber boots stares at the pig with his mouth open. Horizontal 16:9 cinematic photorealistic still photograph. Use the attached reference images for the exact face and outfit of the man, the animals and the location. No text, no captions, no logos anywhere in the image.",
       "dialogue": [
         {
           "speaker": "아저씨",
@@ -134,7 +134,7 @@
         "refs": [
           "C_slimpig"
         ],
-        "prompt": "Closing frame of the same shot. Keep exactly the same camera angle, composition, background and man as the first attached image, but the fat pig has been replaced by the sleek slim pretty pink pig from the pig reference, standing elegantly in the same sunbeam with soft sparkles and a glamorous glow, head turned gracefully. The man is unchanged and still stares in disbelief. Horizontal 16:9 cinematic photorealistic still photograph. Use the attached reference images for the exact face and outfit of the man, the animals and the location. No text, no captions, no logos anywhere in the image."
+        "prompt": "Closing frame of the same shot. Keep exactly the same camera angle, composition, background and man as the first attached image, but the fat pig has been replaced, with the slim pig's body clearly much narrower, about half as wide as the fat pig in the first image, a lean slender silhouette with long thin legs, by the sleek slim pretty pink pig from the pig reference, standing elegantly in the same sunbeam with soft sparkles and a glamorous glow, head turned gracefully. The man is unchanged and still stares in disbelief. Horizontal 16:9 cinematic photorealistic still photograph. Use the attached reference images for the exact face and outfit of the man, the animals and the location. No text, no captions, no logos anywhere in the image."
       }
     },
     {

@@ -88,5 +88,59 @@
     "scene": "02_gyeolsim",
     "seconds": 4,
     "won": 280
+  },
+  {
+    "time": "2026-10-01T08:43:42",
+    "scene": "frame_01_nollim",
+    "seconds": 0,
+    "won": 55
+  },
+  {
+    "time": "2026-10-01T08:43:52",
+    "scene": "frame_02_gyeolsim",
+    "seconds": 0,
+    "won": 55
+  },
+  {
+    "time": "2026-10-01T08:44:04",
+    "scene": "frame_03_baram",
+    "seconds": 0,
+    "won": 55
+  },
+  {
+    "time": "2026-10-01T08:44:14",
+    "scene": "frame_04_byeonsin",
+    "seconds": 0,
+    "won": 55
+  },
+  {
+    "time": "2026-10-01T08:45:03",
+    "scene": "frame_04_byeonsin_end",
+    "seconds": 0,
+    "won": 55
+  },
+  {
+    "time": "2026-10-01T08:45:13",
+    "scene": "frame_05_dochuk",
+    "seconds": 0,
+    "won": 55
+  },
+  {
+    "time": "2026-10-01T08:45:22",
+    "scene": "frame_06_ending",
+    "seconds": 0,
+    "won": 55
+  },
+  {
+    "time": "2026-10-01T08:46:01",
+    "scene": "frame_04_byeonsin",
+    "seconds": 0,
+    "won": 55
+  },
+  {
+    "time": "2026-10-01T08:46:10",
+    "scene": "frame_04_byeonsin_end",
+    "seconds": 0,
+    "won": 55
   }
 ]
