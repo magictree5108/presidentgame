@@ -190,5 +190,11 @@
     "scene": "06_ending",
     "seconds": 8,
     "won": 560
+  },
+  {
+    "time": "2026-10-01T08:57:44",
+    "scene": "05_dochuk",
+    "seconds": 8,
+    "won": 560
   }
 ]
