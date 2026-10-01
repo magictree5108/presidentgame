@@ -2,7 +2,7 @@
   "project": "mounjaro_pig_farm",
   "aspect_ratio": "16:9",
   "resolution": "720p",
-  "model": "veo-3.1-fast-generate-preview",
+  "model": "veo-3.1-lite-generate-preview",
   "negative_suffix": "No subtitles, no captions, no on-screen text, no watermark, no title cards, no logos. Spoken dialogue only, audio without any text overlay.",
   "references": {
     "A_ajae": {
@@ -193,5 +193,8 @@
         }
       ]
     }
-  ]
+  ],
+  "image_model": "gemini-2.5-flash-image",
+  "image_usd": 0.039,
+  "budget_won": 4000
 }

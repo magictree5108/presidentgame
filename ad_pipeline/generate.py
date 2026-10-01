@@ -208,6 +208,25 @@ def print_plan(cfg, plan):
     return total_secs, total_secs * rate
 
 
+def frames_needed(cfg, plan):
+    return sum(
+        1 for p in plan
+        if not p["frame"].exists() or not frame_matches(p["frame"], cfg["aspect_ratio"])
+    )
+
+
+def check_budget(cfg, plan, video_usd, over_ok):
+    """시작 장면 이미지(없는 것만)와 영상을 합친 예상 총액이 예산을 넘으면 중단한다."""
+    n = frames_needed(cfg, plan)
+    frame_usd = n * IMAGE_USD
+    total = video_usd + frame_usd
+    budget = cfg.get("budget_won")
+    print(f"  시작 장면 {n}장 {won(frame_usd)} + 영상 {won(video_usd)} = 예상 총 {won(total)}", end="")
+    print(f" / 예산 {budget:,}원" if budget else "")
+    if budget and round(total * KRW_PER_USD) > budget and not over_ok:
+        sys.exit("  예산을 넘습니다. 모델/길이를 조정하거나 --over-budget 으로 진행하세요.")
+
+
 def log_cost(scene_id, secs, usd):
     OUT_DIR.mkdir(exist_ok=True)
     log = json.loads(COST_LOG.read_text(encoding="utf-8")) if COST_LOG.exists() else []
@@ -312,10 +331,14 @@ def main():
     ap.add_argument("--duration", type=int, help="길이(초) 직접 지정")
     ap.add_argument("--force", action="store_true", help="이미 있는 레퍼런스도 다시 생성")
     ap.add_argument("--model", help="영상 모델 덮어쓰기. 예: veo-3.1-lite-generate-preview")
+    ap.add_argument("--over-budget", action="store_true", help="scenes.json 의 budget_won 을 넘어도 진행")
     ap.add_argument("--yes", action="store_true", help="금액 확인 질문 생략")
     args = ap.parse_args()
 
+    global IMAGE_MODEL, IMAGE_USD
     cfg = load_config()
+    IMAGE_MODEL = cfg.get("image_model", IMAGE_MODEL)
+    IMAGE_USD = cfg.get("image_usd", IMAGE_USD)
     if args.model:
         cfg["model"] = args.model
     print(f"\n[{cfg['project']}] 모델: {cfg['model']}")
@@ -340,6 +363,7 @@ def main():
         only = args.target if args.mode == "video" else None
         plan = plan_videos(cfg, only, args.test, args.duration)
         secs, usd = print_plan(cfg, plan)
+        check_budget(cfg, plan, usd, args.over_budget)
         if args.dry or secs == 0:
             print("\n(사전 점검만 수행, API 호출 없음)\n" if args.dry else "")
             return
