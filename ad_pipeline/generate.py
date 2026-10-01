@@ -11,6 +11,7 @@
     python generate.py frames 02 --force     # 특정 씬 시작 장면만 다시 생성
     python generate.py video --dry           # 호출 없이 프롬프트/예상 금액만 확인
     python generate.py video                 # 영상 생성 (금액 확인 후 진행)
+    python generate.py concat                # 완성된 클립을 순서대로 이어 붙여 final.mp4
     python generate.py video 03              # 특정 씬만 생성
     python generate.py video 02 --test       # 4초 시험 클립 (대사/레퍼런스 확인용)
     python generate.py video 02 --test --duration 8
@@ -233,9 +234,35 @@ def make_videos(cli, cfg, plan):
             print(f"  [실패] {scene['id']}: {e}")
 
 
+def concat_clips(cfg):
+    """씬 순서대로 편집 없이 이어 붙여 output/final.mp4 를 만든다. 시험 클립은 제외."""
+    import shutil
+    import subprocess
+
+    if not shutil.which("ffmpeg"):
+        print("  [건너뜀] ffmpeg 가 없어 이어 붙이기를 못 했습니다.")
+        return
+    clips = [OUT_DIR / f"{s['id']}.mp4" for s in cfg["scenes"]]
+    missing = [c.name for c in clips if not c.exists()]
+    if missing:
+        print(f"  [건너뜀] 아직 없는 클립이 있어 이어 붙이지 않습니다: {missing}")
+        return
+    listing = OUT_DIR / "concat_list.txt"
+    listing.write_text("".join(f"file '{c.name}'\n" for c in clips), encoding="utf-8")
+    final = OUT_DIR / "final.mp4"
+    subprocess.run(
+        ["ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0", "-i", str(listing),
+         "-c:v", "libx264", "-pix_fmt", "yuv420p", "-c:a", "aac", "-movflags", "+faststart",
+         str(final)],
+        check=True,
+    )
+    listing.unlink()
+    print(f"  [완료] {final} (씬 {len(clips)}개를 순서대로 연결)")
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("mode", nargs="?", default="all", choices=["refs", "frames", "video", "all"])
+    ap.add_argument("mode", nargs="?", default="all", choices=["refs", "frames", "video", "concat", "all"])
     ap.add_argument("target", nargs="?", help="refs: 레퍼런스 이름 / video: 씬 id 일부")
     ap.add_argument("--dry", action="store_true", help="API 호출 없이 계획과 금액만 출력")
     ap.add_argument("--test", action="store_true", help="4초 시험 클립")
@@ -267,6 +294,13 @@ def main():
             if input("  진행할까요? [y/N] ").strip().lower() != "y":
                 sys.exit("취소했습니다.")
         make_videos(client(), cfg, plan)
+        if not args.test and not only:
+            print("\n이어 붙이기")
+            concat_clips(cfg)
+
+    if args.mode == "concat":
+        print("\n이어 붙이기")
+        concat_clips(cfg)
 
     print("\n끝. output/ 폴더 확인하세요.\n")
 
