@@ -83,13 +83,14 @@ def build_prompt(scene, cfg):
 
 
 def print_script(cfg, only=None):
-    print("\n씬별 대사 (수정하려면 scenes.json 의 dialogue 항목의 line 을 고치세요)")
-    for s in cfg["scenes"]:
+    """씬별 대사를 '인물: 대사' 형식으로 출력한다. 수정할 때는 이 형식 그대로 고치면 된다."""
+    print("\n대사 (인물: 대사)")
+    for i, s in enumerate(cfg["scenes"], 1):
         if only and only not in s["id"]:
             continue
-        print(f"\n  [{s['id']}] {s['duration']}초")
+        print(f"\n[씬{i}] {s['id']} ({s['duration']}초)")
         for d in s.get("dialogue", []):
-            print(f"    {d['speaker']}: \"{d['line']}\"")
+            print(f"{d['speaker']}: {d['line']}")
 
 
 def frame_matches(path, aspect):
