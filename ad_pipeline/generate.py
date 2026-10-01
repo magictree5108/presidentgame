@@ -7,6 +7,8 @@
     export GEMINI_API_KEY="your-key"
     python generate.py refs                  # 레퍼런스 이미지만 생성
     python generate.py refs A_ajae --force   # 특정 레퍼런스만 다시 생성
+    python generate.py frames                # 씬별 9:16 시작 장면 이미지 생성
+    python generate.py frames 02 --force     # 특정 씬 시작 장면만 다시 생성
     python generate.py video --dry           # 호출 없이 프롬프트/예상 금액만 확인
     python generate.py video                 # 영상 생성 (금액 확인 후 진행)
     python generate.py video 03              # 특정 씬만 생성
@@ -26,10 +28,12 @@ from pathlib import Path
 CONFIG = "scenes.json"
 REF_DIR = Path("refs")
 OUT_DIR = Path("output")
+FRAME_DIR = Path("frames")
 COST_LOG = OUT_DIR / "cost_log.json"
 IMAGE_MODEL = "gemini-3-pro-image-preview"
 
 KRW_PER_USD = 1400  # 가정 환율. 실제와 다를 수 있음
+IMAGE_USD = 0.134  # 이미지 1장 추정 요금(USD, 2K 기준). 실제와 다를 수 있음
 POLL_INTERVAL = 10
 POLL_TIMEOUT = 20 * 60  # 초
 
@@ -90,6 +94,48 @@ def make_refs(cli, cfg, only=None, force=False):
         print(f"  [완료] {path}" if saved else f"  [실패] {name}")
 
 
+def make_frames(cli, cfg, only=None, force=False):
+    """씬별 9:16 시작 장면 이미지를 만든다. 영상의 첫 프레임으로 쓰인다."""
+    from google.genai import types
+
+    FRAME_DIR.mkdir(exist_ok=True)
+    for scene in cfg["scenes"]:
+        if only and only not in scene["id"]:
+            continue
+        path = FRAME_DIR / f"{scene['id']}.png"
+        if path.exists() and not force:
+            print(f"  [건너뜀] {scene['id']}: 이미 있음 (다시 만들려면 --force)")
+            continue
+
+        parts = []
+        for k in scene["refs"][:3]:
+            p = Path(cfg["references"][k]["file"])
+            if p.exists():
+                parts.append(types.Part.from_bytes(data=p.read_bytes(), mime_type="image/png"))
+            else:
+                print(f"    경고: 레퍼런스 없음 {k}")
+        parts.append(scene["frame_prompt"])
+
+        print(f"  [생성중] {scene['id']} 시작 장면 (레퍼 {len(parts) - 1}장, 약 {won(IMAGE_USD)}) ...")
+        resp = cli.models.generate_content(
+            model=IMAGE_MODEL,
+            contents=parts,
+            config=types.GenerateContentConfig(
+                response_modalities=["IMAGE"],
+                image_config=types.ImageConfig(aspect_ratio=cfg["aspect_ratio"]),
+            ),
+        )
+        saved = False
+        for part in resp.candidates[0].content.parts:
+            if getattr(part, "inline_data", None):
+                path.write_bytes(part.inline_data.data)
+                saved = True
+                break
+        print(f"  [완료] {path}" if saved else f"  [실패] {scene['id']}")
+        if saved:
+            log_cost(f"frame_{scene['id']}", 0, IMAGE_USD)
+
+
 def plan_videos(cfg, only, test, duration):
     """이번 실행에서 만들 씬 목록과 각 씬의 길이/출력 경로를 계산한다."""
     plan = []
@@ -99,11 +145,8 @@ def plan_videos(cfg, only, test, duration):
         secs = duration or (4 if test else scene["duration"])
         name = f"test_{scene['id']}_{secs}s" if test else scene["id"]
         out = OUT_DIR / f"{name}.mp4"
-        refs = [k for k in scene["refs"][:3]]
-        missing = [k for k in refs if not Path(cfg["references"][k]["file"]).exists()]
-        plan.append(
-            {"scene": scene, "secs": secs, "out": out, "refs": refs, "missing": missing}
-        )
+        frame = FRAME_DIR / f"{scene['id']}.png"
+        plan.append({"scene": scene, "secs": secs, "out": out, "frame": frame})
     return plan
 
 
@@ -116,9 +159,9 @@ def print_plan(cfg, plan):
             print(f"  [건너뜀] {s['id']}: {p['out'].name} 이미 있음")
             continue
         total_secs += p["secs"]
-        print(f"\n  [{s['id']}] {p['secs']}초, {won(p['secs'] * rate)}, 레퍼런스 {p['refs']}")
-        if p["missing"]:
-            print(f"    경고: 레퍼런스 파일 없음 {p['missing']}")
+        print(f"\n  [{s['id']}] {p['secs']}초, {won(p['secs'] * rate)}, 첫 프레임 {p['frame']}")
+        if not p["frame"].exists():
+            print("    경고: 시작 장면 이미지 없음. 먼저 frames 모드를 실행하세요")
         print(f"    프롬프트: {s['prompt']} {cfg['negative_suffix']}")
     print(f"\n  이번 실행 합계: {total_secs}초, {won(total_secs * rate)} (환율 {KRW_PER_USD}원 가정)")
     return total_secs, total_secs * rate
@@ -148,29 +191,22 @@ def make_videos(cli, cfg, plan):
         if out.exists():
             continue
 
-        ref_objs = [
-            types.VideoGenerationReferenceImage(
-                image=types.Image(
-                    image_bytes=Path(cfg["references"][k]["file"]).read_bytes(),
-                    mime_type="image/png",
-                ),
-                reference_type=types.VideoGenerationReferenceType.ASSET,
-            )
-            for k in p["refs"]
-            if k not in p["missing"]
-        ]
+        if not p["frame"].exists():
+            print(f"  [건너뜀] {scene['id']}: 시작 장면 없음 ({p['frame']})")
+            continue
+        first_frame = types.Image(image_bytes=p["frame"].read_bytes(), mime_type="image/png")
         prompt = f"{scene['prompt']} {cfg['negative_suffix']}"
-        print(f"  [생성중] {scene['id']} ({secs}초, 레퍼 {len(ref_objs)}장) ...")
+        print(f"  [생성중] {scene['id']} ({secs}초, 첫 프레임 방식) ...")
 
         try:
             op = cli.models.generate_videos(
                 model=cfg["model"],
                 prompt=prompt,
+                image=first_frame,
                 config=types.GenerateVideosConfig(
                     aspect_ratio=cfg["aspect_ratio"],
                     resolution=cfg["resolution"],
                     duration_seconds=secs,
-                    reference_images=ref_objs or None,
                 ),
             )
             waited = 0
@@ -199,7 +235,7 @@ def make_videos(cli, cfg, plan):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("mode", nargs="?", default="all", choices=["refs", "video", "all"])
+    ap.add_argument("mode", nargs="?", default="all", choices=["refs", "frames", "video", "all"])
     ap.add_argument("target", nargs="?", help="refs: 레퍼런스 이름 / video: 씬 id 일부")
     ap.add_argument("--dry", action="store_true", help="API 호출 없이 계획과 금액만 출력")
     ap.add_argument("--test", action="store_true", help="4초 시험 클립")
@@ -214,6 +250,10 @@ def main():
     if args.mode in ("refs", "all") and not args.dry:
         print("\n레퍼런스 이미지")
         make_refs(client(), cfg, args.target if args.mode == "refs" else None, args.force)
+
+    if args.mode in ("frames", "all") and not args.dry:
+        print("\n시작 장면 이미지")
+        make_frames(client(), cfg, args.target if args.mode == "frames" else None, args.force)
 
     if args.mode in ("video", "all"):
         print("\n영상 클립")
