@@ -184,5 +184,11 @@
     "scene": "04_byeonsin",
     "seconds": 8,
     "won": 560
+  },
+  {
+    "time": "2026-10-01T08:55:32",
+    "scene": "06_ending",
+    "seconds": 8,
+    "won": 560
   }
 ]
