@@ -64,5 +64,23 @@
     "scene": "02_gyeolsim",
     "seconds": 6,
     "won": 840
+  },
+  {
+    "time": "2026-10-01T08:28:50",
+    "scene": "04_byeonsin",
+    "seconds": 8,
+    "won": 1120
+  },
+  {
+    "time": "2026-10-01T08:29:54",
+    "scene": "05_dochuk",
+    "seconds": 8,
+    "won": 1120
+  },
+  {
+    "time": "2026-10-01T08:30:48",
+    "scene": "06_ending",
+    "seconds": 8,
+    "won": 1120
   }
 ]
