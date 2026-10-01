@@ -142,5 +142,35 @@
     "scene": "frame_04_byeonsin_end",
     "seconds": 0,
     "won": 55
+  },
+  {
+    "time": "2026-10-01T08:47:15",
+    "scene": "01_nollim",
+    "seconds": 8,
+    "won": 560
+  },
+  {
+    "time": "2026-10-01T08:47:48",
+    "scene": "frame_04_byeonsin_end",
+    "seconds": 0,
+    "won": 55
+  },
+  {
+    "time": "2026-10-01T08:47:58",
+    "scene": "02_gyeolsim",
+    "seconds": 6,
+    "won": 420
+  },
+  {
+    "time": "2026-10-01T08:47:59",
+    "scene": "frame_05_dochuk",
+    "seconds": 0,
+    "won": 55
+  },
+  {
+    "time": "2026-10-01T08:48:07",
+    "scene": "frame_06_ending",
+    "seconds": 0,
+    "won": 55
   }
 ]
