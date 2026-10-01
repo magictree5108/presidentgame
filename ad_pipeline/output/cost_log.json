@@ -40,5 +40,11 @@
     "scene": "02_gyeolsim",
     "seconds": 4,
     "won": 560
+  },
+  {
+    "time": "2026-10-01T08:25:57",
+    "scene": "01_nollim",
+    "seconds": 8,
+    "won": 1120
   }
 ]
