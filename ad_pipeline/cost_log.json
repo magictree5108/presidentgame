@@ -238,5 +238,11 @@
     "scene": "03_baram",
     "seconds": 6,
     "won": 420
+  },
+  {
+    "time": "2026-10-02T00:25:44",
+    "scene": "04a_before",
+    "seconds": 4,
+    "won": 560
   }
 ]
