@@ -39,7 +39,7 @@
         "B_fatpig",
         "D_farm"
       ],
-      "frame_prompt": "Opening frame of a video. Korean pig farm pen with mud, hay and a metal fence, overcast daylight. In the foreground a very fat middle-aged Korean man with a huge round belly in a stained white tank top and black rubber boots carries a feed sack and walks along the fence. Behind the metal fence stand two small elementary school boys in ordinary clothes, watching him and pointing. A fat pink pig stands in the pen behind. Handheld documentary look. Horizontal 16:9 cinematic photorealistic still photograph. Use the attached reference images for the exact face and outfit of the man, the animals and the location. No text, no captions, no logos anywhere in the image.",
+      "frame_prompt": "Opening frame of a video. Korean pig farm pen with mud, hay and a metal fence, overcast daylight. A very fat middle-aged Korean man with a huge round belly in a stained white tank top and black rubber boots walks along the fence carrying a feed sack, looking ahead with a tired deadpan face. On the other side of the metal fence, close to the camera, stand two small elementary school boys in ordinary clothes. Both boys face the man directly, look straight at him, point their index fingers at him and laugh to tease him. The boys' eyes and fingers are aimed at the man, not at any animal. A fat pink pig stands far away in the background of the pen. Horizontal 16:9 cinematic photorealistic still photograph. Use the attached reference images for the exact face and outfit of the man, the animals and the location. No text, no captions, no logos anywhere in the image.",
       "shot": "Korean pig farm pen with mud, hay and a metal fence, 16:9. Handheld documentary style, deadpan comedy, natural speed.",
       "cast": [
         "man",
@@ -50,19 +50,19 @@
       "beats": [
         {
           "t": "0-2s",
-          "visual": "The fat owner walks along the fence carrying a feed sack, his belly jiggling. Two small boys stand behind the fence watching him."
+          "visual": "The fat owner walks along the fence carrying a feed sack, his belly jiggling, looking ahead with a tired deadpan face. Two small boys on the other side of the fence look straight at him and point their fingers at him, teasing him and laughing."
         },
         {
           "t": "2-4s",
           "speaker": "kid1",
           "line": "돼지 아저씨다!",
-          "visual": "The first boy points at the owner."
+          "visual": "The first boy keeps pointing at the owner and calls out to tease him."
         },
         {
           "t": "4-6s",
           "speaker": "kid2",
           "line": "누가 돼지예요?",
-          "visual": "The second boy looks around puzzled."
+          "visual": "The second boy points at the owner too and asks mockingly."
         },
         {
           "t": "6-8s",
