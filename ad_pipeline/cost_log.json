@@ -196,5 +196,23 @@
     "scene": "05_dochuk",
     "seconds": 8,
     "won": 560
+  },
+  {
+    "time": "2026-10-02T00:14:49",
+    "scene": "frame_01_nollim",
+    "seconds": 0,
+    "won": 55
+  },
+  {
+    "time": "2026-10-02T00:14:58",
+    "scene": "frame_02_gyeolsim",
+    "seconds": 0,
+    "won": 55
+  },
+  {
+    "time": "2026-10-02T00:15:08",
+    "scene": "frame_03_baram",
+    "seconds": 0,
+    "won": 55
   }
 ]

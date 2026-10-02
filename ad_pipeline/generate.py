@@ -65,21 +65,35 @@ def client():
     return genai.Client(api_key=key)
 
 
-def render_line(d):
-    """dialogue 항목 하나를 영상 프롬프트용 영어 문장으로 만든다."""
-    manner = f" {d['manner']}" if d.get("manner") else ""
-    lang = "" if d.get("animal") else " in Korean"
-    dialect = " with Gyeongsang dialect" if d.get("dialect") else ""
-    return f'{d["en"]}{manner}{lang}{dialect}: "{d["line"]}"'
+def render_beat(b, chars):
+    """장면의 한 구간(시간대)을 영어 프롬프트 문장으로 만든다. 화자, 목소리, 입 모양 규칙을 명시한다."""
+    s = f"[{b['t']}] {b.get('visual', '')}".rstrip()
+    sp = b.get("speaker")
+    if not sp:
+        return s
+    c = chars[sp]
+    who = c["label"][0].upper() + c["label"][1:]
+    dialect = " with a Gyeongsang dialect accent" if b.get("dialect") else ""
+    if c["kind"] == "animal":
+        return (f'{s} {who} makes {c["voice"]}, written as "{b["line"]}". '
+                "No human speaks or makes this sound; every human keeps their mouth closed.")
+    if c["kind"] == "voiceover":
+        return (f'{s} Off-screen, {c["voice"]} says in Korean: "{b["line"]}". '
+                "No on-screen character speaks during this line.")
+    return (f'{s} {who} says in Korean{dialect}, in {c["voice"]}: "{b["line"]}". '
+            f'Only {c["label"]} moves their mouth for this line; every other character keeps their mouth closed.')
 
 
 def build_prompt(scene, cfg):
-    prompt = scene["prompt"]
-    for i, d in enumerate(scene.get("dialogue", []), 1):
-        token = f"[[{i}]]"
-        sentence = render_line(d)
-        prompt = prompt.replace(token, sentence) if token in prompt else f"{prompt} {sentence}"
-    return f"{prompt} {cfg['negative_suffix']}"
+    chars = cfg["characters"]
+    parts = [scene["shot"]]
+    cast = [chars[c]["en"] for c in scene.get("cast", [])]
+    if cast:
+        parts.append("On screen: " + "; ".join(cast) + ".")
+    parts.append("Timeline:")
+    parts += [render_beat(b, chars) for b in scene["beats"]]
+    parts += [cfg["audio_rules"], cfg["negative_suffix"]]
+    return " ".join(parts)
 
 
 def print_script(cfg, only=None):
@@ -89,8 +103,9 @@ def print_script(cfg, only=None):
         if only and only not in s["id"]:
             continue
         print(f"\n[씬{i}] {s['id']} ({s['duration']}초)")
-        for d in s.get("dialogue", []):
-            print(f"{d['speaker']}: {d['line']}")
+        for b in s["beats"]:
+            if b.get("speaker"):
+                print(f"{cfg['characters'][b['speaker']]['name']}: {b['line']}")
 
 
 def frame_matches(path, aspect):

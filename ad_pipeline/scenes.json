@@ -39,24 +39,34 @@
         "B_fatpig",
         "D_farm"
       ],
-      "prompt": "Korean pig farm pen with mud, hay and a metal fence, 16:9. Very fat middle-aged Korean man in a stained white tank top and rubber boots carries a feed sack, his belly jiggling. [[1]] [[2]] The kids run away. He turns and locks eyes with a fat pink pig. Awkward silence. Handheld documentary style, deadpan comedy.",
-      "frame_prompt": "Korean pig farm pen with mud, hay and a metal fence, overcast daylight. A very fat middle-aged Korean man with a huge round belly, in a stained white tank top and black rubber boots, carries a feed sack and walks along the fence. A fat pink pig stands in the pen behind him. Handheld documentary look. Horizontal 16:9 cinematic photorealistic still photograph, the opening frame of a video. Use the attached reference images for the exact face and outfit of the man, the animals and the location. No text, no captions, no logos anywhere in the image.",
-      "dialogue": [
+      "frame_prompt": "Opening frame of a video. Korean pig farm pen with mud, hay and a metal fence, overcast daylight. In the foreground a very fat middle-aged Korean man with a huge round belly in a stained white tank top and black rubber boots carries a feed sack and walks along the fence. Behind the metal fence stand two small elementary school boys in ordinary clothes, watching him and pointing. A fat pink pig stands in the pen behind. Handheld documentary look. Horizontal 16:9 cinematic photorealistic still photograph. Use the attached reference images for the exact face and outfit of the man, the animals and the location. No text, no captions, no logos anywhere in the image.",
+      "shot": "Korean pig farm pen with mud, hay and a metal fence, 16:9. Handheld documentary style, deadpan comedy, natural speed.",
+      "cast": [
+        "man",
+        "kid1",
+        "kid2",
+        "pig_fat"
+      ],
+      "beats": [
         {
-          "speaker": "아이1",
-          "en": "A kid behind the fence",
-          "manner": "shouts",
-          "line": "돼지 아저씨다!",
-          "dialect": false,
-          "animal": false
+          "t": "0-2s",
+          "visual": "The fat owner walks along the fence carrying a feed sack, his belly jiggling. Two small boys stand behind the fence watching him."
         },
         {
-          "speaker": "아이2",
-          "en": "Another kid",
-          "manner": "says",
+          "t": "2-4s",
+          "speaker": "kid1",
+          "line": "돼지 아저씨다!",
+          "visual": "The first boy points at the owner."
+        },
+        {
+          "t": "4-6s",
+          "speaker": "kid2",
           "line": "누가 돼지예요?",
-          "dialect": false,
-          "animal": false
+          "visual": "The second boy looks around puzzled."
+        },
+        {
+          "t": "6-8s",
+          "visual": "The two boys run away. The owner stops, turns his head and locks eyes with the fat pink pig. Awkward silence, nobody speaks."
         }
       ]
     },
@@ -68,16 +78,25 @@
         "D_farm",
         "E_pen"
       ],
-      "prompt": "Night, inside a dirty pig barn, single bare light bulb, hay and pigs in the background, 16:9. The same fat man in a white tank top holds up the small white plastic injection pen from the first frame, a glowing light on it and a bright ding sound. [[1]] He lifts his tank top to show his huge belly. Overly serious epic parody lighting, comedic.",
-      "frame_prompt": "Night inside a dirty pig barn lit by a single bare light bulb, hay and pigs in the background. A very fat middle-aged Korean man with a huge round belly in a stained white tank top stands facing the camera with a solemn expression and holds up the small white injection pen from the product reference image, copied exactly as in that photo, in his right hand at chest height. Epic dramatic lighting. Horizontal 16:9 cinematic photorealistic still photograph, the opening frame of a video. Use the attached reference images for the exact face and outfit of the man, the animals and the location. No text, no captions, no logos anywhere in the image.",
-      "dialogue": [
+      "frame_prompt": "Opening frame of a video. Night inside a dirty pig barn lit by a single bare light bulb, hay and pigs in the background. Medium close-up from the waist up of a very fat middle-aged Korean man with a huge round belly in a stained white tank top, facing the camera with a serious expression. In his right hand, raised in front of his chest, he holds the small white injection pen from the product reference image, large and clearly visible, matte white plastic, no glow, no light effects. Horizontal 16:9 cinematic photorealistic still photograph. Use the attached reference images for the exact face and outfit of the man, the animals and the location. No text, no captions, no logos anywhere in the image.",
+      "shot": "Night, inside a dirty pig barn, single bare light bulb, hay and pigs in the background, 16:9. Medium close-up, steady camera, serious comedic tone, natural speed.",
+      "cast": [
+        "man"
+      ],
+      "beats": [
         {
-          "speaker": "아저씨",
-          "en": "He",
-          "manner": "shouts passionately with clenched fists and burning determination,",
+          "t": "0-1s",
+          "visual": "The owner holds the small white injection pen steadily in front of his chest in his right hand. The pen is plain matte white plastic. It never glows, sparks, burns, melts or disappears, and it stays solid and clearly visible in his hand for the entire clip."
+        },
+        {
+          "t": "1-5s",
+          "speaker": "man",
           "line": "나 이제부터 살 빼서 잘생겨질 거야! 예쁜 여자도 만날 거야!!!",
-          "dialect": true,
-          "animal": false
+          "visual": "He shouts passionately with a clenched left fist and burning determination, still holding the pen."
+        },
+        {
+          "t": "5-6s",
+          "visual": "He lifts his tank top with his left hand to show his huge belly, the pen still in his right hand."
         }
       ]
     },
@@ -89,53 +108,90 @@
         "B_fatpig",
         "E_pen"
       ],
-      "prompt": "Pig farm pen, daytime, 16:9. A sudden strong gust of wind blows the small white injection pen out of the fat man's hand in extreme slow motion, dust and straw flying. [[1]] The pen lands and sticks into the fat pink pig's rump with a loud thwack. [[2]] and turns its head to look at its own rear. Action movie parody, comedic timing.",
-      "frame_prompt": "Pig farm pen in daytime with dust and straw flying in the air. A very fat middle-aged Korean man with a huge round belly in a stained white tank top reaches out with his arm in panic, the small white injection pen from the product reference image, copied exactly, flying in mid-air just out of his hand. A fat pink pig stands nearby with its rump toward the camera. Horizontal 16:9 cinematic photorealistic still photograph, the opening frame of a video. Use the attached reference images for the exact face and outfit of the man, the animals and the location. No text, no captions, no logos anywhere in the image.",
-      "dialogue": [
+      "frame_prompt": "Opening frame of a video. Inside a pig barn in daytime with straw on the floor. On the left wall there is an open window letting in daylight. A very fat middle-aged Korean man with a huge round belly in a stained white tank top stands next to the open window, loosely holding the small white injection pen from the product reference image in his right hand and looking at it. A fat pink pig stands about two meters away in the middle of the barn with its rump toward the camera. Natural realistic lighting. Horizontal 16:9 cinematic photorealistic still photograph. Use the attached reference images for the exact face and outfit of the man, the animals and the location. No text, no captions, no logos anywhere in the image.",
+      "shot": "Inside a pig barn in daytime, straw on the floor, an open window on the left wall, 16:9. Realistic, natural speed, no slow motion, no visual effects, no dramatic music.",
+      "cast": [
+        "man",
+        "pig_fat"
+      ],
+      "beats": [
         {
-          "speaker": "아저씨",
-          "en": "He reaches out screaming",
-          "manner": "",
-          "line": "안 돼애애!",
-          "dialect": false,
-          "animal": false
+          "t": "0-2s",
+          "visual": "The owner stands by the open window, loosely holding the small white injection pen and looking at it. The fat pig stands about two meters away with its rump toward him."
         },
         {
-          "speaker": "뚱뚱한 돼지",
-          "en": "The pig",
-          "manner": "grunts",
+          "t": "2-3s",
+          "visual": "A sudden strong gust of wind blows in through the open window. Straw on the floor and his tank top flutter."
+        },
+        {
+          "t": "3-4s",
+          "speaker": "man",
+          "line": "안 돼!",
+          "visual": "The gust knocks the pen out of his hand. It tumbles naturally through the air toward the pig while he reaches after it."
+        },
+        {
+          "t": "4-5s",
+          "visual": "The pen lands tip-first into the pig's rump with a soft thump and stays stuck there."
+        },
+        {
+          "t": "5-6s",
+          "speaker": "pig_fat",
           "line": "꾸엑?",
-          "dialect": false,
-          "animal": true
+          "visual": "The pig flinches and turns its head to look at its own rear."
         }
       ]
     },
     {
-      "id": "04_byeonsin",
-      "duration": 8,
+      "id": "04a_before",
+      "duration": 4,
       "refs": [
         "A_ajae",
         "B_fatpig",
         "D_farm"
       ],
-      "prompt": "Pig pen, 16:9. Fixed camera. A swirl of sparkles and glowing light wraps around the fat pink pig as the light shifts rapidly to show time passing, and its body smoothly slims down into the sleek slim pretty pig of the last frame. The slim pig then does a slow-motion shampoo-commercial head turn with sparkles and soft glow. [[1]] Absurd glamorous comedy.",
-      "frame_prompt": "Opening frame of a video. Pig pen with mud and hay, a sunbeam falling on a very fat pink pig standing in the pen looking toward the camera. On the right side, at medium distance and in natural human scale, a very fat middle-aged Korean man with a big round belly in a stained white tank top and rubber boots stares at the pig with his mouth open. Horizontal 16:9 cinematic photorealistic still photograph. Use the attached reference images for the exact face and outfit of the man, the animals and the location. No text, no captions, no logos anywhere in the image.",
-      "dialogue": [
-        {
-          "speaker": "아저씨",
-          "en": "The fat man stares in disbelief and",
-          "manner": "mumbles",
-          "line": "니... 누고?",
-          "dialect": true,
-          "animal": false
-        }
+      "frame_prompt": "(기존 이미지 사용: frames/04a_before.png)",
+      "shot": "Pig pen, 16:9. Fixed camera, natural speed.",
+      "cast": [
+        "man",
+        "pig_fat"
       ],
-      "end_frame": {
-        "refs": [
-          "C_slimpig"
-        ],
-        "prompt": "Closing frame of the same shot. Keep exactly the same camera angle, composition, background and man as the first attached image, but the fat pig has been replaced, with the slim pig's body clearly much narrower, about half as wide as the fat pig in the first image, a lean slender silhouette with long thin legs, by the sleek slim pretty pink pig from the pig reference, standing elegantly in the same sunbeam with soft sparkles and a glamorous glow, head turned gracefully. The man is unchanged and still stares in disbelief. Horizontal 16:9 cinematic photorealistic still photograph. Use the attached reference images for the exact face and outfit of the man, the animals and the location. No text, no captions, no logos anywhere in the image."
-      }
+      "beats": [
+        {
+          "t": "0-3s",
+          "visual": "The fat pink pig stands still in a sunbeam. The owner stands to the right, staring at it with his mouth open in disbelief. Nobody speaks."
+        },
+        {
+          "t": "3-4s",
+          "visual": "Soft sparkles swirl around the pig and a bright white flash fills the whole frame."
+        }
+      ]
+    },
+    {
+      "id": "04b_after",
+      "duration": 4,
+      "refs": [
+        "A_ajae",
+        "C_slimpig",
+        "D_farm"
+      ],
+      "frame_prompt": "(기존 이미지 사용: frames/04b_after.png)",
+      "shot": "Pig pen, 16:9. Fixed camera, natural speed.",
+      "cast": [
+        "man",
+        "pig_slim"
+      ],
+      "beats": [
+        {
+          "t": "0-2s",
+          "visual": "The flash fades. The sleek slim pretty pink pig stands in the sunbeam with soft sparkles around it and does a slow graceful shampoo-commercial head turn."
+        },
+        {
+          "t": "2-4s",
+          "speaker": "man",
+          "line": "예쁜 돼지로 바꼈잖아?",
+          "visual": "The owner stares at the pig in astonishment."
+        }
+      ]
     },
     {
       "id": "05_dochuk",
@@ -145,32 +201,36 @@
         "C_slimpig",
         "D_farm"
       ],
-      "prompt": "Pig farm gate with mud and hay, a livestock truck parked, 16:9. [[1]] [[2]] [[3]] He waves the truck away. Melodramatic lighting, sad piano, comedic tone.",
-      "frame_prompt": "Pig farm gate with mud and hay and a livestock truck parked, a truck driver leaning out of the cab window. In the foreground a sleek slim pink pig looks up with huge glossy puppy eyes at a very fat middle-aged Korean man with a huge round belly in a stained white tank top, who looks down at it with teary eyes. Melodramatic soft lighting. Horizontal 16:9 cinematic photorealistic still photograph, the opening frame of a video. Use the attached reference images for the exact face and outfit of the man, the animals and the location. No text, no captions, no logos anywhere in the image.",
-      "dialogue": [
+      "frame_prompt": "(기존 이미지 사용: frames/05_dochuk.png)",
+      "shot": "Pig farm yard at dusk with mud, a livestock truck parked on the left, 16:9. Melodramatic soft lighting, sad piano, natural speed.",
+      "cast": [
+        "man",
+        "driver",
+        "pig_slim"
+      ],
+      "beats": [
         {
-          "speaker": "트럭 기사",
-          "en": "The truck driver leans out and",
-          "manner": "asks",
+          "t": "0-2.5s",
+          "speaker": "driver",
           "line": "저 돼지도 실어요?",
-          "dialect": false,
-          "animal": false
+          "visual": "The truck driver leans out of the cab window and asks. The fat owner stands outside on the ground, silent."
         },
         {
-          "speaker": "날씬한 돼지",
-          "en": "The slim pink pig looks up at the fat man with huge glossy puppy eyes and",
-          "manner": "whimpers",
-          "line": "끼잉.",
-          "dialect": false,
-          "animal": true
+          "t": "2.5-4.5s",
+          "speaker": "pig_slim",
+          "line": "끼잉",
+          "visual": "The slim pig looks up at the owner with huge glossy puppy eyes and whimpers. The owner's mouth stays closed."
         },
         {
-          "speaker": "아저씨",
-          "en": "The man pauses, teary, and",
-          "manner": "says quietly",
+          "t": "4.5-7s",
+          "speaker": "man",
           "line": "야는 가족입니더.",
           "dialect": true,
-          "animal": false
+          "visual": "The owner, teary-eyed, says it quietly."
+        },
+        {
+          "t": "7-8s",
+          "visual": "He waves his hand to send the truck away."
         }
       ]
     },
@@ -181,29 +241,90 @@
         "A_ajae",
         "C_slimpig"
       ],
-      "prompt": "Dirt road in front of the pig farm, golden hour sunset, 16:9. The fat man walks the slim pink pig on a pink leash, the pig wearing a pink ribbon and strutting like a runway model. Kids run up and pet the pig, ignoring the man. [[1]] The man stays silent, deadpan stare. [[2]] Warm sunset tones, heartwarming yet absurd.",
-      "frame_prompt": "Dirt road in front of a pig farm at golden hour sunset. A very fat middle-aged Korean man with a huge round belly in a stained white tank top and rubber boots walks a sleek slim pink pig on a pink leash, the pig wearing a pink ribbon and strutting like a runway model. Warm sunset tones. Horizontal 16:9 cinematic photorealistic still photograph, the opening frame of a video. Use the attached reference images for the exact face and outfit of the man, the animals and the location. No text, no captions, no logos anywhere in the image.",
-      "dialogue": [
+      "frame_prompt": "(기존 이미지 사용: frames/06_ending.png)",
+      "shot": "Dirt road in front of the pig farm, golden hour sunset, 16:9. Warm sunset tones, heartwarming yet absurd, natural speed.",
+      "cast": [
+        "man",
+        "kid1",
+        "pig_slim"
+      ],
+      "beats": [
         {
-          "speaker": "아이",
-          "en": "A kid",
-          "manner": "says",
-          "line": "아저씨는 아직 돼지네요.",
-          "dialect": false,
-          "animal": false
+          "t": "0-3s",
+          "visual": "The owner walks the slim pink pig on a pink leash toward the camera. The pig wears a pink ribbon and struts like a runway model."
         },
         {
-          "speaker": "내레이터(화면 밖)",
-          "en": "Narrator",
-          "manner": "says warmly",
+          "t": "3-5s",
+          "visual": "Two small elementary school children run into the frame from the left, crouch and pet the pig, ignoring the owner."
+        },
+        {
+          "t": "5-6.5s",
+          "speaker": "kid1",
+          "line": "아저씨는 아직 돼지네요.",
+          "visual": "One child says it while looking up at the owner. The owner keeps his mouth closed and stares back deadpan."
+        },
+        {
+          "t": "6.5-8s",
+          "speaker": "narrator",
           "line": "먹지 말고 사랑하자.",
-          "dialect": false,
-          "animal": false
+          "visual": "The owner stays silent with a deadpan stare while the pig and children are beside him."
         }
       ]
     }
   ],
   "image_model": "gemini-2.5-flash-image",
   "image_usd": 0.039,
-  "budget_won": 4000
+  "budget_won": 4000,
+  "characters": {
+    "man": {
+      "name": "아저씨",
+      "kind": "human",
+      "en": "the very fat middle-aged Korean farm owner in a stained white tank top and rubber boots",
+      "voice": "a deep adult male Korean voice",
+      "label": "the owner"
+    },
+    "kid1": {
+      "name": "아이1",
+      "kind": "human",
+      "en": "the first boy, a small elementary school child",
+      "voice": "a high-pitched young child's voice",
+      "label": "the first boy"
+    },
+    "kid2": {
+      "name": "아이2",
+      "kind": "human",
+      "en": "the second boy, a small elementary school child",
+      "voice": "a high-pitched young child's voice",
+      "label": "the second boy"
+    },
+    "driver": {
+      "name": "트럭 기사",
+      "kind": "human",
+      "en": "the truck driver in the cab, a thin man in a cap who is clearly a different person from the fat owner",
+      "voice": "an ordinary adult male voice that is clearly different from the fat owner's voice",
+      "label": "the truck driver"
+    },
+    "pig_fat": {
+      "name": "뚱뚱한 돼지",
+      "kind": "animal",
+      "en": "the fat pink pig",
+      "voice": "a short pig grunt sound effect, an animal sound only with no words",
+      "label": "the fat pig"
+    },
+    "pig_slim": {
+      "name": "날씬한 돼지",
+      "kind": "animal",
+      "en": "the slim pink pig",
+      "voice": "a tiny high-pitched piglet squeal sound effect, an animal sound only with no words",
+      "label": "the slim pig"
+    },
+    "narrator": {
+      "name": "내레이터(화면 밖)",
+      "kind": "voiceover",
+      "en": "an off-screen narrator",
+      "voice": "a warm calm adult narrator voice",
+      "label": "an off-screen narrator"
+    }
+  },
+  "audio_rules": "Audio rules: each spoken line is spoken only by the character named for it, in that character's own voice, and nobody else speaks or moves their mouth during that line. Children always have high-pitched child voices, never an adult male voice. The fat owner never speaks lines assigned to anyone else. Animals make only animal sounds, never words. No background music, no extra dialogue, no crowd voices."
 }
