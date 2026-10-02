@@ -220,5 +220,23 @@
     "scene": "frame_01_nollim",
     "seconds": 0,
     "won": 55
+  },
+  {
+    "time": "2026-10-02T00:21:16",
+    "scene": "01_nollim",
+    "seconds": 8,
+    "won": 560
+  },
+  {
+    "time": "2026-10-02T00:21:59",
+    "scene": "02_gyeolsim",
+    "seconds": 6,
+    "won": 420
+  },
+  {
+    "time": "2026-10-02T00:22:42",
+    "scene": "03_baram",
+    "seconds": 6,
+    "won": 420
   }
 ]
