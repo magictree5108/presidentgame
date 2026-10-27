@@ -28,3 +28,9 @@ cases:
   moe_z: 1.96
   reason_change_pp: 3         # 같은 기간 이 이상 늘거나 준 평가 이유 항목을 카드에 싣는다
   recovery_z: 1.0             # 잔차가 기준 주 잔차와 (recovery_z × 변화량 표준오차) 안으로 돌아오면 '회복'
+
+backtest:
+  horizons: [1, 2]            # 케이스 시작 주 뒤 몇 번째 조사까지 예측할지
+  k_analogs: 3                # 가장 비슷한 과거 케이스 몇 개를 평균할지
+  min_similarity: 0.1         # 이보다 덜 비슷하면 유사 사례로 쓰지 않음
+  noise_z: 1.0                # |변화| < noise_z × 변화량 표준오차 이면 방향 '변화 없음'으로 본다
