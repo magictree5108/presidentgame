@@ -13,3 +13,230 @@
 502,blank_cell,권역/광주/전라: neither 빈 칸(합 100.0)
 502,reasons_sum_rounding,negative 합 104.0 (24개 항목)
 504,blank_cell,직업/학생: neither 빈 칸(합 100.0)
+505,blank_cell,직업/학생: neither 빈 칸(합 100.0)
+506,blank_cell,권역/대전/세종/충청: neither 빈 칸(합 100.0)
+506,blank_cell,지지정당/더불어민주당: neither 빈 칸(합 100.0)
+506,blank_cell,직업/학생: neither 빈 칸(합 100.0)
+507,blank_cell,권역/광주/전라: dont_know 빈 칸(합 100.0)
+507,blank_cell,권역/부산/울산/경남: neither 빈 칸(합 100.0)
+507,se_missing,직무 평가 표준오차를 읽지 못함(페이지가 회전돼 있는 등) → 비워 둠
+508,blank_cell,권역/광주/전라: neither 빈 칸(합 101.0)
+509,blank_cell,직업/학생: neither 빈 칸(합 100.0)
+509,blank_cell,정치관심도/전혀 없다/모름: neither 빈 칸(합 100.0)
+510,blank_cell,권역/광주/전라: neither 빈 칸(합 100.0)
+510,blank_cell,생활수준/중하: neither 빈 칸(합 100.0)
+510,se_missing,직무 평가 표준오차를 읽지 못함(페이지가 회전돼 있는 등) → 비워 둠
+511,blank_cell,연령/40대: dont_know 빈 칸(합 100.0)
+512,blank_cell,권역/광주/전라: neither 빈 칸(합 101.0)
+512,blank_cell,지지정당/정의당: neither 빈 칸(합 100.0)
+512,blank_cell,직업/학생: neither 빈 칸(합 100.0)
+513,blank_cell,"지지정당/정의당: neither,dont_know 빈 칸(합 100.0)"
+513,blank_cell,직업/학생: neither 빈 칸(합 100.0)
+514,blank_cell,권역/대전/세종/충청: neither 빈 칸(합 100.0)
+514,blank_cell,권역/광주/전라: neither 빈 칸(합 100.0)
+514,blank_cell,연령/18~29세: neither 빈 칸(합 100.0)
+514,reasons_sum_rounding,negative 합 103.0 (26개 항목)
+515,blank_cell,직업/학생: neither 빈 칸(합 100.0)
+516,blank_cell,직업/사무/관리: neither 빈 칸(합 100.0)
+517,blank_cell,지지정당/정의당: neither 빈 칸(합 100.0)
+517,blank_cell,직업/자영업: neither 빈 칸(합 101.0)
+518,blank_cell,연령/18~29세: neither 빈 칸(합 100.0)
+518,blank_cell,지지정당/더불어민주당: neither 빈 칸(합 100.0)
+519,blank_cell,권역/광주/전라: neither 빈 칸(합 100.0)
+519,blank_cell,지지정당/정의당: neither 빈 칸(합 100.0)
+519,reasons_sum_rounding,positive 합 103.0 (24개 항목)
+520,blank_cell,지지정당/더불어민주당: neither 빈 칸(합 100.0)
+520,blank_cell,이념성향/진보: neither 빈 칸(합 100.0)
+521,blank_cell,지지정당/더불어민주당: neither 빈 칸(합 100.0)
+521,blank_cell,지지정당/정의당: neither 빈 칸(합 100.0)
+521,blank_cell,이념성향/진보: neither 빈 칸(합 101.0)
+521,reasons_sum_rounding,positive 합 103.0 (22개 항목)
+523,blank_cell,지지정당/정의당: dont_know 빈 칸(합 100.0)
+523,blank_cell,정치관심도/많이 있다: dont_know 빈 칸(합 100.0)
+524,blank_cell,권역/부산/울산/경남: neither 빈 칸(합 100.0)
+524,blank_cell,"지지정당/정의당: neither,dont_know 빈 칸(합 100.0)"
+525,blank_cell,권역/광주/전라: neither 빈 칸(합 101.0)
+525,blank_cell,직업/학생: neither 빈 칸(합 100.0)
+526,blank_cell,권역/광주/전라: neither 빈 칸(합 100.0)
+526,reasons_sum_rounding,positive 합 97.0 (22개 항목)
+527,blank_cell,권역/대구/경북: neither 빈 칸(합 100.0)
+527,blank_cell,정치관심도/많이 있다: neither 빈 칸(합 100.0)
+528,blank_cell,권역/대구/경북: neither 빈 칸(합 100.0)
+529,blank_cell,직업/학생: neither 빈 칸(합 100.0)
+529,se_missing,직무 평가 표준오차를 읽지 못함(페이지가 회전돼 있는 등) → 비워 둠
+532,blank_cell,"지지정당/정의당: neither,dont_know 빈 칸(합 100.0)"
+532,reasons_sum_rounding,negative 합 97.0 (24개 항목)
+533,blank_cell,지지정당/더불어민주당: neither 빈 칸(합 101.0)
+533,blank_cell,직업/학생: neither 빈 칸(합 100.0)
+534,blank_cell,연령/30대: neither 빈 칸(합 101.0)
+534,blank_cell,지지정당/더불어민주당: neither 빈 칸(합 100.0)
+535,blank_cell,정치관심도/많이 있다: neither 빈 칸(합 100.0)
+535,reasons_sum_rounding,negative 합 103.0 (23개 항목)
+536,blank_cell,지지정당/정의당: neither 빈 칸(합 101.0)
+536,blank_cell,직업/학생: neither 빈 칸(합 101.0)
+537,blank_cell,권역/대전/세종/충청: neither 빈 칸(합 100.0)
+537,blank_cell,"지지정당/정의당: neither,dont_know 빈 칸(합 100.0)"
+537,blank_cell,직업/기능노무/서비스: neither 빈 칸(합 100.0)
+537,blank_cell,정치관심도/많이 있다: dont_know 빈 칸(합 100.0)
+539,blank_cell,연령/30대: neither 빈 칸(합 101.0)
+539,blank_cell,직업/자영업: neither 빈 칸(합 100.0)
+540,blank_cell,이념성향/모름/응답거절: neither 빈 칸(합 100.0)
+541,reasons_sum_rounding,positive 합 97.0 (19개 항목)
+542,blank_cell,연령/18~29세: neither 빈 칸(합 100.0)
+542,blank_cell,직업/무직/은퇴/기타: neither 빈 칸(합 100.0)
+543,blank_cell,연령/40대: neither 빈 칸(합 100.0)
+543,blank_cell,직업/학생: neither 빈 칸(합 100.0)
+543,blank_cell,정치관심도/많이 있다: dont_know 빈 칸(합 100.0)
+544,reasons_sum_rounding,negative 합 103.0 (22개 항목)
+545,blank_cell,권역/광주/전라: neither 빈 칸(합 100.0)
+545,blank_cell,직업/학생: neither 빈 칸(합 100.0)
+545,blank_cell,생활수준/중하: neither 빈 칸(합 100.0)
+547,blank_cell,연령/30대: neither 빈 칸(합 100.0)
+548,blank_cell,생활수준/상/중상: neither 빈 칸(합 100.0)
+549,blank_cell,직업/학생: neither 빈 칸(합 99.0)
+551,blank_cell,직업/학생: neither 빈 칸(합 100.0)
+552,blank_cell,생활수준/상/중상: neither 빈 칸(합 101.0)
+554,blank_cell,권역/대전/세종/충청: neither 빈 칸(합 100.0)
+554,blank_cell,연령/40대: neither 빈 칸(합 100.0)
+554,blank_cell,직업/무직/은퇴/기타: neither 빈 칸(합 101.0)
+555,reasons_sum_rounding,negative 합 103.0 (25개 항목)
+556,blank_cell,직업/학생: neither 빈 칸(합 101.0)
+556,blank_cell,"정치관심도/많이 있다: neither,dont_know 빈 칸(합 100.0)"
+558,blank_cell,지지정당/정의당: dont_know 빈 칸(합 100.0)
+558,blank_cell,직업/학생: neither 빈 칸(합 100.0)
+558,blank_cell,생활수준/중하: neither 빈 칸(합 100.0)
+558,blank_cell,정치관심도/많이 있다: neither 빈 칸(합 100.0)
+559,blank_cell,직업/자영업: dont_know 빈 칸(합 100.0)
+559,blank_cell,직업/학생: neither 빈 칸(합 99.0)
+560,blank_cell,정치관심도/많이 있다: dont_know 빈 칸(합 100.0)
+560,reasons_sum_rounding,negative 합 105.0 (22개 항목)
+561,blank_cell,권역/광주/전라: neither 빈 칸(합 100.0)
+561,blank_cell,권역/대구/경북: neither 빈 칸(합 100.0)
+561,blank_cell,연령/40대: neither 빈 칸(합 100.0)
+561,blank_cell,직업/학생: neither 빈 칸(합 101.0)
+561,reasons_sum_rounding,negative 합 103.0 (24개 항목)
+562,blank_cell,권역/광주/전라: neither 빈 칸(합 100.0)
+564,blank_cell,정치관심도/많이 있다: neither 빈 칸(합 100.0)
+564,blank_cell,정치관심도/전혀 없다/모름: neither 빈 칸(합 99.0)
+565,blank_cell,권역/대전/세종/충청: neither 빈 칸(합 101.0)
+565,blank_cell,권역/광주/전라: neither 빈 칸(합 100.0)
+566,blank_cell,권역/광주/전라: neither 빈 칸(합 100.0)
+566,blank_cell,생활수준/상/중상: dont_know 빈 칸(합 99.0)
+566,blank_cell,정치관심도/많이 있다: dont_know 빈 칸(합 99.0)
+567,reasons_sum_rounding,negative 합 103.0 (26개 항목)
+567,se_missing,직무 평가 표준오차를 읽지 못함(페이지가 회전돼 있는 등) → 비워 둠
+568,blank_cell,직업/자영업: neither 빈 칸(합 100.0)
+569,blank_cell,연령/30대: neither 빈 칸(합 100.0)
+569,blank_cell,직업/학생: neither 빈 칸(합 100.0)
+569,blank_cell,이념성향/진보: neither 빈 칸(합 100.0)
+571,blank_cell,권역/광주/전라: neither 빈 칸(합 100.0)
+571,blank_cell,직업/무직/은퇴/기타: neither 빈 칸(합 100.0)
+572,blank_cell,권역/서울: neither 빈 칸(합 100.0)
+572,blank_cell,지지정당/더불어민주당: neither 빈 칸(합 100.0)
+572,blank_cell,직업/학생: neither 빈 칸(합 100.0)
+572,blank_cell,직업/무직/은퇴/기타: neither 빈 칸(합 101.0)
+572,reasons_sum_rounding,negative 합 104.0 (26개 항목)
+573,blank_cell,권역/광주/전라: neither 빈 칸(합 100.0)
+573,reasons_sum_rounding,negative 합 105.0 (27개 항목)
+574,blank_cell,연령/50대: dont_know 빈 칸(합 99.0)
+574,blank_cell,이념성향/진보: neither 빈 칸(합 100.0)
+574,reasons_sum_rounding,negative 합 103.0 (27개 항목)
+576,reasons_sum_rounding,positive 합 103.0 (22개 항목)
+577,blank_cell,연령/40대: neither 빈 칸(합 99.0)
+577,blank_cell,"지지정당/조국 신당: approve,dont_know 빈 칸(합 100.0)"
+577,blank_cell,정치관심도/많이 있다: dont_know 빈 칸(합 100.0)
+577,reasons_sum_rounding,negative 합 103.0 (27개 항목)
+578,blank_cell,지지정당/조국혁신당: neither 빈 칸(합 100.0)
+578,blank_cell,직업/전업주부: dont_know 빈 칸(합 100.0)
+578,reasons_sum_rounding,negative 합 103.0 (25개 항목)
+579,blank_cell,지지정당/조국혁신당: neither 빈 칸(합 100.0)
+580,extra_category,이 호수에만 있는 구분 '기타:총선결과기대' / 여당 다수 당선
+580,extra_category,이 호수에만 있는 구분 '기타:총선결과기대' / 야당 다수 당선
+580,extra_category,이 호수에만 있는 구분 '기타:총선결과기대' / 모름/응답거절
+580,blank_cell,지지정당/조국혁신당: neither 빈 칸(합 100.0)
+581,blank_cell,연령/18~29세: neither 빈 칸(합 100.0)
+581,blank_cell,지지정당/조국혁신당: neither 빈 칸(합 100.0)
+581,blank_cell,직업/학생: neither 빈 칸(합 99.0)
+581,reasons_sum_rounding,negative 합 103.0 (25개 항목)
+583,blank_cell,직업/학생: neither 빈 칸(합 100.0)
+583,reasons_sum_rounding,negative 합 104.0 (27개 항목)
+584,blank_cell,"지지정당/조국혁신당: neither,dont_know 빈 칸(합 100.0)"
+584,blank_cell,직업/학생: neither 빈 칸(합 100.0)
+585,blank_cell,지지정당/조국혁신당: dont_know 빈 칸(합 100.0)
+587,blank_cell,권역/광주/전라: neither 빈 칸(합 101.0)
+587,blank_cell,지지정당/조국혁신당: approve 빈 칸(합 99.0)
+587,reasons_sum_rounding,negative 합 104.0 (26개 항목)
+588,blank_cell,"지지정당/조국혁신당: neither,dont_know 빈 칸(합 100.0)"
+589,blank_cell,지지정당/조국혁신당: neither 빈 칸(합 100.0)
+589,blank_cell,직업/학생: neither 빈 칸(합 100.0)
+589,reasons_sum_rounding,negative 합 104.0 (30개 항목)
+590,blank_cell,"지지정당/조국혁신당: neither,dont_know 빈 칸(합 100.0)"
+590,blank_cell,직업/학생: neither 빈 칸(합 100.0)
+591,blank_cell,지지정당/조국혁신당: neither 빈 칸(합 100.0)
+591,reasons_sum_rounding,negative 합 103.0 (27개 항목)
+591,se_missing,직무 평가 표준오차를 읽지 못함(페이지가 회전돼 있는 등) → 비워 둠
+592,blank_cell,권역/광주/전라: neither 빈 칸(합 99.0)
+592,blank_cell,지지정당/조국혁신당: neither 빈 칸(합 100.0)
+592,blank_cell,이념성향/진보: neither 빈 칸(합 100.0)
+593,blank_cell,지지정당/조국혁신당: dont_know 빈 칸(합 100.0)
+594,blank_cell,지지정당/조국혁신당: dont_know 빈 칸(합 99.0)
+594,reasons_sum_rounding,negative 합 103.0 (26개 항목)
+595,blank_cell,지지정당/조국혁신당: neither 빈 칸(합 99.0)
+596,blank_cell,권역/광주/전라: neither 빈 칸(합 101.0)
+596,blank_cell,지지정당/조국혁신당: neither 빈 칸(합 100.0)
+596,blank_cell,직업/학생: neither 빈 칸(합 101.0)
+596,reasons_sum_rounding,negative 합 104.0 (30개 항목)
+597,blank_cell,지지정당/더불어민주당: neither 빈 칸(합 101.0)
+597,reasons_sum_rounding,negative 합 105.0 (24개 항목)
+598,blank_cell,권역/광주/전라: neither 빈 칸(합 100.0)
+598,blank_cell,"지지정당/조국혁신당: approve,neither 빈 칸(합 100.0)"
+598,blank_cell,이념성향/진보: neither 빈 칸(합 100.0)
+598,blank_cell,정치관심도/많이 있다: dont_know 빈 칸(합 100.0)
+599,blank_cell,권역/광주/전라: neither 빈 칸(합 100.0)
+599,blank_cell,지지정당/조국혁신당: dont_know 빈 칸(합 101.0)
+599,blank_cell,직업/학생: neither 빈 칸(합 99.0)
+600,blank_cell,연령/40대: neither 빈 칸(합 100.0)
+600,blank_cell,"지지정당/조국혁신당: approve,neither,dont_know 빈 칸(합 100.0)"
+601,blank_cell,권역/광주/전라: neither 빈 칸(합 100.0)
+601,blank_cell,"지지정당/조국혁신당: approve,neither,dont_know 빈 칸(합 100.0)"
+601,reasons_sum_rounding,negative 합 103.0 (26개 항목)
+602,blank_cell,"지지정당/조국혁신당: approve,neither 빈 칸(합 100.0)"
+603,blank_cell,"지지정당/조국혁신당: approve,neither 빈 칸(합 100.0)"
+603,reasons_sum_rounding,positive 합 106.0 (13개 항목)
+603,reasons_sum_rounding,negative 합 103.0 (28개 항목)
+604,blank_cell,"지지정당/조국혁신당: neither,dont_know 빈 칸(합 100.0)"
+605,extra_category,이 호수에만 있는 구분 '기타:비상계엄' / 사태 전 (12/3)
+605,extra_category,이 호수에만 있는 구분 '기타:비상계엄' / 사태 후 (12/4-5)
+605,blank_cell,지지정당/더불어민주당: neither 빈 칸(합 100.0)
+605,blank_cell,"지지정당/조국혁신당: approve,neither 빈 칸(합 100.0)"
+606,blank_cell,권역/서울: dont_know 빈 칸(합 100.0)
+606,blank_cell,연령/30대: neither 빈 칸(합 101.0)
+606,blank_cell,연령/40대: neither 빈 칸(합 100.0)
+606,blank_cell,지지정당/더불어민주당: dont_know 빈 칸(합 100.0)
+606,blank_cell,"지지정당/조국혁신당: approve,reserved,neither,dont_know 빈 칸(합 100.0)"
+606,blank_cell,직업/학생: dont_know 빈 칸(합 100.0)
+606,blank_cell,생활수준/상/중상: dont_know 빈 칸(합 100.0)
+606,blank_cell,이념성향/진보: neither 빈 칸(합 100.0)
+606,blank_cell,정치관심도/전혀 없다/모름: neither 빈 칸(합 100.0)
+608,extra_category,이 호수에만 있는 구분 '기타:대통령탄핵' / 찬성
+608,extra_category,이 호수에만 있는 구분 '기타:대통령탄핵' / 반대
+609,extra_category,이 호수에만 있는 구분 '기타:대통령탄핵' / 찬성
+609,extra_category,이 호수에만 있는 구분 '기타:대통령탄핵' / 반대
+610,extra_category,이 호수에만 있는 구분 '기타:대통령탄핵' / 찬성
+610,extra_category,이 호수에만 있는 구분 '기타:대통령탄핵' / 반대
+611,extra_category,이 호수에만 있는 구분 '기타:대통령탄핵' / 찬성
+611,extra_category,이 호수에만 있는 구분 '기타:대통령탄핵' / 반대
+612,extra_category,이 호수에만 있는 구분 '기타:대통령탄핵' / 찬성
+612,extra_category,이 호수에만 있는 구분 '기타:대통령탄핵' / 반대
+613,extra_category,이 호수에만 있는 구분 '기타:대통령탄핵' / 찬성
+613,extra_category,이 호수에만 있는 구분 '기타:대통령탄핵' / 반대
+614,extra_category,이 호수에만 있는 구분 '기타:대통령탄핵' / 찬성
+614,extra_category,이 호수에만 있는 구분 '기타:대통령탄핵' / 반대
+615,extra_category,이 호수에만 있는 구분 '기타:대통령탄핵' / 찬성
+615,extra_category,이 호수에만 있는 구분 '기타:대통령탄핵' / 반대
+616,extra_category,이 호수에만 있는 구분 '기타:대통령탄핵' / 찬성
+616,extra_category,이 호수에만 있는 구분 '기타:대통령탄핵' / 반대
+617,extra_category,이 호수에만 있는 구분 '기타:대통령탄핵' / 찬성
+617,extra_category,이 호수에만 있는 구분 '기타:대통령탄핵' / 반대
+618,extra_category,이 호수에만 있는 구분 '기타:대통령탄핵' / 찬성
+618,extra_category,이 호수에만 있는 구분 '기타:대통령탄핵' / 반대

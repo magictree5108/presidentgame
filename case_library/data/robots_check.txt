@@ -1,4 +1,4 @@
-확인 시각: 2026-10-27T11:15:34
+확인 시각: 2026-10-27T12:55:10
 
 https://www.gallup.co.kr/robots.txt: HTTP 200 (text/html) -> robots.txt 없음(오류 페이지), 제한 규칙 없음
 

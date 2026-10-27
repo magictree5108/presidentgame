@@ -49,16 +49,18 @@ SCHEMA = """
 CREATE TABLE IF NOT EXISTS survey (
     issue INTEGER PRIMARY KEY, week_label TEXT, post_date TEXT, pdf_url TEXT,
     survey_period TEXT, survey_start TEXT, survey_end TEXT,
-    n_sample INTEGER, response_rate REAL, response_calls INTEGER,
+    n_sample INTEGER, response_rate REAL, response_calls INTEGER, contact_rate REAL,
     method TEXT, sampling TEXT, margin_of_error REAL,
     approve_se REAL, approve_ci_low REAL, approve_ci_high REAL,
     disapprove_se REAL, disapprove_ci_low REAL, disapprove_ci_high REAL,
+    approval_status TEXT,  -- asked | not_asked(탄핵소추로 직무 정지 기간)
     pages TEXT, parsed_at TEXT DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TABLE IF NOT EXISTS approval_by_group (
     issue INTEGER, category TEXT, subgroup TEXT, row_order INTEGER,
     n_raw INTEGER, n_weighted INTEGER,
     approve REAL, disapprove REAL, neither REAL, dont_know REAL,
+    reserved REAL,  -- '의견 유보' 열이 따로 있는 호수만(= 어느 쪽도 아님 + 모름/응답거절)
     suppressed INTEGER, blank_cells TEXT, page INTEGER,
     PRIMARY KEY (issue, category, subgroup)
 );
@@ -112,8 +114,8 @@ def is_num(t: str) -> bool:
     return bool(NUM_RE.match(t)) and t not in {",", "."}
 
 
-def to_int(t: str) -> int:
-    return int(t.replace(",", ""))
+def to_int(t: str):
+    return None if t == "-" else int(t.replace(",", ""))
 
 
 def to_pct(t: str):
@@ -130,99 +132,120 @@ def page_words(page) -> list[dict]:
 
 # ---------- 교차표 ----------
 
-def find_total_line(lines, min_pct: int):
-    for i, l in enumerate(lines):
-        toks = merge_numbers(l)
-        for j, w in enumerate(toks):
-            if w["text"] == "전체":
-                nums = [t for t in toks[j + 1:] if is_num(t["text"])]
-                if len(nums) >= 2 + min_pct and all(is_num(t["text"]) for t in toks[j + 1:]):
-                    return i, j, toks
+def find_total_row(words, min_pct: int):
+    """'전체' 단어와 같은 높이에서 오른쪽이 모두 숫자인 곳을 찾는다(왼쪽 추이표와 섞이지 않게 단어 단위로 본다)."""
+    for w in sorted(words, key=lambda w: (w["top"], w["x0"])):
+        if w["text"] != "전체":
+            continue
+        right = merge_numbers(sorted([v for v in words if abs(v["top"] - w["top"]) < 3 and v["x0"] > w["x1"]],
+                                     key=lambda v: v["x0"]))
+        # 오른쪽에 다른 표가 붙어 있으면(예: 정당 지지 강도) 첫 글자 단어 앞에서 끊는다
+        cut = next((k for k, t in enumerate(right) if not is_num(t["text"])), len(right))
+        if cut >= 2 + min_pct:
+            right_edge = right[cut]["x0"] - 2 if cut < len(right) else float("inf")
+            return w, right[:cut], right_edge
     return None
 
 
+def is_prefix(t: str) -> bool:
+    return any(k.startswith(t) for k in CATEGORY_MAP)
+
+
 def parse_crosstab(page, min_pct: int):
-    """교차표 하나를 읽어 (헤더 단어들, 행 목록)을 돌려준다. 행 = (category, subgroup, 값 토큰 리스트)."""
+    """교차표 하나를 읽어 (머리글 줄, 열 기준점, 열 중심, 행 목록)을 돌려준다. 행 = [category, subgroup, 칸 값들]."""
     words = page_words(page)
-    lines = lines_of(words)
-    found = find_total_line(lines, min_pct)
+    found = find_total_row(words, min_pct)
     if not found:
         raise ParseError("table_not_found", "'전체' 행을 찾지 못함")
-    ti, tj, ttoks = found
-    # 표의 왼쪽 경계 = '전체' 아래 첫 구분 이름 '지역별'의 시작 x (왼쪽 추이표는 잘라낸다)
-    below = [w for l in lines[ti + 1:ti + 3] for w in l
-             if w["text"] == "지역별" and w["x0"] < ttoks[tj]["x0"]]
+    total_w, _, right_edge = found
+    # 표의 왼쪽 경계 = '전체' 바로 아래 '지역별'의 시작 x. 그 왼쪽(추이표)은 버리고 줄을 다시 묶는다.
+    below = [w for w in words if w["text"] == "지역별" and 0 < w["top"] - total_w["top"] < 25
+             and w["x0"] < total_w["x0"]]
     if not below:
         raise ParseError("table_layout", "'전체' 아래에 '지역별'이 없음")
     left = max(w["x0"] for w in below) - 2
-    anchors = [t["x1"] for t in ttoks[tj + 1:]]
-    centers = [(t["x0"] + t["x1"]) / 2 for t in ttoks[tj + 1:]]
+    # 오른쪽에 붙은 표의 '지역별'이 있으면 그 앞까지만 이 표로 본다
+    last_x1 = max(t["x1"] for t in found[1])
+    side = [w["x0"] for w in words if w["text"] == "지역별" and w["x0"] > last_x1 and 0 < w["top"] - total_w["top"] < 25]
+    if side:
+        right_edge = min(right_edge, min(side) - 2)
+    lines = lines_of([w for w in words if left <= w["x0"] < right_edge])
+    ti = next(i for i, l in enumerate(lines) if total_w in l)
 
-    # 표 영역만 남긴다(왼쪽 추이표 제외)
-    lines = [[w for w in l if w["x0"] >= left] for l in lines]
     # 열 머리글 = '조사완료' 가 있는 줄부터 '전체' 행 바로 위까지(그 위의 질문 문구는 제외)
     hstart = next((k for k in range(ti - 1, max(-1, ti - 10), -1)
                    if any(w["text"] == "조사완료" for w in lines[k])), max(0, ti - 6))
     header_lines = [l for l in lines[hstart:ti] if l]
 
-    rows = []
-    label_x0s = []
-    raw_rows = []
+    raw_rows, label_x0s = [], []
     for l in lines[ti:]:
         toks = merge_numbers(l)
         if not toks:
             continue
-        if toks[0]["text"].startswith("-") and (len(toks) == 1 or not is_num(toks[1]["text"])):
+        if toks[0]["text"].startswith("-") and len(toks) > 1 and not is_num(toks[1]["text"]):
             break  # 표 아래 주석("- 소수점 아래 ...")
         labels = [t for t in toks if not is_num(t["text"])]
         nums = [t for t in toks if is_num(t["text"])]
-        # 숫자가 레이블 오른쪽에만 있어야 한다
         if labels and nums and max(t["x0"] for t in labels) > min(t["x0"] for t in nums):
-            break
+            break  # 숫자가 레이블 오른쪽에만 있어야 표 행이다
         if not nums:
-            # 숫자 없는 줄 = 구분 이름의 이어지는 줄(예: '정당별') 이거나 표 끝
-            if raw_rows and all(t["x0"] < anchors[0] - 40 for t in labels):
-                raw_rows.append((labels, []))
-                continue
-            break
+            # 숫자 없는 줄: 구분 이름의 이어지는 줄('정당별')이거나, 값이 없는 행('대통령 직무 정지 중')
+            raw_rows.append((labels, []))
+            continue
+        if not labels and raw_rows:
+            raise ParseError("row_split", f"레이블 없는 숫자 줄: {[t['text'] for t in nums]}")
         raw_rows.append((labels, nums))
         label_x0s += [t["x0"] for t in labels]
 
+    # 열 기준점: 모든 행의 숫자 토큰 오른쪽 끝 x 를 모아 4pt 안쪽끼리 한 열로 묶는다
+    # ('전체' 행에 빈 칸이 있는 열도 놓치지 않기 위해)
+    xs = sorted((t["x1"], (t["x0"] + t["x1"]) / 2) for _, nums in raw_rows for t in nums)
+    clusters: list[list] = []
+    for x1, c in xs:
+        if clusters and x1 - clusters[-1][-1][0] < 4:
+            clusters[-1].append((x1, c))
+        else:
+            clusters.append([(x1, c)])
+    anchors = [sum(x for x, _ in cl) / len(cl) for cl in clusters]
+    centers = [sum(c for _, c in cl) / len(cl) for cl in clusters]
+
     sub_x = Counter(round(x) for x in label_x0s).most_common(1)[0][0]
-    cat_buf, category = "", None
+    blocks: list[str] = []      # 구분 블록별 이름(여러 줄을 이어 붙임)
+    rows = []
     for labels, nums in raw_rows:
-        cat_words = [t["text"] for t in labels if t["x0"] < sub_x - 3]
+        cat_words = "".join(t["text"] for t in labels if t["x0"] < sub_x - 3)
         sub_words = [t["text"] for t in labels if t["x0"] >= sub_x - 3]
         if [t["text"] for t in labels] == ["전체"]:
-            cat_words, sub_words = [], ["전체"]
+            cat_words, sub_words = "", ["전체"]
         if cat_words:
-            # 구분 이름이 완성된 상태면 새 이름 시작, 아니면 이어 붙인다(예: 주요/지지/정당별)
-            cat_buf = ("" if (not cat_buf or cat_buf in CATEGORY_MAP) else cat_buf) + "".join(cat_words)
-            if cat_buf in CATEGORY_MAP:
-                category = CATEGORY_MAP[cat_buf]
-            elif any(k.startswith(cat_buf) for k in CATEGORY_MAP):
-                category = "_pending_"
+            cur = blocks[-1] if blocks else None
+            # 새 블록 시작: 블록이 없거나, 현재 이름이 완성됐거나, 이어 붙이면 아는 이름이 안 되는데 새 단어는 아는 이름의 시작일 때
+            if cur is None or cur in CATEGORY_MAP or (not is_prefix(cur + cat_words) and is_prefix(cat_words)):
+                blocks.append(cat_words)
             else:
-                raise ParseError("category_unknown", f"모르는 구분 이름 '{cat_buf}'")
+                blocks[-1] = cur + cat_words
         if not nums:
             continue
         sub = " ".join(sub_words)
         cells = [None] * len(anchors)
         for t in nums:
             k = min(range(len(anchors)), key=lambda i: abs(anchors[i] - t["x1"]))
-            if abs(anchors[k] - t["x1"]) > 8:
+            if abs(anchors[k] - t["x1"]) > 6:
                 raise ParseError("cell_misaligned", f"{sub}: '{t['text']}' 열을 정하지 못함")
             if cells[k] is not None:
                 raise ParseError("cell_collision", f"{sub}: 한 칸에 값 두 개")
             cells[k] = t["text"]
-        rows.append(["전체" if sub == "전체" else category, sub, cells])
+        if sub == "전체":
+            rows.append(["전체", sub, cells])
+        elif not blocks:
+            raise ParseError("category_unknown", f"'{sub}' 행의 구분을 정하지 못함")
+        else:
+            rows.append([len(blocks) - 1, sub, cells])
 
-    # 여러 줄짜리 구분 이름은 마지막 줄에서 확정되므로, 그 앞 행들을 확정된 이름으로 채운다
-    for i, r in enumerate(rows):
-        if r[0] == "_pending_":
-            r[0] = next((x[0] for x in rows[i:] if x[0] != "_pending_"), None)
-        if r[0] is None:
-            raise ParseError("category_unknown", f"'{r[1]}' 행의 구분을 정하지 못함")
+    for r in rows:
+        if isinstance(r[0], int):
+            name = blocks[r[0]]
+            r[0] = CATEGORY_MAP.get(name, f"기타:{name}")
     return header_lines, anchors, centers, rows
 
 
@@ -259,8 +282,10 @@ def parse_overview(pdf) -> dict:
     rr = grab("응답률") or ""
     m = re.search(r"([\d.]+)%", rr)
     out["response_rate"] = float(m.group(1)) if m else None
-    m = re.search(r"총 통화\s*([\d,]+)명", rr)
+    m = re.search(r"총\s*통화\s*([\d,]+)\s*명", rr)
     out["response_calls"] = to_int(m.group(1)) if m else None
+    m = re.search(r"([\d.]+)%", grab("접촉률") or "")
+    out["contact_rate"] = float(m.group(1)) if m else None
     moe = grab("표본오차") or ""
     m = re.search(r"±\s*([\d.]+)\s*%", moe)
     out["margin_of_error"] = float(m.group(1)) if m else None
@@ -299,31 +324,69 @@ def parse_se(pdf) -> tuple[dict, int | None]:
     return out, i
 
 
+TITLE_WORDS = {"대통령", "직무", "수행", "평가", "정당", "지지도", "(현재", "지지하는", "정당)"}
+SKIP_WORDS = {"조사완료", "가중적용", "사례수", "(명)"}
+
+
+def column_names(header, centers) -> list[str]:
+    """머리글 단어를 가장 가까운 열 중심에 배정하고 위에서 아래로 붙여 열 이름을 만든다.
+    표 제목('대통령 직무 수행 평가', '정당 지지도 (현재 지지하는 정당)')이 있는 줄의 제목 단어는 뺀다."""
+    title_tops = [w["top"] for l in header for w in l if w["text"] in ("지지도", "평가")]
+    names = [[] for _ in centers]
+    for l in header:
+        for w in l:
+            t = w["text"]
+            if t in SKIP_WORDS or WEEK_RE.search(t) or re.fullmatch(r"\(.*일\)", t):
+                continue
+            if t in TITLE_WORDS and any(abs(w["top"] - tt) < 2 for tt in title_tops):
+                continue
+            c = (w["x0"] + w["x1"]) / 2
+            k = min(range(len(centers)), key=lambda j: abs(centers[j] - c))
+            if abs(centers[k] - c) < 22:
+                names[k].append((w["top"], w["x0"], t))
+    return ["".join(t for _, _, t in sorted(n)) for n in names]
+
+
+def approval_column(name: str) -> str | None:
+    n = name.replace(" ", "")
+    if n.startswith("잘하고"):
+        return "approve"
+    if n.startswith("잘못하고"):
+        return "disapprove"
+    if "의견" in n or "유보" in n:
+        return "reserved"
+    if "쪽도" in n or n.startswith("어느"):
+        return "neither"
+    if n.startswith("모름") or "응답거절" in n:
+        return "dont_know"
+    return None
+
+
 def parse_approval(pdf, week_label: str):
     i = find_page(pdf, 0, ["대통령 직무 수행 평가", "가중적용", "잘하고", "잘못하고", "성향별", week_label],
-                  reject=["표준오차", "이유", "통합"])
+                  reject=["표준오차", "평가 이유"])
     if i is None:
         raise ParseError("approval_page_not_found", week_label)
     header, anchors, centers, rows = parse_crosstab(pdf.pages[i], min_pct=4)
-    if len(anchors) != 6:
-        raise ParseError("approval_columns", f"열 수 {len(anchors)} (예상 6)")
+    cols = [approval_column(c) for c in column_names(header, centers)[2:]]
+    need = {"approve", "disapprove", "neither", "dont_know"}
+    if None in cols or len(set(cols)) != len(cols) or not need <= set(cols):
+        raise ParseError("approval_columns", f"열 이름을 읽지 못함: {column_names(header, centers)}")
     out = []
     for order, (cat, sub, cells) in enumerate(rows):
         try:
             n_raw = to_int(cells[0]) if cells[0] else None
             n_w = to_int(cells[1]) if cells[1] else None
-            vals = [to_pct(c) if c is not None else None for c in cells[2:]]
+            vals = {k: (to_pct(c) if c is not None else None) for k, c in zip(cols, cells[2:])}
         except ValueError as e:
             raise ParseError("bad_number", f"{sub}: {e}")
         suppressed = int(any(c == "-" for c in cells[2:]))
-        blanks = ",".join(n for n, c in zip(["approve", "disapprove", "neither", "dont_know"], cells[2:]) if c is None)
+        blanks = ",".join(k for k, c in zip(cols, cells[2:]) if c is None)
         out.append(dict(category=cat, subgroup=sub, row_order=order, n_raw=n_raw, n_weighted=n_w,
-                        approve=vals[0], disapprove=vals[1], neither=vals[2], dont_know=vals[3],
+                        approve=vals["approve"], disapprove=vals["disapprove"], neither=vals["neither"],
+                        dont_know=vals["dont_know"], reserved=vals.get("reserved"),
                         suppressed=suppressed, blank_cells=blanks, page=i + 1))
     return out, i
-
-
-PARTY_TITLE_WORDS = {"정당", "지지도", "(현재", "지지하는", "정당)", "조사완료", "가중적용"}
 
 
 def normalize_party(name: str) -> str:
@@ -334,27 +397,18 @@ def normalize_party(name: str) -> str:
         return "모름/응답거절(무당층 중)"
     if n == "없음":
         return "없음(무당층 중)"
+    if n in ("기타", "그외정당", "이외정당"):
+        return "기타(그 외 정당)"
     return n
 
 
 def parse_party(pdf, start: int, week_label: str):
     i = find_page(pdf, start, ["정당 지지도", "가중적용", "국민의힘", "성향별", week_label],
-                  reject=["표준오차", "통합", "잘하고"])
+                  reject=["표준오차", "잘하고"])
     if i is None:
         raise ParseError("party_page_not_found", week_label)
     header, anchors, centers, rows = parse_crosstab(pdf.pages[i], min_pct=4)
-    # 열 이름: 헤더 단어를 가장 가까운 열 중심에 배정해 위에서 아래로 붙인다
-    names = [[] for _ in anchors]
-    for l in header:
-        for w in l:
-            if w["text"] in PARTY_TITLE_WORDS or WEEK_RE.search(w["text"]) or w["text"] in {"사례수", "(명)"}:
-                continue
-            c = (w["x0"] + w["x1"]) / 2
-            k = min(range(len(centers)), key=lambda j: abs(centers[j] - c))
-            if abs(centers[k] - c) < 22:
-                names[k].append((w["top"], w["x0"], w["text"]))
-    cols = ["".join(t for _, _, t in sorted(n)) for n in names]
-    party_cols = [normalize_party(c) for c in cols[2:]]
+    party_cols = [normalize_party(c) for c in column_names(header, centers)[2:]]
     if any(not c for c in party_cols) or len(set(party_cols)) != len(party_cols):
         raise ParseError("party_header", f"열 이름을 읽지 못함: {party_cols}")
     out = []
@@ -392,8 +446,9 @@ def parse_reasons(pdf):
         raise ParseError("reasons_layout", "두 칸의 경계를 찾지 못함")
     split_x = min(starts) - 2
     text = page.extract_text(x_tolerance=1.5) or ""
-    m = re.search(r"(\d+주\s*전|직전\s*조사|지난주)\s*대비", text)
-    basis = m.group(0) if m else None
+    # 증감 기준 문구 전체를 남긴다(예: '지난주 대비', '직전 조사(2주 전, 5월 7~9일) 대비')
+    m = re.search(r"-\s*([^\n]*?대비)\s*±", text)
+    basis = m.group(1).strip() if m else None
 
     out = []
     for pol, (x0, x1) in (("positive", (0, split_x)), ("negative", (split_x, page.width))):
@@ -430,58 +485,75 @@ def parse_reasons(pdf):
 
 def validate(ov, appr, reasons, party, party_cols):
     errs, warns = [], []
-    total = next((r for r in appr if r["category"] == "전체"), None)
-    if not total:
-        errs.append(("no_total_row", "직무 평가 '전체' 행 없음"))
-        return errs, warns
-    if total["n_raw"] != ov["n_sample"]:
-        errs.append(("n_mismatch", f"개요 {ov['n_sample']} vs 표 {total['n_raw']}"))
-    cats = {r["category"] for r in appr}
-    for c in EXPECTED_CATEGORIES:
-        if c not in cats:
-            errs.append(("category_missing", f"직무 평가 표에 '{c}' 없음"))
-    for c in EXHAUSTIVE:
-        s = sum(r["n_raw"] or 0 for r in appr if r["category"] == c)
-        if s and s != total["n_raw"]:
-            errs.append(("group_n_sum", f"{c} 사례수 합 {s} != 전체 {total['n_raw']}"))
-    for r in appr:
-        vals = [r[k] for k in ("approve", "disapprove", "neither", "dont_know")]
-        if r["suppressed"]:
-            if (r["n_raw"] or 0) >= 50 and (r["n_weighted"] or 0) >= 50:
-                warns.append(("suppressed_large_n", f"{r['category']}/{r['subgroup']}"))
-            continue
-        s = sum(v for v in vals if v is not None)
-        if not 98 <= s <= 102:
-            errs.append(("approval_sum", f"{r['category']}/{r['subgroup']} 합 {s}"))
-        if r["blank_cells"]:
-            warns.append(("blank_cell", f"{r['category']}/{r['subgroup']}: {r['blank_cells']} 빈 칸(합 {s})"))
-    for pol in ("positive", "negative"):
-        rs = [r for r in reasons if r["polarity"] == pol]
-        s = sum(r["pct"] for r in rs)
-        # 이유는 20~30개 항목을 각각 정수로 반올림해 싣기 때문에 합이 100에서 몇 %p 벗어날 수 있다.
-        # 98~102 밖이면 경고, 95~106 밖이면 파싱 오류로 본다.
-        if not 95 <= s <= 106:
-            errs.append(("reasons_sum", f"{pol} 합 {s} ({len(rs)}개 항목)"))
-        elif not 98 <= s <= 102:
-            warns.append(("reasons_sum_rounding", f"{pol} 합 {s} ({len(rs)}개 항목)"))
-        expect = round(total[{"positive": "approve", "negative": "disapprove"}[pol]] / 100 * total["n_weighted"])
-        if rs and abs(rs[0]["base_n"] - expect) > 15:
-            warns.append(("reasons_base", f"{pol} 응답자 {rs[0]['base_n']} vs 전체×비율 {expect}"))
+    for r in appr + party:
+        if r["category"].startswith("기타:"):
+            warns.append(("extra_category", f"이 호수에만 있는 구분 '{r['category']}' / {r['subgroup']}"))
+    if appr:
+        total = next((r for r in appr if r["category"] == "전체"), None)
+        if not total:
+            return [("no_total_row", "직무 평가 '전체' 행 없음")], warns
+        if total["n_raw"] != ov["n_sample"]:
+            errs.append(("n_mismatch", f"개요 {ov['n_sample']} vs 직무 평가 표 {total['n_raw']}"))
+        cats = {r["category"] for r in appr}
+        for c in EXPECTED_CATEGORIES:
+            if c not in cats:
+                errs.append(("category_missing", f"직무 평가 표에 '{c}' 없음"))
+        for c in EXHAUSTIVE:
+            s = sum(r["n_raw"] or 0 for r in appr if r["category"] == c)
+            if s and s != total["n_raw"]:
+                errs.append(("group_n_sum", f"직무 평가 {c} 사례수 합 {s} != 전체 {total['n_raw']}"))
+        for r in appr:
+            vals = [r[k] for k in ("approve", "disapprove", "neither", "dont_know")]
+            if r["suppressed"]:
+                if (r["n_raw"] or 0) >= 50 and (r["n_weighted"] or 0) >= 50:
+                    warns.append(("suppressed_large_n", f"{r['category']}/{r['subgroup']}"))
+                continue
+            s = sum(v for v in vals if v is not None)
+            if not 98 <= s <= 102:
+                errs.append(("approval_sum", f"{r['category']}/{r['subgroup']} 합 {s}"))
+            if r["reserved"] is not None:
+                parts = (r["neither"] or 0) + (r["dont_know"] or 0)
+                if abs(r["reserved"] - parts) > 1:
+                    errs.append(("reserved_sum", f"{r['category']}/{r['subgroup']} 의견유보 {r['reserved']} != {parts}"))
+            if r["blank_cells"]:
+                warns.append(("blank_cell", f"{r['category']}/{r['subgroup']}: {r['blank_cells']} 빈 칸(합 {s})"))
+        for pol in ("positive", "negative"):
+            rs = [r for r in reasons if r["polarity"] == pol]
+            s = sum(r["pct"] for r in rs)
+            # 이유는 20~30개 항목을 각각 정수로 반올림해 싣기 때문에 합이 100에서 몇 %p 벗어날 수 있다.
+            # 98~102 밖이면 경고, 95~106 밖이면 파싱 오류로 본다.
+            if not 95 <= s <= 106:
+                errs.append(("reasons_sum", f"{pol} 합 {s} ({len(rs)}개 항목)"))
+            elif not 98 <= s <= 102:
+                warns.append(("reasons_sum_rounding", f"{pol} 합 {s} ({len(rs)}개 항목)"))
+            expect = round(total[{"positive": "approve", "negative": "disapprove"}[pol]] / 100 * total["n_weighted"])
+            if rs and abs(rs[0]["base_n"] - expect) > 15:
+                warns.append(("reasons_base", f"{pol} 응답자 {rs[0]['base_n']} vs 전체×비율 {expect}"))
+
     main_cols = [c for c in party_cols if "무당층 중" not in c]
     by_row: dict = {}
     for r in party:
         by_row.setdefault((r["category"], r["subgroup"]), []).append(r)
     ptotal = by_row.get(("전체", "전체"))
-    if not ptotal or ptotal[0]["n_raw"] != total["n_raw"]:
-        errs.append(("party_n_mismatch", "정당 표 전체 사례수가 직무 평가 표와 다름"))
+    if not ptotal or ptotal[0]["n_raw"] != ov["n_sample"]:
+        errs.append(("party_n_mismatch", "정당 표 전체 사례수가 조사 개요 표본 수와 다름"))
+    for c in EXHAUSTIVE:
+        s = sum(rs[0]["n_raw"] or 0 for (cat, _), rs in by_row.items() if cat == c)
+        if s and s != ov["n_sample"]:
+            errs.append(("group_n_sum", f"정당 표 {c} 사례수 합 {s} != 전체 {ov['n_sample']}"))
     for (c, sgrp), rs in by_row.items():
         if any(r["suppressed"] for r in rs):
             continue
         s = sum(r["pct"] or 0 for r in rs if r["party"] in main_cols)
         if not 98 <= s <= 102:
             errs.append(("party_sum", f"{c}/{sgrp} 합 {s}"))
+        sub = [r["pct"] for r in rs if "무당층 중" in r["party"]]
+        nop = next((r["pct"] for r in rs if r["party"] == "무당층"), None)
+        if nop is not None and sub and abs(sum(v or 0 for v in sub) - nop) > 1:
+            errs.append(("party_noparty_sum", f"{c}/{sgrp} 무당층 {nop} != 세부 합 {sum(v or 0 for v in sub)}"))
     pcats = {r["category"] for r in party}
-    for c in PARTY_EXPECTED_CATEGORIES:
+    expected = PARTY_EXPECTED_CATEGORIES if appr else [c for c in PARTY_EXPECTED_CATEGORIES if c != "직무평가"]
+    for c in expected:
         if c not in pcats:
             errs.append(("category_missing", f"정당 표에 '{c}' 없음"))
     return errs, warns
@@ -497,12 +569,22 @@ def load_manifest():
 def parse_issue(m: dict):
     with pdfplumber.open(ROOT / m["local_path"]) as pdf:
         ov = parse_overview(pdf)
-        se, se_page = parse_se(pdf)
-        appr, ap = parse_approval(pdf, m["week_label"])
-        reasons, rp = parse_reasons(pdf)
-        party, party_cols, pp = parse_party(pdf, ap + 1, m["week_label"])
+        cover = (pdf.pages[0].extract_text() or "").replace(" ", "")
+        # 2024-12-14 탄핵소추안 가결 뒤에는 '직무 정지로 직무 평가 불가' (직무 평가·이유 문항 없음)
+        if "직무평가불가" in cover:
+            ov["approval_status"] = "not_asked"
+            se, se_page, appr, ap, reasons, rp = {}, None, [], None, [], None
+        else:
+            ov["approval_status"] = "asked"
+            se, se_page = parse_se(pdf)
+            appr, ap = parse_approval(pdf, m["week_label"])
+            reasons, rp = parse_reasons(pdf)
+        party, party_cols, pp = parse_party(pdf, (ap + 1) if ap is not None else 0, m["week_label"])
     errs, warns = validate(ov, appr, reasons, party, party_cols)
-    pages = f"approval:{ap+1},reasons:{rp+1},party:{pp+1},se:{(se_page or -1)+1}"
+    if appr and "approve_se" not in se:
+        warns.append(("se_missing", "직무 평가 표준오차를 읽지 못함(페이지가 회전돼 있는 등) → 비워 둠"))
+    pg = lambda i: "-" if i is None else i + 1
+    pages = f"approval:{pg(ap)},reasons:{pg(rp)},party:{pg(pp)},se:{pg(se_page)}"
     return {**ov, **se, "pages": pages}, appr, reasons, party, errs, warns
 
 
@@ -559,7 +641,7 @@ def main():
             failures.append({"issue": issue, "kind": "exception", "detail": repr(e)})
             print(f"제{issue}호 예외 {e!r}")
             continue
-        for k, d in warns:
+        for k, d in dict.fromkeys(warns):
             warnings.append({"issue": issue, "kind": k, "detail": d})
         if errs:
             for k, d in errs:
