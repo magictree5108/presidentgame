@@ -1,0 +1,13 @@
+# 국정 시뮬레이터 케이스 도서관 설정
+government:
+  name: 윤석열
+  start: 2022-05-10
+  end: 2025-04-04
+
+collect:
+  user_agent: "Mozilla/5.0 (compatible; PresidentGameResearchBot/0.1; non-commercial academic research on public opinion; contact: repository owner)"
+  min_interval_sec: 2.5      # 요청 사이 최소 간격(초)
+  timeout_sec: 60
+  list_url: https://www.gallup.co.kr/gallupdb/report.asp
+  content_url: https://www.gallup.co.kr/gallupdb/reportContent.asp?seqNo={seq}
+  years: [2022, 2023, 2024, 2025]
