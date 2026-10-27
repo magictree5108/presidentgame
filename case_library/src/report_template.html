@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>국정 케이스 도서관</title>
+<style>
+:root{
+  color-scheme:light;
+  --page:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
+  --grid:#e1e0d9; --axis:#c3c2b7; --ring:rgba(11,11,11,.10);
+  --s1:#2a78d6; --s2:#eb6834; --up:#2a78d6; --down:#e34948; --mid:#f0efec;
+  --up-tint:rgba(42,120,214,.10); --down-tint:rgba(227,73,72,.10); --edge:#efeee9;
+  --warn-bg:#fff4e0; --warn-ink:#7a4a00;
+}
+@media (prefers-color-scheme: dark){
+  :root:where(:not([data-theme="light"])){
+    color-scheme:dark;
+    --page:#0d0d0d; --surface:#1a1a19; --ink:#f0efec; --ink2:#c3c2b7; --muted:#898781;
+    --grid:#2c2c2a; --axis:#383835; --ring:rgba(255,255,255,.10);
+    --s1:#3987e5; --s2:#d95926; --up:#3987e5; --down:#e66767; --mid:#383835;
+    --up-tint:rgba(57,135,229,.08); --down-tint:rgba(230,103,103,.08); --edge:#242422;
+    --warn-bg:#3a2a10; --warn-ink:#f2c879;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --page:#0d0d0d; --surface:#1a1a19; --ink:#f0efec; --ink2:#c3c2b7; --muted:#898781;
+  --grid:#2c2c2a; --axis:#383835; --ring:rgba(255,255,255,.10);
+  --s1:#3987e5; --s2:#d95926; --up:#3987e5; --down:#e66767; --mid:#383835;
+  --up-tint:rgba(57,135,229,.08); --down-tint:rgba(230,103,103,.08); --edge:#242422;
+  --warn-bg:#3a2a10; --warn-ink:#f2c879;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif}
+.wrap{max-width:1120px;margin:0 auto;padding:24px 16px 80px}
+h1{font-size:26px;line-height:1.3;margin:0 0 6px}
+h2{font-size:19px;margin:44px 0 6px}
+h3{font-size:16px;margin:20px 0 6px}
+p{margin:6px 0}
+.lede{color:var(--ink2);max-width:760px}
+.src{color:var(--muted);font-size:11.5px;white-space:nowrap}
+.src a{color:inherit}
+a{color:var(--s1)}
+nav{display:flex;flex-wrap:wrap;gap:6px 14px;margin:14px 0 4px;font-size:14px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:18px 0}
+.tile{background:var(--surface);border:1px solid var(--ring);border-radius:10px;padding:12px 14px}
+.tile b{display:block;font-size:24px;line-height:1.2;font-variant-numeric:tabular-nums}
+.tile span{color:var(--ink2);font-size:13px}
+.panel{background:var(--surface);border:1px solid var(--ring);border-radius:10px;padding:14px}
+.warn{background:var(--warn-bg);color:var(--warn-ink);border-radius:8px;padding:10px 12px;font-size:14px;margin:10px 0}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--ink2);margin:4px 0 8px}
+.legend i{display:inline-block;width:18px;height:0;border-top:2px solid;vertical-align:middle;margin-right:6px}
+.legend .box{width:14px;height:10px;border:none;border-radius:2px}
+svg{display:block;width:100%;height:auto}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tip{position:fixed;z-index:20;pointer-events:none;background:var(--surface);color:var(--ink);border:1px solid var(--ring);border-radius:8px;padding:7px 9px;font-size:12.5px;line-height:1.45;display:none;box-shadow:0 4px 14px rgba(0,0,0,.14);max-width:280px}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
+select,button{font:inherit;font-size:14px;color:var(--ink);background:var(--surface);border:1px solid var(--ring);border-radius:7px;padding:5px 9px}
+button{cursor:pointer}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.card{background:var(--surface);border:1px solid var(--ring);border-radius:10px;padding:12px 14px;cursor:pointer;text-align:left;font:inherit;color:inherit}
+.card:hover,.card:focus-visible{border-color:var(--s1);outline:none}
+.card .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.card .id{font-weight:700}
+.card .chg{font-variant-numeric:tabular-nums;font-weight:600}
+.card .meta{color:var(--ink2);font-size:13px}
+.card .reason{font-size:13.5px;margin-top:4px}
+.badge{display:inline-block;font-size:11.5px;padding:1px 7px;border-radius:9px;border:1px solid var(--ring);color:var(--ink2);margin-left:4px;white-space:nowrap}
+.dir-up{color:var(--up)} .dir-down{color:var(--down)}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{padding:5px 8px;border-bottom:1px solid var(--grid);text-align:left;vertical-align:top}
+th{color:var(--ink2);font-weight:600;font-size:12.5px}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+dialog{border:none;border-radius:12px;padding:0;max-width:880px;width:calc(100% - 24px);background:var(--surface);color:var(--ink);box-shadow:0 10px 40px rgba(0,0,0,.3)}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+.dlg-head{position:sticky;top:0;background:var(--surface);border-bottom:1px solid var(--grid);padding:12px 16px;display:flex;justify-content:space-between;gap:10px;align-items:start}
+.dlg-body{padding:6px 16px 20px}
+.quote{border-left:3px solid var(--grid);padding:4px 10px;color:var(--ink2);font-size:14px}
+ul.notes{margin:4px 0;padding-left:18px;color:var(--ink2);font-size:14px}
+.scale{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink2)}
+.scale .bar{width:160px;height:10px;border-radius:2px}
+footer{color:var(--muted);font-size:13px;margin-top:40px}
+@media (max-width:600px){h1{font-size:22px}.tile b{font-size:20px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>국정 케이스 도서관 · 윤석열 정부</h1>
+  <p class="lede" id="lede"></p>
+  <nav>
+    <a href="#trend">긍정률과 기준선</a><a href="#heat">집단별 잔차</a><a href="#cases">케이스 카드</a>
+    <a href="#backtest">역검증</a><a href="#about">출처와 한계</a>
+  </nav>
+  <div class="tiles" id="tiles"></div>
+
+  <h2 id="trend">전체 직무 긍정률과 기준선</h2>
+  <p class="lede">파란 선이 실제 긍정률, 주황 선이 시간에 따른 기본 추세(기준선)입니다. 색 띠가 케이스(기준선에서 유의하게 벗어난 구간)이고, 띠를 누르면 카드가 열립니다.</p>
+  <div class="panel">
+    <div class="legend">
+      <span><i style="border-color:var(--s1)"></i>실제 긍정률</span>
+      <span><i style="border-color:var(--s2)"></i>기준선(LOESS)</span>
+      <span><i class="box" style="background:var(--up-tint);border:1px solid var(--up)"></i>상승 케이스</span>
+      <span><i class="box" style="background:var(--down-tint);border:1px solid var(--down)"></i>하락 케이스</span>
+      <span><i class="box" style="background:var(--edge)"></i>기준선 가장자리(신뢰도 낮음)</span>
+    </div>
+    <div class="scroll"><svg id="chart" viewBox="0 0 1000 400" style="min-width:680px" role="img" aria-label="주별 직무 긍정률, 기준선, 케이스 구간"></svg></div>
+  </div>
+
+  <h2 id="heat">집단별 잔차 히트맵</h2>
+  <p class="lede">칸 하나가 한 주의 한 집단입니다. 색은 잔차(실제 긍정률 − 그 집단 기준선)로, 파랑은 기준선보다 높고 빨강은 낮다는 뜻입니다. 칸에 올리면 값과 출처 호수가 보입니다.</p>
+  <div class="panel">
+    <div class="scale"><span>−15%p</span><span class="bar" id="scalebar"></span><span>+15%p</span><span style="margin-left:10px">빈 칸 = 50명 미만이라 미제시</span></div>
+    <div class="scroll"><svg id="heatmap" role="img" aria-label="주 × 집단 잔차 히트맵"></svg></div>
+  </div>
+
+  <h2 id="cases">케이스 카드</h2>
+  <p class="lede" id="caseLede"></p>
+  <div class="warn" id="caseWarn" hidden></div>
+  <div class="filters">
+    <select id="fType"><option value="">모든 유형</option><option value="전체">전체 긍정률이 움직인 케이스</option><option value="집단">일부 집단만 움직인 케이스</option></select>
+    <select id="fDir"><option value="">모든 방향</option><option value="상승">상승</option><option value="하락">하락</option></select>
+    <select id="fConf"><option value="">모든 신뢰 수준</option><option>높음</option><option>낮음</option><option>판단 불가</option></select>
+  </div>
+  <div class="cards" id="cardList"></div>
+
+  <h2 id="backtest">역검증: 과거 유사 사례로 다음 1~2주를 맞힐 수 있나</h2>
+  <div class="warn" id="btFirst"></div>
+  <div class="panel scroll"><table id="btTable"></table></div>
+  <ul class="notes" id="btCov"></ul>
+
+  <h2 id="about">데이터 출처와 한계</h2>
+  <div class="panel" id="about-body"></div>
+
+  <footer id="foot"></footer>
+</div>
+<div class="tip" id="tip"></div>
+<dialog id="dlg"><div class="dlg-head"><div id="dlgTitle"></div><button id="dlgClose" aria-label="닫기">닫기</button></div><div class="dlg-body" id="dlgBody"></div></dialog>
+
+<script>
+const D = /*__DATA__*/null;
+const M = D.meta, S = D.sources;
+const $ = id => document.getElementById(id);
+const NS = "http://www.w3.org/2000/svg";
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt = (v, d=1) => v == null ? "–" : (Math.round(v * 10 ** d) / 10 ** d).toString();
+const sgn = (v, d=1) => v == null ? "–" : (v > 0 ? "+" : v < 0 ? "−" : "±") + fmt(Math.abs(v), d);
+const src = (...iss) => `<span class="src">(${iss.filter(x => x != null).map(i => `<a href="${S[i].url}" target="_blank" rel="noopener">제${i}호</a>`).join("·")})</span>`;
+const el = (n, a, p) => { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); p && p.appendChild(e); return e; };
+const tip = $("tip");
+const showTip = (ev, html) => { tip.innerHTML = html; tip.style.display = "block";
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  tip.style.left = Math.min(ev.clientX + 14, innerWidth - w - 8) + "px";
+  tip.style.top = (ev.clientY + 14 + h > innerHeight ? ev.clientY - h - 10 : ev.clientY + 14) + "px"; };
+const hideTip = () => tip.style.display = "none";
+const caseById = Object.fromEntries(D.cases.map(c => [c.case_id, c]));
+const isUp = c => c.direction.startsWith("상승");
+
+// ---------- 머리말과 요약 타일 ----------
+$("lede").innerHTML = `한국갤럽 데일리 오피니언 제${M.first_issue}~${M.last_issue}호(2022년 5월~2025년 4월, ${M.n_reports}개 보고서)로 주별 대통령 직무 평가를 복원하고, 지지율이 기본 추세에서 벗어난 시점마다 그 주의 평가 이유 변화·집단별 반응·사건 후보를 묶었습니다. 연구용 시제품입니다.`;
+const ov = D.overall, first = ov[0], last = ov[ov.length - 1];
+$("tiles").innerHTML = [
+  [`${M.n_reports - M.n_parse_fail}/${M.n_reports}`, "보고서 파싱 성공"],
+  [`${M.n_asked}주`, `직무 평가가 있는 주 (탄핵소추 뒤 ${M.n_reports - M.n_asked}주는 조사 없음)`],
+  [`${first.y}% → ${last.y}%`, `첫 주 → 마지막 측정 주 긍정률 ${src(first.issue, last.issue)}`],
+  [`${M.n_cases}개`, `케이스 (전체 ${M.n_cases_overall} · 집단 ${M.n_cases - M.n_cases_overall})`],
+  ["단순 기준보다 못함", "역검증: 유사 사례 예측 vs '변화 없음'"],
+].map(([b, s]) => `<div class="tile"><b>${b}</b><span>${s}</span></div>`).join("");
+
+// ---------- 추세 그래프 ----------
+(function chart() {
+  const svg = $("chart"), W = 1000, H = 400, m = {l: 44, r: 16, t: 26, b: 34};
+  const tmax = Math.max(...ov.map(d => d.t)), ymax = 60;
+  const x = t => m.l + t / tmax * (W - m.l - m.r), y = v => m.t + (1 - v / ymax) * (H - m.t - m.b);
+  const tOf = Object.fromEntries(ov.map(d => [d.issue, d.t]));
+  // 가장자리
+  let run = null;
+  ov.forEach((d, i) => { if (d.edge && run === null) run = i;
+    if ((!d.edge || i === ov.length - 1) && run !== null) { const j = d.edge ? i : i - 1;
+      el("rect", {x: x(ov[run].t) - 3, y: m.t, width: x(ov[j].t) - x(ov[run].t) + 6, height: H - m.t - m.b, fill: "var(--edge)"}, svg); run = null; } });
+  for (let v = 0; v <= ymax; v += 10) {
+    el("line", {x1: m.l, x2: W - m.r, y1: y(v), y2: y(v), stroke: "var(--grid)"}, svg);
+    el("text", {x: m.l - 8, y: y(v) + 4, "text-anchor": "end", "font-size": 11, fill: "var(--muted)"}, svg).textContent = v + "%";
+  }
+  // 연도 눈금
+  const ticks = {}; ov.forEach(d => { const yr = S[d.issue].period.slice(0, 4); if (!(yr in ticks)) ticks[yr] = d.t; });
+  Object.entries(ticks).forEach(([yr, t]) => el("text", {x: x(t), y: H - 10, "font-size": 11, fill: "var(--muted)"}, svg).textContent = yr + "년");
+  // 케이스 띠
+  D.cases.forEach(c => {
+    const t0 = tOf[c.start_issue], t1 = tOf[c.end_issue]; if (t0 == null || t1 == null) return;
+    const overallCase = c.type === "전체";
+    const g = el("g", {tabindex: 0, role: "button", "aria-label": `${c.case_id} ${c.direction}`, style: "cursor:pointer"}, svg);
+    const x0 = x(t0) - 4, w = Math.max(8, x(t1) - x(t0) + 8);
+    el("rect", {x: x0, y: overallCase ? m.t : H - m.b - 14, width: w, height: overallCase ? H - m.t - m.b : 14,
+      fill: isUp(c) ? "var(--up-tint)" : "var(--down-tint)", stroke: isUp(c) ? "var(--up)" : "var(--down)",
+      "stroke-opacity": overallCase ? .25 : .6}, g);
+    if (overallCase) el("text", {x: x0 + w / 2, y: m.t - 8, "text-anchor": "middle", "font-size": 10, fill: "var(--ink2)"}, g).textContent = c.case_id.slice(1).replace(/^0+/, "");
+    g.addEventListener("click", () => openCase(c.case_id));
+    g.addEventListener("keydown", e => { if (e.key === "Enter") openCase(c.case_id); });
+    g.addEventListener("mousemove", e => showTip(e, `<b>${c.case_id} · ${c.direction}</b><br>${esc(c.start_week)} ~ ${esc(c.end_week)}<br>긍정률 ${c.overall.approve_from}% → ${c.overall.approve_to}% (제${c.reference_issue}→${c.end_issue}호)<br>누르면 카드가 열립니다`));
+    g.addEventListener("mouseleave", hideTip);
+  });
+  const path = (k, st, w) => el("path", {d: ov.map((d, i) => (i ? "L" : "M") + x(d.t) + "," + y(d[k])).join(""), fill: "none", stroke: st, "stroke-width": w, "stroke-linejoin": "round", "pointer-events": "none"}, svg);
+  path("b", "var(--s2)", 2); path("y", "var(--s1)", 2);
+  const cross = el("line", {y1: m.t, y2: H - m.b, stroke: "var(--ink2)", opacity: 0, "pointer-events": "none"}, svg);
+  const dot = el("circle", {r: 5, fill: "var(--s1)", stroke: "var(--surface)", "stroke-width": 2, opacity: 0, "pointer-events": "none"}, svg);
+  // 크로스헤어는 그래프 아래쪽 띠(축 영역)와 선 근처에서 동작하도록 투명 레이어를 케이스 띠 아래에 둔다
+  svg.addEventListener("mousemove", ev => {
+    if (ev.target.closest("g[role=button]")) { cross.setAttribute("opacity", 0); dot.setAttribute("opacity", 0); return; }
+    const r = svg.getBoundingClientRect(), px = (ev.clientX - r.left) * W / r.width;
+    if (px < m.l || px > W - m.r) return;
+    const d = ov.reduce((a, b) => Math.abs(x(b.t) - px) < Math.abs(x(a.t) - px) ? b : a);
+    cross.setAttribute("x1", x(d.t)); cross.setAttribute("x2", x(d.t)); cross.setAttribute("opacity", .35);
+    dot.setAttribute("cx", x(d.t)); dot.setAttribute("cy", y(d.y)); dot.setAttribute("opacity", 1);
+    showTip(ev, `<b>${esc(S[d.issue].week)}</b> <span class="src">제${d.issue}호</span><br>긍정률 ${d.y}% (95% 오차 ±${fmt(1.96 * d.se)}%p)<br>기준선 ${fmt(d.b)}% · 잔차 ${sgn(d.y - d.b)}%p${d.edge ? "<br>기준선 가장자리" : ""}`);
+  });
+  svg.addEventListener("mouseleave", () => { hideTip(); cross.setAttribute("opacity", 0); dot.setAttribute("opacity", 0); });
+})();
+
+// ---------- 히트맵 ----------
+function hexRgb(h) { const n = parseInt(h.slice(1), 16); return [n >> 16, (n >> 8) & 255, n & 255]; }
+function divColor(v) {
+  const cs = getComputedStyle(document.documentElement);
+  const up = hexRgb(cs.getPropertyValue("--up").trim()), dn = hexRgb(cs.getPropertyValue("--down").trim()), mid = hexRgb(cs.getPropertyValue("--mid").trim());
+  const t = Math.max(-1, Math.min(1, v / 15)), a = Math.abs(t), to = t >= 0 ? up : dn;
+  return `rgb(${mid.map((c, i) => Math.round(c + (to[i] - c) * a)).join(",")})`;
+}
+function drawHeat() {
+  const H = D.heat, svg = $("heatmap"); svg.innerHTML = "";
+  const cw = 8, ch = 15, left = 170, top = 22, W = left + H.issues.length * cw + 10, Ht = top + H.rows.length * ch + 6;
+  svg.setAttribute("viewBox", `0 0 ${W} ${Ht}`); svg.style.minWidth = W + "px";
+  let prevCat = null;
+  H.rows.forEach((r, ri) => {
+    const yy = top + ri * ch;
+    if (r.cat !== prevCat) { if (ri) el("line", {x1: 0, x2: W, y1: yy, y2: yy, stroke: "var(--grid)"}, svg);
+      el("text", {x: 2, y: yy + 11, "font-size": 10.5, fill: "var(--muted)"}, svg).textContent = r.cat; prevCat = r.cat; }
+    el("text", {x: left - 6, y: yy + 11, "text-anchor": "end", "font-size": 11, fill: "var(--ink2)"}, svg).textContent = r.sub;
+    H.values[ri].forEach((v, ci) => {
+      if (v == null) return;
+      const c = el("rect", {x: left + ci * cw, y: yy + 1, width: cw - 1, height: ch - 2, fill: divColor(v)}, svg);
+      c.addEventListener("mousemove", e => { const iss = H.issues[ci];
+        showTip(e, `<b>${esc(r.cat)} · ${esc(r.sub)}</b><br>${esc(S[iss].week)} <span class="src">제${iss}호</span><br>긍정률 ${H.approve[ri][ci]}% (조사완료 ${H.n[ri][ci]}명)<br>잔차 ${sgn(v)}%p`); });
+      c.addEventListener("mouseleave", hideTip);
+    });
+  });
+  const ticks = {}; H.issues.forEach((iss, i) => { const yr = S[iss].period.slice(0, 4); if (!(yr in ticks)) ticks[yr] = i; });
+  Object.entries(ticks).forEach(([yr, i]) => el("text", {x: left + i * cw, y: 12, "font-size": 11, fill: "var(--muted)"}, svg).textContent = yr + "년");
+  D.cases.filter(c => c.type === "전체").forEach(c => { const i = H.issues.indexOf(c.end_issue); if (i < 0) return;
+    el("path", {d: `M${left + i * cw + cw / 2 - 3},${top - 6} l3,4 l3,-4z`, fill: isUp(c) ? "var(--up)" : "var(--down)"}, svg); });
+  $("scalebar").style.background = `linear-gradient(90deg, ${divColor(-15)}, ${divColor(0)}, ${divColor(15)})`;
+}
+drawHeat();
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", drawHeat);
+
+// ---------- 케이스 카드 ----------
+$("caseLede").innerHTML = `케이스 = 전체 긍정률의 잔차가 1~3주 사이 조사 오차(95%)를 넘어 움직였거나, 어떤 집단이 그 집단 표본오차의 2배 넘게 움직인 구간. 카드를 누르면 집단별 반응, 평가 이유 변화, 사건 후보, 출처가 열립니다.`;
+if (!M.events_reviewed) { $("caseWarn").hidden = false;
+  $("caseWarn").innerHTML = `사건은 아직 사람이 검토하지 않은 <b>자동 추출 후보</b>입니다(${M.n_events}개 중 검토 0). 그래서 신뢰 수준은 잠정이고 대부분 '낮음'입니다. 사건 검토 뒤 다시 만들면 달라집니다.`; }
+function topReason(c) { const r = c.reason_changes[0]; if (!r) return "3%p 이상 바뀐 평가 이유 없음";
+  return `${r.polarity} 이유 '${esc(r.item)}' ${r.pct_from == null ? "새로 " + r.pct_to + "%" : r.pct_to == null ? r.pct_from + "% → 목록에서 빠짐" : r.pct_from + "% → " + r.pct_to + "%"}`; }
+function renderCards() {
+  const t = $("fType").value, d = $("fDir").value, cf = $("fConf").value;
+  const list = D.cases.filter(c => (!t || c.type === t) && (!d || c.direction.startsWith(d)) && (!cf || c.confidence === cf));
+  $("cardList").innerHTML = list.map(c => `<button class="card" data-id="${c.case_id}">
+    <div class="top"><span class="id">${c.case_id} <span class="${isUp(c) ? "dir-up" : "dir-down"}">${isUp(c) ? "▲" : "▼"} ${esc(c.direction)}</span></span>
+      <span class="chg">${c.overall.approve_from}→${c.overall.approve_to}%</span></div>
+    <div class="meta">${esc(c.start_week)} ~ ${esc(c.end_week)} <span class="src">(제${c.reference_issue}~${c.end_issue}호)</span></div>
+    <div class="reason">${topReason(c)}</div>
+    <div class="meta">신뢰 ${esc(c.confidence)}<span class="badge">${c.type === "전체" ? "전체" : "집단만"}</span>${c.confidence_notes.some(n => n.includes("가장자리")) ? '<span class="badge">가장자리</span>' : ""}${c.confidence_notes.some(n => n.includes("기준선이 움직여")) ? '<span class="badge">기준선 영향</span>' : ""}</div>
+  </button>`).join("") || `<p class="lede">조건에 맞는 케이스가 없습니다.</p>`;
+}
+["fType", "fDir", "fConf"].forEach(id => $(id).addEventListener("change", renderCards));
+$("cardList").addEventListener("click", e => { const b = e.target.closest(".card"); if (b) openCase(b.dataset.id); });
+renderCards();
+
+function openCase(id) {
+  const c = caseById[id], o = c.overall;
+  $("dlgTitle").innerHTML = `<b style="font-size:18px">${c.case_id} · <span class="${isUp(c) ? "dir-up" : "dir-down"}">${esc(c.direction)}</span></b><br><span class="src" style="font-size:13px">${esc(c.start_week)} ~ ${esc(c.end_week)} · 조사 ${esc(c.period)} · 기준 주 ${esc(c.reference_week)}</span>`;
+  const gTop = c.group_changes.slice(0, 12);
+  const rc = c.reason_changes;
+  const matched = c.event_candidates.filter(e => e.matches_changed_reason), other = c.event_candidates.filter(e => !e.matches_changed_reason);
+  const evRow = e => `<tr><td class="num">${esc(e.date)}</td><td>${esc(e.event)} <span class="src">제${e.issue}호 · ${esc(e.week_role)}</span></td><td>${esc(e.domain)}</td></tr>`;
+  $("dlgBody").innerHTML = `
+    <h3>전체 긍정률</h3>
+    <p>${o.approve_from}% → ${o.approve_to}% (실제 ${sgn(o.change)}%p, 기준선 대비 잔차 ${sgn(o.residual_change)}%p, 조사 오차 대비 z = ${fmt(o.z, 2)}${o.significant ? "" : ", 전체로는 유의하지 않음"}) ${src(c.reference_issue, c.end_issue)}</p>
+    <p>회복: ${c.recovery ? `끝 주 뒤 약 ${c.recovery.weeks}주 만에 기준 주 수준으로 ${src(c.recovery.issue)}` : esc(c.recovery_note)}</p>
+    <h3>신뢰 수준: ${esc(c.confidence)}</h3>
+    <ul class="notes">${c.confidence_notes.map(n => `<li>${esc(n)}</li>`).join("")}</ul>
+    <h3>집단별 변화 (잔차 변화가 큰 순, 상위 ${gTop.length}개 / ${c.group_changes.length}개)</h3>
+    <div class="scroll"><table><thead><tr><th>순위</th><th>집단</th><th class="num">긍정률</th><th class="num">변화</th><th class="num">잔차 변화</th><th class="num">감지 기준</th><th>감지</th></tr></thead><tbody>
+    ${gTop.map(g => `<tr><td class="num">${g.rank}</td><td>${esc(g.category)} · ${esc(g.subgroup)} <span class="src">${g.n_raw_to}명</span></td><td class="num">${g.approve_from}→${g.approve_to}%</td><td class="num">${sgn(g.change)}</td><td class="num">${sgn(g.residual_change)}</td><td class="num">±${g.threshold}</td><td>${g.detected ? "●" : ""}</td></tr>`).join("")}
+    </tbody></table></div>
+    <p class="src">출처: 각 집단 값 모두 ${src(c.reference_issue, c.end_issue)} 직무 평가 교차표. '감지'(●) = 케이스 기간 안의 어느 1~3주 구간에서 그 집단 변화가 집단 표본오차 2배를 넘었음(표의 기준 주→끝 주 변화는 그보다 작을 수 있음). '감지 기준'은 끝 주 표본 기준 값.</p>
+    <h3>같은 기간 3%p 이상 바뀐 평가 이유</h3>
+    ${rc.length ? `<div class="scroll"><table><thead><tr><th>구분</th><th>항목</th><th class="num">기준 주</th><th class="num">끝 주</th><th>변화</th><th>분야</th></tr></thead><tbody>
+    ${rc.map(r => `<tr><td>${r.polarity}</td><td>${esc(r.item)}</td><td class="num">${r.pct_from ?? "목록에 없음"}${r.pct_from != null ? "%" : ""}</td><td class="num">${r.pct_to ?? "목록에 없음"}${r.pct_to != null ? "%" : ""}</td><td>${r.change != null ? sgn(r.change) + "%p" : esc(r.kind)}</td><td>${esc(r.domain)}</td></tr>`).join("")}
+    </tbody></table></div><p class="src">출처: ${src(c.reference_issue, c.end_issue)} 긍정·부정 평가 이유(자유응답, 각 평가자 중 비율). 목록은 보통 1% 이상 항목만 실려서 '목록에 없음'은 1% 미만일 수 있으나 0으로 보지 않았습니다.</p>` : "<p>없음</p>"}
+    <h3>사건 후보 ${M.events_reviewed ? "" : '<span class="badge">미검토 자동 추출</span>'}</h3>
+    <p class="src" style="white-space:normal">원인을 하나로 단정하지 않습니다. 평가 이유 변화와 같은 분야로 분류된 사건을 먼저 보여 줍니다.</p>
+    ${matched.length ? `<div class="scroll"><table><thead><tr><th class="num">날짜</th><th>이유 변화와 같은 분야의 사건 (${matched.length})</th><th>분야</th></tr></thead><tbody>${matched.map(evRow).join("")}</tbody></table></div>` : ""}
+    <details><summary>그 밖의 같은 주·앞 주 사건 (${other.length})</summary><div class="scroll"><table><tbody>${other.map(evRow).join("")}</tbody></table></div></details>
+    ${c.gallup_commentary_excerpt ? `<h3>갤럽 해설 발췌</h3><p class="quote">${esc(c.gallup_commentary_excerpt)}</p><p>${src(c.end_issue)}</p>` : ""}
+    <h3>출처</h3>
+    <ul class="notes">${c.sources.map(s => `<li>제${s.issue}호 ${esc(s.week)} · <a href="${s.url}" target="_blank" rel="noopener">게시물</a> · <a href="${s.pdf}" target="_blank" rel="noopener">PDF</a></li>`).join("")}</ul>`;
+  $("dlg").showModal(); $("dlgBody").scrollTop = 0;
+}
+$("dlgClose").addEventListener("click", () => $("dlg").close());
+$("dlg").addEventListener("click", e => { if (e.target === $("dlg")) $("dlg").close(); });
+
+// ---------- 역검증 ----------
+$("btFirst").innerHTML = `<b>${esc(M.bt_first)}</b>`;
+$("btTable").innerHTML = `<thead><tr><th>범위</th><th class="num">몇 주 뒤</th><th>방법</th><th class="num">건수</th><th class="num">방향 적중률</th><th class="num">평균 절대오차(%p)</th></tr></thead><tbody>` +
+  M.bt_rows.map(r => `<tr${r.method === "유사 사례 평균" ? ' style="font-weight:600"' : ""}><td>${esc(r.scope)}</td><td class="num">${esc(r.h)}</td><td>${esc(r.method)}</td><td class="num">${esc(r.n)}</td><td class="num">${esc(r.dir)}</td><td class="num">${esc(r.mae)}</td></tr>`).join("") + "</tbody>";
+$("btCov").innerHTML = [`대상: '전체' 케이스 중 비교할 과거 케이스가 있던 ${M.bt_cases}개의 시작 주에 서서, 그 전에 끝난 비슷한 케이스 3개의 반응을 평균해 다음 1·2번째 조사의 긍정률 변화를 예측.`,
+  ...M.bt_cov, "방향 적중은 변화가 1주 잡음 범위 안이면 '변화 없음'으로 본 3분류. 자세한 내용은 data/backtest_report.md."].map(s => `<li>${esc(s)}</li>`).join("");
+
+// ---------- 출처와 한계 ----------
+$("about-body").innerHTML = `
+  <h3 style="margin-top:0">출처</h3>
+  <ul class="notes">
+    <li>한국갤럽 데일리 오피니언 제${M.first_issue}~${M.last_issue}호 PDF(교차집계표)와 게시물 본문(www.gallup.co.kr). 모든 수치 옆 작은 글씨가 출처 호수이며 누르면 원문이 열립니다.</li>
+    <li>수집: robots.txt 확인(제한 규칙 없음), 요청 간격 2.5초, 연구 목적 User-Agent. 중앙선거여론조사심의위원회와 한국사회과학자료원 자료는 쓰지 않았습니다.</li>
+    <li>파싱: ${M.n_reports}개 중 ${M.n_reports - M.n_parse_fail}개 자동 검증 통과. 무작위 5개 호수를 원본 PDF와 칸마다 대조(README 검증표).</li>
+  </ul>
+  <h3>이용 조건</h3>
+  <p><b>연구용 시제품입니다.</b> 원자료 저작권은 한국갤럽에 있으며, 상업적으로 이용하기 전에는 반드시 한국갤럽과 이용 조건을 협의해야 합니다. 원본 PDF는 공개 저장소에 올리지 않았습니다.</p>
+  <h3>한계</h3>
+  <ul class="notes">
+    <li>2024년 12월 14일 탄핵소추안 가결 뒤 12주(제607~618호)는 갤럽이 직무 평가를 하지 않아 긍정률이 없습니다.</li>
+    <li>기준선: ${esc(M.model)}. 로그·지수 감소 모델은 이 정부의 계단식 흐름을 담지 못해 쓰지 않았습니다. LOESS는 처음·끝 약 10주(취임 초, 2024년 10~12월 계엄 시기 포함)에서 기울어질 수 있어 '가장자리'로 표시했습니다. 또 앞뒤 데이터를 함께 쓰므로 예측에는 쓰지 않았습니다.</li>
+    <li>케이스 감지는 여러 집단·여러 주를 동시에 보므로 우연한 신호가 섞입니다(집단 신호 약 1만 번 검사, 우연 기대 약 60건, 실제 303건).</li>
+    <li>사건은 갤럽 게시물의 '주요 사건' 목록을 자동으로 나누고 키워드로 분야를 붙인 것입니다(표본 판정 약 75~80% 적절). 사람 검토 전에는 원인 후보일 뿐입니다.</li>
+    <li>집단 표본은 50~400명이라 1주 변화의 잡음이 큽니다. 50명 미만 집단(강원·제주 등)은 갤럽이 수치를 싣지 않아 비어 있습니다.</li>
+    <li>표준오차가 회전된 페이지에 있던 5개 호수와 모든 집단의 표준오차는 √(p(1−p)/n) 계산값입니다(보고서 값과 평균 0.96배 차이).</li>
+  </ul>`;
+$("foot").innerHTML = `생성 ${M.generated} · 재생성: <code>python src/report.py</code> · 국정 시뮬레이터 1단계 케이스 도서관 시제품`;
+</script>
+</body>
+</html>
