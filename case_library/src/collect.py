@@ -92,9 +92,17 @@ class PoliteClient:
     def request(self, method: str, url: str, **kw) -> requests.Response:
         if not self.allowed(url):
             raise PermissionError(f"robots.txt 가 막은 경로: {url}")
-        self._wait()
-        r = self.s.request(method, url, timeout=self.timeout, **kw)
-        return r
+        # 연결 끊김 같은 네트워크 오류만 간격을 늘려 가며 다시 시도한다(4, 8, 16, 32초)
+        for attempt in range(5):
+            self._wait()
+            try:
+                return self.s.request(method, url, timeout=self.timeout, **kw)
+            except (requests.ConnectionError, requests.Timeout) as e:
+                if attempt == 4:
+                    raise
+                delay = 4 * 2 ** attempt
+                print(f"  네트워크 오류({type(e).__name__}), {delay}초 뒤 재시도: {url}")
+                time.sleep(delay)
 
 
 def cached_html(client: PoliteClient, name: str, method: str, url: str, **kw) -> str:
