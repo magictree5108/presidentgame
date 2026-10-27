@@ -215,7 +215,19 @@ def build_review_page(events, commentary, reasons):
                           "reasons": [f"{'긍정' if p == 'positive' else '부정'}:{i} {pc:g}%" + (f"({ch:+g})" if ch is not None else "")
                                       for p, i, pc, ch in reasons.get(c["issue"], [])
                                       if i not in ("기타", "모름/응답거절") and (ch is not None or pc >= 5)]} for c in commentary}
-    payload = json.dumps({"events": events, "weeks": weeks, "domains": DOMAINS}, ensure_ascii=False)
+    # 5단계 케이스가 있으면 케이스 관련 주(케이스 기간 + 앞 주)를 표시해 그 주만 먼저 검토할 수 있게 한다
+    # 우선 검토 = 전체 케이스에서 이유 변화와 같은 분야로 연결된 원인 후보 사건(신뢰 수준 판단에 쓰임)
+    case_weeks: dict[int, list[str]] = {}
+    priority: list[str] = []
+    cases_path = DATA / "cases.json"
+    if cases_path.exists():
+        for c in json.loads(cases_path.read_text(encoding="utf-8")):
+            for i in c["event_weeks"]:
+                case_weeks.setdefault(i, []).append(c["case_id"])
+            if c["type"] == "전체":
+                priority += [e["event_id"] for e in c["event_candidates"] if e["matches_changed_reason"]]
+    payload = json.dumps({"events": events, "weeks": weeks, "domains": DOMAINS, "caseWeeks": case_weeks,
+                          "priority": sorted(set(priority))}, ensure_ascii=False)
     tpl = (ROOT / "src" / "review_template.html").read_text(encoding="utf-8")
     (ROOT / "review_events.html").write_text(tpl.replace("/*__DATA__*/null", payload), encoding="utf-8")
 

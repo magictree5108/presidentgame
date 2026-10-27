@@ -65,6 +65,7 @@ tr.s-삭제 td.ev input{text-decoration:line-through;color:var(--muted)}
     작업 중인 내용은 이 브라우저에 자동 저장됩니다. 끝나면 <b>검토 결과 CSV 저장</b>을 눌러 받은 파일
     <code>events_reviewed.csv</code>를 <code>case_library/data/</code> 폴더에 넣거나 대화창에 올려 주세요.
     분야와 관련 이유는 키워드로 자동 분류한 값이라 틀린 것이 있을 수 있습니다.
+    시간이 없으면 범위를 <b>우선 검토</b>로 바꿔 케이스 원인 후보부터 보세요(나머지는 케이스 카드에서 '미검토'로 남습니다).
   </p>
   <div class="bar">
     <select id="fWeek"><option value="">모든 주</option></select>
@@ -74,6 +75,11 @@ tr.s-삭제 td.ev input{text-decoration:line-through;color:var(--muted)}
       <option value="승인">승인</option><option value="수정">수정</option><option value="삭제">삭제</option>
     </select>
     <input type="search" id="fQ" placeholder="사건 검색">
+    <select id="fScope">
+      <option value="">모든 사건</option>
+      <option value="priority">우선 검토: 전체 케이스의 원인 후보</option>
+      <option value="case">케이스 관련 주의 사건</option>
+    </select>
     <button class="primary" id="save">검토 결과 CSV 저장</button>
     <button id="loadBtn">저장한 CSV 불러오기</button>
     <input type="file" id="loadFile" accept=".csv" hidden>
@@ -103,6 +109,10 @@ function setField(id, f, v) {
 }
 
 const weeks = [...new Set(DATA.events.map(e => e.issue))];
+const CASES = DATA.caseWeeks || {};
+const PRIORITY = new Set(DATA.priority || []);
+const fScope = document.getElementById("fScope");
+if (!Object.keys(CASES).length) fScope.hidden = true;
 const fWeek = document.getElementById("fWeek"), fDom = document.getElementById("fDom"),
       fSt = document.getElementById("fSt"), fQ = document.getElementById("fQ");
 weeks.forEach(i => fWeek.add(new Option(`제${i}호 ${DATA.weeks[i].week_label}`, i)));
@@ -111,19 +121,21 @@ DATA.domains.forEach(d => fDom.add(new Option(d, d)));
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
 function render() {
-  const w = fWeek.value, d = fDom.value, st = fSt.value, q = fQ.value.trim();
+  const w = fWeek.value, d = fDom.value, st = fSt.value, q = fQ.value.trim(), scope = fScope.value;
   const main = document.getElementById("main");
   let html = "";
   for (const i of weeks) {
     if (w && String(i) !== w) continue;
+    if (scope === "case" && !CASES[i]) continue;
     const evs = DATA.events.filter(e => e.issue === i &&
       (!d || cur(e, "domain") === d) && (!st || statusOf(e) === st) &&
-      (!q || cur(e, "event").includes(q)));
+      (!q || cur(e, "event").includes(q)) && (scope !== "priority" || PRIORITY.has(e.event_id)));
     if (!evs.length) continue;
     const wk = DATA.weeks[i];
     const notAsked = evs[0].approval_status === "not_asked";
     html += `<section class="week" data-issue="${i}">
       <div class="week-head"><b>제${i}호 · ${esc(wk.week_label)}</b>
+        ${CASES[i] ? `<span class="chip">케이스 ${CASES[i].join(", ")}</span>` : ""}
         <span class="note">조사 ${esc(evs[0].survey_period)}${notAsked ? " · 직무 평가 없음(직무 정지)" : ""}</span>
         <span class="sp"></span>
         <a href="${esc(wk.url)}" target="_blank" rel="noopener">원문</a>
@@ -172,11 +184,12 @@ document.getElementById("main").addEventListener("change", ev => {
 document.getElementById("main").addEventListener("click", ev => {
   const i = ev.target.dataset && ev.target.dataset.bulk;
   if (!i) return;
-  DATA.events.filter(e => String(e.issue) === i && statusOf(e) === "미검토")
+  DATA.events.filter(e => String(e.issue) === i && statusOf(e) === "미검토" &&
+                     (fScope.value !== "priority" || PRIORITY.has(e.event_id)))
     .forEach(e => { state[e.event_id] = state[e.event_id] || {}; state[e.event_id].status = "승인"; });
   persist(); render();
 });
-[fWeek, fDom, fSt].forEach(el => el.addEventListener("change", render));
+[fWeek, fDom, fSt, fScope].forEach(el => el.addEventListener("change", render));
 fQ.addEventListener("input", render);
 
 const COLS = ["event_id","issue","week_label","survey_period","event_date","date_text","event","source_line","domain",

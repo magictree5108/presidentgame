@@ -20,3 +20,11 @@ baseline:
   # 케이스 감지 창(최대 3주)의 5배.
   min_window_weeks: 15
   min_coverage: 0.9          # 직무 긍정률이 있는 주가 이 비율 이상인 집단만 기준선을 만든다
+
+cases:
+  windows: [1, 2, 3]          # 몇 번의 조사(주) 사이 변화를 볼지
+  overall_z: 1.96             # 전체: |잔차 변화| > overall_z × 변화량 표준오차 이면 감지 (95%)
+  group_moe_multiple: 2.0     # 집단: |잔차 변화| > group_moe_multiple × 집단 표본오차(±1.96×표준오차) 이면 감지
+  moe_z: 1.96
+  reason_change_pp: 3         # 같은 기간 이 이상 늘거나 준 평가 이유 항목을 카드에 싣는다
+  recovery_z: 1.0             # 잔차가 기준 주 잔차와 (recovery_z × 변화량 표준오차) 안으로 돌아오면 '회복'
