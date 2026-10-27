@@ -146,6 +146,8 @@ def check_move(state: dict, move: dict) -> Verdict:
                 return Verdict(False, rule["id"], "불가: 종결 선포된 안건은 다시 무제한토론 요구 불가(제106조의2 ⑨)", [])
             ok = _check(checks, "요구서 서명", th["sign"], total, have)
             return verdict(ok, rule, "가능", "불가: 재적 3분의 1 서명 부족")
+        if not state.get("filibuster", {}).get(move.get("bill"), {}).get("active"):
+            return Verdict(False, rule["id"], "불가: 진행 중인 무제한토론이 없음", [])
         if move["action"] == "cloture_file":
             ok = _check(checks, "종결동의 서명", th["cloture_sign"], total, have)
             return verdict(ok, rule, "가능(24시간 후 표결)", "불가: 재적 3분의 1 서명 부족")

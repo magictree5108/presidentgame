@@ -8,10 +8,6 @@ CACHE = DATA / "cache"
 LOGS = DATA / "logs"
 DOCS = ROOT / "docs"
 
-ASSEMBLY_DB = DATA / "assembly.sqlite"
-METRICS_DB = DATA / "metrics.sqlite"
-PREDICTIONS_DB = DATA / "predictions.sqlite"
-NEWS_DB = DATA / "news.sqlite"
 
 # 22대 국회 임기 시작일
 TERM_START = "2024-05-30"
@@ -31,6 +27,15 @@ def load_env(path: Path = ROOT / ".env") -> None:
 
 
 load_env()
+
+
+# 테스트·시연용으로 DB 위치를 바꿀 수 있다(JEONGMU_DB_DIR)
+_DBDIR = Path(os.environ["JEONGMU_DB_DIR"]) if os.environ.get("JEONGMU_DB_DIR") else DATA
+ASSEMBLY_DB = _DBDIR / "assembly.sqlite"
+METRICS_DB = _DBDIR / "metrics.sqlite"
+PREDICTIONS_DB = _DBDIR / "predictions.sqlite"
+NEWS_DB = _DBDIR / "news.sqlite"
+METRICS_JSON = _DBDIR / "metrics"
 
 
 def env(name: str, default: str = "") -> str:

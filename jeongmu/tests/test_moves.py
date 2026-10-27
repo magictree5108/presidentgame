@@ -16,7 +16,7 @@ STATE = {
         "B3": {"stage": "법사위 심사", "committee": "가위원회", "days_in_judiciary": 61},
         "B4": {"stage": "본회의 통과", "vetoed": True},
     },
-    "filibuster": {"B1": {"cloture_filed_hours_ago": 10}},
+    "filibuster": {"B1": {"active": True, "cloture_filed_hours_ago": 10}},
 }
 
 
@@ -78,3 +78,8 @@ def test_negotiating_group_and_mediation():
     assert check(STATE, {"type": "form_negotiating_group", "supporters": ["병당", "정당"]})["allowed"]
     assert check(STATE, {"type": "mediation_committee", "bill": "B1", "supporters": ["을당"]})["allowed"]
     assert not check(STATE, {"type": "mediation_committee", "bill": "B3", "supporters": ["을당"]})["allowed"]
+
+
+def test_cloture_requires_active_filibuster():
+    v = check(STATE, {"type": "filibuster", "action": "cloture_file", "bill": "B2", "supporters": ["갑당"]})
+    assert not v["allowed"] and "진행 중인" in v["reason"]

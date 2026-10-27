@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>정무상황실</title>
+<style>
+:root{
+  --bg:#0b1016; --panel:#121a23; --panel2:#18222d; --line:#253241; --text:#d9e2ec; --dim:#8696a7;
+  --accent:#4fb3ff; --warn:#ffb547; --bad:#ff6b6b; --ok:#4cd492;
+  --t-rec:#4fb3ff; --t-news:#c792ea; --t-rule:#ffcb6b; --t-prec:#80cbc4; --t-ai:#f78c6c;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 -apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif}
+header{display:flex;align-items:center;gap:16px;padding:10px 16px;border-bottom:1px solid var(--line);background:#0e151d;position:sticky;top:0;z-index:5;flex-wrap:wrap}
+header h1{font-size:17px;margin:0;letter-spacing:.08em}
+header h1 span{color:var(--accent)}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+nav button{background:none;border:1px solid transparent;color:var(--dim);padding:5px 10px;border-radius:6px;cursor:pointer;font:inherit}
+nav button.on{color:var(--text);border-color:var(--line);background:var(--panel)}
+#statusbar{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;font-size:12px}
+.chip{padding:2px 8px;border-radius:10px;border:1px solid var(--line);color:var(--dim)}
+.chip.ok{color:var(--ok);border-color:#235c40}.chip.no{color:var(--bad);border-color:#5c2323}
+main{padding:12px;display:none}
+main.on{display:grid;gap:12px}
+#tab-room{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)}
+@media(max-width:1000px){#tab-room{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px;min-width:0}
+.panel h2{font-size:12px;margin:0 0 8px;color:var(--dim);letter-spacing:.12em;font-weight:600}
+.col{display:grid;gap:12px;align-content:start;min-width:0}
+.tag{display:inline-block;font-size:10.5px;padding:0 5px;border-radius:3px;margin-left:4px;vertical-align:1px;border:1px solid;white-space:nowrap}
+.tag.기록{color:var(--t-rec)}.tag.보도{color:var(--t-news)}.tag.규칙{color:var(--t-rule)}.tag.선례{color:var(--t-prec)}
+.tag.AI추정,.tag.시뮬레이션{color:var(--t-ai);border-style:dashed}.tag.약함{color:var(--bad);border-style:dashed}
+.big{font-size:26px;font-weight:700}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+.kpi{background:var(--panel2);border-radius:6px;padding:8px}
+.kpi .l{font-size:11px;color:var(--dim)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{padding:4px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{color:var(--dim);font-weight:500}
+input,select,textarea,button.act{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:6px 8px;font:inherit}
+button.act{cursor:pointer;background:#173049;border-color:#24527a}
+button.act:hover{background:#1d3d5d}
+.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--dim)}.small{font-size:12px}
+.layers label{margin-right:10px;font-size:12px;color:var(--dim)}
+#hemi{width:100%;height:auto;display:block}
+#hemi circle{cursor:pointer;stroke:#0b1016;stroke-width:.6}
+#hemi circle.dim{opacity:.15}
+#hemi circle.hl{stroke:#fff;stroke-width:1.4}
+.legend{display:flex;flex-wrap:wrap;gap:8px;font-size:12px;margin-top:6px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:-1px}
+.list{max-height:340px;overflow:auto}
+.log{max-height:380px;overflow:auto;font-size:13px}
+.log div{padding:4px 0;border-bottom:1px dashed var(--line)}
+.bad{color:var(--bad)}.ok{color:var(--ok)}.warn{color:var(--warn)}
+dialog{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:10px;max-width:760px;width:calc(100% - 32px);padding:16px}
+dialog::backdrop{background:#000a}
+dialog h2{font-size:12px;margin:12px 0 4px;color:var(--dim);letter-spacing:.12em;font-weight:600}
+@media(max-width:700px){header{position:static}}
+.empty{padding:16px;border:1px dashed var(--line);border-radius:6px;color:var(--dim)}
+pre{white-space:pre-wrap;font:12px/1.5 ui-monospace,monospace}
+.tree ul{list-style:none;padding-left:18px;margin:4px 0}
+.tree li{padding:2px 0}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+<header>
+  <h1>정무<span>상황실</span></h1>
+  <nav id="tabs">
+    <button data-tab="room" class="on">작전상황실</button>
+    <button data-tab="actors">행위자</button>
+    <button data-tab="gov">정부 지휘계통</button>
+    <button data-tab="rules">규칙집</button>
+    <button data-tab="score">적중 기록</button>
+  </nav>
+  <div id="statusbar"></div>
+</header>
+
+<main id="tab-room" class="on">
+  <div class="col">
+    <section class="panel">
+      <h2>상황판</h2>
+      <div id="board"></div>
+    </section>
+    <section class="panel">
+      <h2>본회의장 의석도 <span class="tag 기록">기록</span></h2>
+      <div class="row small" style="margin-bottom:6px">
+        <label>기준일 <input type="date" id="seatDate"></label>
+        <span class="layers">
+          <label><input type="checkbox" id="lyNet"> 관계망(공동발의)</label>
+          <label><input type="checkbox" id="lyCross"> 초당적만</label>
+          <label>위원회 <select id="lyCmt"><option value="">끔</option></select></label>
+          <label>지역 <select id="lyReg"><option value="">끔</option></select></label>
+        </span>
+      </div>
+      <svg id="hemi" viewBox="0 0 640 340" role="img" aria-label="본회의장 의석도"></svg>
+      <div class="legend" id="legend"></div>
+    </section>
+    <section class="panel">
+      <h2>작전 일지 <span class="tag 시뮬레이션">시뮬레이션</span></h2>
+      <div class="log" id="oplog"><div class="muted">워게임을 시작하면 여기에 턴별 기록이 쌓입니다.</div></div>
+    </section>
+  </div>
+  <div class="col">
+    <section class="panel">
+      <h2>작전 입력</h2>
+      <div class="row"><input id="billQ" placeholder="법안명 검색" style="flex:1"><button class="act" id="billSearch">검색</button></div>
+      <div class="list small" id="billList" style="max-height:160px;margin-top:6px"></div>
+      <div class="row" style="margin-top:8px">
+        <input id="issueTitle" placeholder="또는 사안 제목 직접 입력" style="flex:1">
+        <input id="issueCmt" placeholder="소관위원회" style="width:150px">
+      </div>
+      <div class="row" style="margin-top:8px">
+        <label class="small"><input type="checkbox" id="useAi" checked> AI 판단 사용</label>
+        <button class="act" id="judgeBtn">판단 실행</button>
+        <button class="act" id="wgBtn">워게임 시작</button>
+      </div>
+      <div id="sel" class="small muted" style="margin-top:6px"></div>
+    </section>
+    <section class="panel">
+      <h2>처리 경로</h2>
+      <div id="path"><div class="muted small">법안을 고르고 판단을 실행하세요.</div></div>
+    </section>
+    <section class="panel">
+      <h2>판단</h2>
+      <div id="judge"><div class="muted small">판단 결과가 근거 표식과 함께 표시됩니다.</div></div>
+    </section>
+    <section class="panel" id="wgPanel" hidden>
+      <h2>워게임 — 다음 수 <span class="tag 시뮬레이션">시뮬레이션</span></h2>
+      <div class="row">
+        <select id="wgMove"></select>
+        <button class="act" id="wgPlay">수 두기</button>
+      </div>
+      <div id="wgState" class="small" style="margin-top:6px"></div>
+    </section>
+  </div>
+</main>
+
+<main id="tab-actors">
+  <section class="panel">
+    <h2>의원 <span class="tag 기록">기록</span></h2>
+    <div class="row"><input id="memQ" placeholder="이름·정당·지역 검색" style="flex:1"></div>
+    <div class="list" id="memList" style="max-height:480px;margin-top:6px"></div>
+  </section>
+  <section class="panel">
+    <h2>이해관계 집단 <span class="small muted">(data/groups.csv — 초안, 확인 필요)</span></h2>
+    <div id="groups"></div>
+  </section>
+</main>
+
+<main id="tab-gov">
+  <section class="panel"><h2>정부 지휘계통 <span class="tag 기록">정부조직법</span></h2><div id="gov" class="tree"></div></section>
+</main>
+
+<main id="tab-rules">
+  <section class="panel"><h2>제도 규칙 <span class="tag 규칙">규칙</span></h2><div id="rulesI"></div></section>
+  <section class="panel">
+    <h2>정무 경험칙</h2>
+    <div id="rulesH"></div>
+    <h2 style="margin-top:16px">경험칙 추가 (인터뷰 기록)</h2>
+    <div class="row"><textarea id="hRule" rows="2" placeholder="규칙 (예: ○○ 상황에서는 ○○가 ○○한다)" style="flex:1"></textarea></div>
+    <div class="row" style="margin-top:6px"><input id="hSrc" placeholder="출처: 직급·경력만 (이름 금지) 예) 국회 보좌관 12년차" style="flex:1"><input id="hNote" placeholder="메모" style="flex:1"><button class="act" id="hAdd">추가</button></div>
+  </section>
+</main>
+
+<main id="tab-score">
+  <section class="panel"><h2>적중 기록</h2><div id="predSum"></div><div class="list" id="predRows"></div></section>
+  <section class="panel"><h2>역검증 리포트</h2><pre id="backtest"></pre></section>
+  <section class="panel"><h2>AI 비용</h2><div id="usage"></div></section>
+</main>
+
+<dialog id="card"><div id="cardBody"></div><div class="row" style="justify-content:flex-end;margin-top:10px"><button class="act" onclick="card.close()">닫기</button></div></dialog>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const tag = (t) => `<span class="tag ${t.replace(/\s/g,"")}">${esc(t)}</span>`;
+const pct = v => v == null ? "—" : (v*100).toFixed(1) + "%";
+const api = async (p, opt) => { const r = await fetch(p, opt); if (!r.ok) throw new Error(await r.text()); return r.headers.get("content-type")?.includes("json") ? r.json() : r.text(); };
+const post = (p, b) => api(p, {method:"POST", headers:{"content-type":"application/json"}, body:JSON.stringify(b)});
+const PALETTE = ["#4fb3ff","#ff8a65","#9ccc65","#ba68c8","#ffd54f","#4dd0e1","#f06292","#a1887f","#90a4ae","#aed581"];
+let S = {seats:null, colors:{}, sel:null, game:null, net:null, cmts:{}};
+
+document.querySelectorAll("#tabs button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("#tabs button").forEach(x => x.classList.toggle("on", x === b));
+  document.querySelectorAll("main").forEach(m => m.classList.toggle("on", m.id === "tab-" + b.dataset.tab));
+  ({actors:loadActors, gov:loadGov, rules:loadRules, score:loadScore})[b.dataset.tab]?.();
+});
+
+async function loadStatus(){
+  const s = await api("/api/status");
+  const k = s.keys, c = s.counts;
+  $("#statusbar").innerHTML = [
+    `<span class="chip">${esc(s.today)}</span>`,
+    `<span class="chip ${c.members ? "ok" : "no"}">의원 ${c.members}</span>`,
+    `<span class="chip ${c.bills ? "ok" : "no"}">법안 ${c.bills}</span>`,
+    `<span class="chip ${c.member_votes ? "ok" : "no"}">표결 ${c.votes}건</span>`,
+    `<span class="chip">갱신 ${esc(s.meta.last_update || "없음")}</span>`,
+    ...Object.entries({국회API:k.assembly, 네이버:k.naver, AI:k.anthropic}).map(([n,v]) => `<span class="chip ${v?"ok":"no"}">${n} ${v?"키 있음":"키 없음"}</span>`),
+  ].join("");
+  return s;
+}
+
+function colorFor(p){ if (!(p in S.colors)) S.colors[p] = PALETTE[Object.keys(S.colors).length % PALETTE.length]; return S.colors[p]; }
+
+async function loadSeats(){
+  const d = $("#seatDate").value;
+  S.seats = await api("/api/seats" + (d ? "?on=" + d : ""));
+  const s = S.seats;
+  Object.keys(s.by_party).forEach(colorFor);
+  const T = s.total || 0, maj = Math.floor(T/2)+1, ft = Math.ceil(T*3/5), two = Math.ceil(T*2/3);
+  const parties = Object.entries(s.by_party);
+  const reach = (n) => { // n석에 닿는 최소 정당 조합(큰 정당부터)
+    let acc = 0, used = []; for (const [p,v] of parties){ if (acc >= n) break; acc += v; used.push(p); } return acc >= n ? used.join("+") : "도달 불가"; };
+  $("#board").innerHTML = T ? `
+    <div class="kpis">
+      <div class="kpi"><div class="l">재적 ${tag("기록")}</div><div class="big">${T}</div><div class="small muted">공석 ${s.vacant}</div></div>
+      <div class="kpi"><div class="l">과반 ${tag("규칙")}</div><div class="big">${maj}</div><div class="small muted">${esc(reach(maj))}</div></div>
+      <div class="kpi"><div class="l">5분의 3 (신속처리·토론종결) ${tag("규칙")}</div><div class="big">${ft}</div><div class="small muted">${esc(reach(ft))}</div></div>
+      <div class="kpi"><div class="l">3분의 2 (재의결·개헌) ${tag("규칙")}</div><div class="big">${two}</div><div class="small muted">${esc(reach(two))}</div></div>
+    </div>
+    <table style="margin-top:8px"><tr><th>정당</th><th>의석</th><th>비율</th></tr>
+    ${parties.map(([p,v]) => `<tr><td><i style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${colorFor(p)}"></i> ${esc(p)}</td><td>${v}</td><td>${pct(v/T)}</td></tr>`).join("")}
+    </table>
+    ${s.unknown_party.length ? `<div class="warn small">당적 미확인 ${s.unknown_party.length}명</div>` : ""}
+    <div id="alerts" style="margin-top:8px"></div>`
+    : `<div class="empty">국회 데이터가 아직 없습니다. <code>python src/update_assembly.py</code> 실행 후 새로고침하세요. (docs/keys.md 참고)</div>`;
+  drawHemi();
+  const regs = [...new Set(s.members.map(m => (m.district || "").split(/\s/)[0]).filter(Boolean))].sort();
+  $("#lyReg").innerHTML = `<option value="">끔</option>` + regs.map(r => `<option>${esc(r)}</option>`).join("");
+  loadAlerts();
+}
+
+async function loadAlerts(){
+  const a = await api("/api/alerts").catch(() => []);
+  if (!Array.isArray(a) || !a.length){ $("#alerts") && ($("#alerts").innerHTML = `<div class="small muted">오늘 수집된 위협·기회 알림 없음 ${tag("보도")}</div>`); return; }
+  $("#alerts").innerHTML = `<h2>오늘의 알림 ${tag("보도")}</h2>` + a.slice(0,12).map(x =>
+    `<div class="small">• [${esc(x.category)}] ${esc(x.entity_name || x.entity_id)} — ${esc(x.summary)} <a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.press_domain)}</a></div>`).join("");
+}
+
+function seatPositions(n){
+  // 반원 의석 배치: 줄마다 반지름에 비례해 좌석을 나누고 각도순으로 정렬
+  const rows = Math.max(4, Math.round(Math.sqrt(n/3.2))), r0 = 110, r1 = 300, cx = 320, cy = 320;
+  const radii = [...Array(rows)].map((_, i) => r0 + (r1-r0)*i/(rows-1));
+  const tot = radii.reduce((a,b) => a+b, 0);
+  let counts = radii.map(r => Math.round(n*r/tot)); counts[rows-1] += n - counts.reduce((a,b)=>a+b,0);
+  const pts = [];
+  radii.forEach((r, i) => { const k = counts[i]; for (let j=0;j<k;j++){ const a = Math.PI*(k===1?0.5:j/(k-1)); pts.push({x:cx - r*Math.cos(a), y:cy - r*Math.sin(a), a}); } });
+  return pts.sort((p,q) => p.a - q.a || q.y - p.y);
+}
+
+function drawHemi(){
+  const s = S.seats, svg = $("#hemi");
+  if (!s || !s.members.length){ svg.innerHTML = `<text x="320" y="200" fill="#8696a7" text-anchor="middle">데이터 없음</text>`; return; }
+  const order = Object.keys(s.by_party);
+  const mem = [...s.members].sort((a,b) => (order.indexOf(a.party) - order.indexOf(b.party)) || String(a.name).localeCompare(b.name, "ko"));
+  const pts = seatPositions(mem.length);
+  S.pos = {};
+  let html = `<g id="netg"></g>`;
+  mem.forEach((m, i) => { const p = pts[i]; S.pos[m.member_id] = p;
+    html += `<circle r="5.2" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" fill="${m.party ? colorFor(m.party) : "#555"}" data-id="${esc(m.member_id)}"><title>${esc(m.name)} · ${esc(m.party || "당적 미확인")} · ${esc(m.district || "")}</title></circle>`; });
+  html += `<text x="320" y="335" fill="#8696a7" font-size="11" text-anchor="middle">${esc(s.date)} 기준 ${s.total}석</text>`;
+  svg.innerHTML = html;
+  svg.querySelectorAll("circle").forEach(c => c.onclick = () => openCard(c.dataset.id));
+  $("#legend").innerHTML = order.map(p => `<span><i style="background:${colorFor(p)}"></i>${esc(p)} ${s.by_party[p]}</span>`).join("");
+  applyLayers();
+}
+
+async function applyLayers(){
+  const svg = $("#hemi"); if (!S.seats) return;
+  const cmt = $("#lyCmt").value, reg = $("#lyReg").value;
+  const cset = cmt ? new Set((S.cmts[cmt] || []).map(x => x.member_id)) : null;
+  svg.querySelectorAll("circle").forEach(c => {
+    const m = S.seats.members.find(x => x.member_id === c.dataset.id);
+    let on = true;
+    if (cset) on = cset.has(c.dataset.id);
+    if (reg) on = on && (m.district || "").startsWith(reg);
+    c.classList.toggle("dim", !on); c.classList.toggle("hl", !!(cset || reg) && on);
+  });
+  const g = svg.querySelector("#netg"); g.innerHTML = "";
+  if ($("#lyNet").checked){
+    if (!S.net) S.net = await api("/api/network?min_w=3");
+    const edges = S.net.edges.filter(e => !$("#lyCross").checked || e.cross_party).sort((a,b) => b.w - a.w).slice(0, 500);
+    const maxw = Math.max(1, ...edges.map(e => e.w));
+    g.innerHTML = edges.map(e => { const a = S.pos[e.a], b = S.pos[e.b]; if (!a || !b) return "";
+      return `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="${e.cross_party ? "#ffcb6b" : "#4fb3ff"}" stroke-opacity="${(0.08 + 0.5*e.w/maxw).toFixed(2)}" stroke-width="${(0.4 + 1.6*e.w/maxw).toFixed(2)}"/>`; }).join("");
+    if (!edges.length) g.innerHTML = `<text x="320" y="20" fill="#8696a7" font-size="11" text-anchor="middle">관계망 데이터 없음(python src/metrics.py)</text>`;
+  }
+}
+["#lyNet","#lyCross","#lyCmt","#lyReg"].forEach(s => $(s).onchange = applyLayers);
+$("#seatDate").onchange = loadSeats;
+
+async function loadCommittees(){
+  S.cmts = await api("/api/committees");
+  $("#lyCmt").innerHTML = `<option value="">끔</option>` + Object.keys(S.cmts).sort().map(c => `<option>${esc(c)}</option>`).join("");
+}
+
+async function openCard(id){
+  const m = await api("/api/members/" + encodeURIComponent(id));
+  const x = m.metrics || {};
+  $("#cardBody").innerHTML = `
+    <h2 style="font-size:18px;color:var(--text);letter-spacing:0">${esc(m.name)} <span class="muted small">${esc(m.name_hanja || "")}</span></h2>
+    <div class="small">${esc(m.current_party)} · ${esc(m.district)} · ${esc(m.reelection || "")} · ${esc(m.elect_type || "")} ${tag("기록")}</div>
+    <div class="small muted">소속위원회: ${esc(m.committees || "—")}</div>
+    <div class="kpis" style="margin-top:10px">
+      <div class="kpi"><div class="l">당론 이탈률 ${tag("기록")}</div><div class="big">${pct(x.defection_rate)}</div><div class="small muted">당 다수 판단 가능 표결 ${x.n_party_line ?? "—"}건</div></div>
+      <div class="kpi"><div class="l">본회의 표결 참여율 ${tag("기록")}</div><div class="big">${pct(x.attendance_rate)}</div><div class="small muted">표결 ${x.n_votes ?? "—"}건</div></div>
+      <div class="kpi"><div class="l">대표발의 ${tag("기록")}</div><div class="big">${x.n_lead_bills ?? "—"}</div><div class="small muted">공동 포함 ${x.n_sponsored_bills ?? "—"}건</div></div>
+      <div class="kpi"><div class="l">초당적 연결 비중 ${tag("기록")}</div><div class="big">${pct(x.bipartisan_share)}</div></div>
+    </div>
+    <h2 style="margin-top:12px">분야(소관위별 발의) ${tag("기록")}</h2>
+    <div class="small">${Object.entries(x.fields || {}).map(([k,v]) => `${esc(k)} ${v}`).join(" · ") || "—"}</div>
+    <h2 style="margin-top:12px">공동발의 상대 상위 10 ${tag("기록")}</h2>
+    <div class="small">${(x.top_cosponsors || []).map(p => `${esc(p.name || p.member_id)}(${p.shared_bills})`).join(", ") || "—"}</div>
+    <h2 style="margin-top:12px">당적·의원직 이력 ${tag("기록")}</h2>
+    <div class="small">${m.parties.map(p => `${esc(p.party)} ${esc(p.start_date)}~${esc(p.end_date || "현재")} <span class="muted">(${esc(p.source)})</span>`).join("<br>") || "—"}</div>
+    <h2 style="margin-top:12px">최근 대표발의</h2>
+    <div class="small">${m.lead_bills.map(b => `${esc(b.propose_dt)} ${b.detail_link ? `<a href="${esc(b.detail_link)}" target="_blank" rel="noopener">${esc(b.bill_name)}</a>` : esc(b.bill_name)} — ${esc(b.stage)}`).join("<br>") || "—"}</div>
+    <h2 style="margin-top:12px">최근 동향 ${tag("보도")}</h2>
+    <div class="small">${m.news.map(n => `${esc(n.pub_date)} [${esc(n.category)}] ${esc(n.summary)} <a href="${esc(n.url)}" target="_blank" rel="noopener">${esc(n.press_domain)}</a>`).join("<br>") || "수집된 보도 없음"}</div>
+    <div class="small muted" style="margin-top:12px">출처: ${m.sources.map(esc).join(" · ")}<br>마지막 갱신: ${esc(m.updated_at || "—")} · 지표 기준일: ${esc(x.as_of || "—")}</div>`;
+  $("#card").showModal();
+}
+
+$("#billSearch").onclick = async () => {
+  const rows = await api("/api/bills?q=" + encodeURIComponent($("#billQ").value));
+  $("#billList").innerHTML = rows.length ? `<table>${rows.map(b => `<tr data-id="${esc(b.bill_id)}" style="cursor:pointer"><td>${esc(b.bill_name)}<div class="muted">${esc(b.proposer || "")} · ${esc(b.propose_dt)}</div></td><td>${esc(b.committee || "")}</td><td>${esc(b.stage)}</td></tr>`).join("")}</table>` : `<div class="muted">결과 없음</div>`;
+  $("#billList").querySelectorAll("tr").forEach(tr => tr.onclick = () => { const b = rows.find(r => r.bill_id === tr.dataset.id); S.sel = b; $("#sel").textContent = `선택: ${b.bill_name} (${b.committee || "위원회 미정"}, ${b.stage})`; });
+};
+$("#billQ").onkeydown = e => { if (e.key === "Enter") $("#billSearch").click(); };
+
+function refList(refs, ev){ return (refs || []).map(r => { const e = ev.find(x => x.ref === r); return e ? `<span title="${esc(e.text)}" class="tag ${e.label.replace(/\s/g,"")}">${r}</span>` : ""; }).join(""); }
+
+$("#judgeBtn").onclick = async () => {
+  const body = S.sel ? {bill_id:S.sel.bill_id} : {title:$("#issueTitle").value, committee:$("#issueCmt").value};
+  if (!body.bill_id && !body.title) return alert("법안을 고르거나 사안 제목을 입력하세요");
+  body.use_ai = $("#useAi").checked;
+  $("#judge").innerHTML = `<div class="muted">판단 중…</div>`;
+  try {
+    const r = await post("/api/judge", body);
+    const ev = r.evidence;
+    $("#judge").innerHTML = `
+      ${r.ai_used ? "" : `<div class="warn small">AI 판단 없이 기본 규칙으로 계산했습니다${r.ai_error ? ` (${esc(r.ai_error)})` : ""}. 정당 입장은 '근거 약함'입니다.</div>`}
+      <div class="kpis"><div class="kpi"><div class="l">통과 확률 ${tag(r.ai_used ? "AI 추정" : "선례")} ${r.pass_prob_weak ? `<span class="tag 약함">근거 약함</span>` : refList(r.pass_prob_refs, ev)}</div><div class="big">${r.pass_prob == null ? "—" : pct(r.pass_prob)}</div></div>
+      <div class="kpi"><div class="l">예상 찬성/반대/유동 ${tag("AI 추정")}</div><div class="big">${r.casting.yes}/${r.casting.no}/${r.casting.swing}</div><div class="small muted">과반 ${r.casting.need_for_majority}, 부족 ${Math.max(0, r.casting.gap)}</div></div></div>
+      <h2 style="margin-top:10px">정당 입장</h2>
+      ${r.party_stances.map(s => `<div class="small">${esc(s.party)}: <b>${esc(s.stance)}</b> — ${esc(s.reason)} ${s.weak ? `<span class="tag 약함">근거 약함</span>` : tag("AI 추정") + refList(s.refs, ev)}</div>`).join("")}
+      <h2 style="margin-top:10px">판단</h2>
+      ${r.judgments.map(j => `<div class="small">• ${esc(j.text)} ${j.weak ? `<span class="tag 약함">근거 약함</span>` : tag("AI 추정") + refList(j.refs, ev)}</div>`).join("") || `<div class="small muted">AI 판단 없음</div>`}
+      <h2 style="margin-top:10px">캐스팅보트 후보 (유동, 이탈률 높은 순)</h2>
+      <div class="small">${r.casting.casting.map(f => `<a href="#" data-id="${esc(f.member_id)}" class="cv">${esc(f.name)}</a>(${esc(f.party)}, ${pct(f.defection_rate)})`).join(", ") || "—"}</div>
+      <details style="margin-top:8px"><summary class="small">의원별 예상 ${r.member_forecast.length}명</summary>
+        <table class="small"><tr><th>의원</th><th>정당</th><th>예상</th><th>이유</th></tr>${r.member_forecast.map(f => `<tr><td>${esc(f.name)}</td><td>${esc(f.party)}</td><td>${esc(f.forecast)}</td><td>${f.reasons.map(esc).join("; ")}</td></tr>`).join("")}</table></details>
+      <details style="margin-top:8px"><summary class="small">근거 목록 ${ev.length}개</summary>${ev.map(e => `<div class="small"><b>${e.ref}</b> ${tag(e.label)} ${esc(e.text)} ${e.link ? `<a href="${esc(e.link)}" target="_blank" rel="noopener">링크</a>` : ""}</div>`).join("")}</details>`;
+    $("#judge").querySelectorAll("a.cv").forEach(a => a.onclick = ev2 => { ev2.preventDefault(); openCard(a.dataset.id); });
+    $("#path").innerHTML = r.path.map(p => `<div class="small">${p.check ? (p.check.allowed ? "<span class=ok>●</span>" : "<span class=bad>●</span>") : "○"} ${esc(p.step)} ${tag("규칙")} <span class="muted">${esc(p.rule)}</span>
+      ${p.check ? `<div class="muted" style="margin-left:14px">${esc(p.check.reason)} — 찬성 정당 ${esc((p.supporters||[]).join("+") || "없음")}: ${p.check.checks.map(c => `${esc(c.what)} ${c.have}/${c.need}`).join(", ")}</div>` : ""}</div>`).join("")
+      + r.path_risks.map(x => `<div class="small warn">⚠ ${esc(x.stage)}: ${esc(x.risk)} ${x.weak ? `<span class="tag 약함">근거 약함</span>` : refList(x.refs, ev)}</div>`).join("");
+    S.lastJudge = r;
+  } catch (e) { $("#judge").innerHTML = `<div class="bad small">${esc(e.message)}</div>`; }
+};
+
+const MOVES = [["committee_pass","소관위 의결"],["fast_track","신속처리안건 지정(본회의)"],["fast_track|committee","신속처리안건 지정(위원회)"],["judiciary_bypass","법사위 지연 → 본회의 부의 요구"],["mediation_committee","안건조정위원회 요구"],["filibuster|start","무제한토론 요구"],["filibuster|cloture_file","토론 종결동의 제출"],["filibuster|cloture_vote","토론 종결 표결"],["plenary_pass","본회의 표결"],["override_veto","재의결"],["veto","재의요구(대통령)"],["negotiate","협상"],["public_campaign","여론전"],["pass","대기"]];
+$("#wgMove").innerHTML = MOVES.map(([k,v]) => `<option value="${k}">${v}</option>`).join("");
+
+$("#wgBtn").onclick = async () => {
+  if (!S.seats || !S.seats.total) return alert("의석 데이터가 필요합니다");
+  const parties = Object.keys(S.seats.by_party);
+  const player = prompt("내가 맡을 세력(정당명 또는 대통령):\n" + parties.join(", ") + ", 대통령", parties[0]);
+  if (!player) return;
+  const stances = S.lastJudge ? Object.fromEntries(S.lastJudge.party_stances.map(s => [s.party, s.stance])) : {};
+  const pres = prompt("대통령(정부)의 이 사안 입장: 찬성 / 반대 / 유동", "유동") || "유동";
+  const actors = parties.map(p => ({name:p, kind:"party", stance:stances[p] || "유동"})).concat([{name:"대통령", kind:"president", stance:pres}]);
+  const yes = parties.filter(p => stances[p] === "찬성"), no = parties.filter(p => stances[p] === "반대");
+  const coalitions = Object.fromEntries(parties.map(p => [p, stances[p] === "찬성" ? yes : stances[p] === "반대" ? no : [p]]));
+  S.game = await post("/api/wargame", {bill_id:S.sel?.bill_id, title:S.sel?.bill_name || $("#issueTitle").value || "사안", committee:S.sel?.committee || $("#issueCmt").value || null, player, actors, coalitions});
+  $("#wgPanel").hidden = false; renderGame(); };
+
+$("#wgPlay").onclick = async () => {
+  const [type, action] = $("#wgMove").value.split("|");
+  const move = {type}; if (action) (type === "fast_track" ? move.route = action : move.action = action);
+  if (type === "veto") move.actor_role = "대통령";
+  const r = await post(`/api/wargame/${S.game.run_id}/turn`, {move, use_ai: $("#useAi").checked});
+  S.game = r.game;
+  if (r.rejected) alert("제도상 불가능한 수입니다:\n" + r.entry.check.reason);
+  renderGame();
+};
+
+function renderGame(){
+  const g = S.game, b = g.bills.X;
+  $("#wgState").innerHTML = `턴 ${g.turn} · ${g.day}일째 · 내 세력 ${esc(g.player)} · 단계 <b>${esc(b.stage)}</b>${b.fast_track ? " · 신속처리" : ""}${b.vetoed ? " · 재의요구됨" : ""}${b.outcome ? ` · 결과 ${esc(b.outcome)}` : ""}`;
+  $("#oplog").innerHTML = g.log.slice().reverse().map(e => `<div><span class="muted">T${e.turn} D${e.day}</span> <b>${esc(e.actor)}</b> ${esc(e.move?.type || "")}${e.move?.action ? "/" + esc(e.move.action) : ""} → <span class="${e.check && !e.check.allowed ? "bad" : ""}">${esc(e.effect)}</span> ${tag(e.label === "규칙" ? "규칙" : "시뮬레이션")} ${e.by ? `<span class="muted small">(${esc(e.by)}${e.reason ? ": " + esc(e.reason) : ""})</span>` : ""}${e.check?.rule_id ? ` <span class="muted small">${esc(e.check.rule_id)}</span>` : ""}</div>`).join("");
+}
+
+async function loadActors(){
+  if (!S.seats) await loadSeats();
+  const render = () => { const q = $("#memQ").value.trim();
+    const rows = S.seats.members.filter(m => !q || [m.name, m.party, m.district].join(" ").includes(q));
+    $("#memList").innerHTML = rows.length ? `<table><tr><th>이름</th><th>정당</th><th>지역</th><th>소속위원회</th></tr>${rows.map(m => `<tr data-id="${esc(m.member_id)}" style="cursor:pointer"><td>${esc(m.name)}</td><td>${esc(m.party)}</td><td>${esc(m.district)}</td><td class="small muted">${esc(m.committees)}</td></tr>`).join("")}</table>` : `<div class="empty">의원 데이터 없음</div>`;
+    $("#memList").querySelectorAll("tr[data-id]").forEach(tr => tr.onclick = () => openCard(tr.dataset.id)); };
+  $("#memQ").oninput = render; render();
+  const g = await api("/api/groups");
+  $("#groups").innerHTML = `<table><tr><th>이름</th><th>유형</th><th>분야</th><th>상태</th></tr>${g.map(x => `<tr><td>${esc(x.name)}</td><td>${esc(x.type)}</td><td>${esc(x.fields)}</td><td class="muted small">${esc(x.status)}</td></tr>`).join("")}</table>`;
+}
+
+async function loadGov(){
+  const g = await api("/api/government");
+  const lv = l => g.orgs.filter(o => o.level === l);
+  const person = o => o.people?.length ? o.people.map(p => `${esc(p.title)} ${esc(p.name)}`).join(", ") : `<span class="muted">미입력</span>`;
+  const li = o => `<li><b>${esc(o.name)}</b> <span class="muted small">${esc(o.head_title)}${o.is_cabinet ? " · 국무위원" : ""}${o.deputies?.length ? " · " + o.deputies.map(esc).join(", ") : ""} · ${esc(o.basis)}</span> — ${person(o)}
+     ${g.orgs.filter(c => c.parent === o.name).length ? `<ul>${g.orgs.filter(c => c.parent === o.name).map(li).join("")}</ul>` : ""}</li>`;
+  $("#gov").innerHTML = `<div class="small muted">${esc(g.source)}<br>${esc(g.note)}</div>
+    <ul><li><b>대통령</b> ${tag("기록")}<ul>${lv("대통령 소속").map(li).join("")}
+      <li><b>국무총리</b> <span class="muted small">헌법 제86조</span><ul>${lv("국무총리 소속").map(li).join("")}</ul></li>
+      <li><b>행정각부</b> (${lv("행정각부").length}부)<ul>${lv("행정각부").map(li).join("")}</ul></li></ul></li></ul>`;
+}
+
+async function loadRules(){
+  const r = await api("/api/rules");
+  const I = r.institutional, H = r.heuristic;
+  $("#rulesI").innerHTML = `<div class="small muted">법제처 현행 원문 대조: ${esc(JSON.stringify(I._verified_summary || {}))}</div>` + I.rules.map(x => {
+    const v = x.verification || {status:"미검증"};
+    return `<div style="padding:6px 0;border-bottom:1px solid var(--line)"><b>${esc(x.id)} ${esc(x.title)}</b> <span class="${v.status === "검증됨" ? "ok" : "bad"} small">${esc(v.status)}</span>
+      <div class="small">${esc(x.rule)}</div><div class="small muted">근거: ${x.basis.map(b => esc(b.law + " " + b.article)).join(", ")}${v.checked_at ? ` · 대조일 ${esc(v.checked_at)}` : ""}</div></div>`; }).join("");
+  $("#rulesH").innerHTML = H.rules.map(x => `<div style="padding:6px 0;border-bottom:1px solid var(--line)"><b>${esc(x.id)}</b> <span class="small ${x.status === "데이터로 확인" ? "ok" : x.status === "반증" ? "bad" : "warn"}">${esc(x.status)}</span> ${esc(x.rule)}
+     <div class="small muted">출처: ${esc(x.source)}${x.evidence ? ` · 검증: ${esc(x.evidence.result)} ${x.evidence.pre_rate != null ? `(선거 전 이탈 ${pct(x.evidence.pre_rate)} vs 그 외 ${pct(x.evidence.rest_rate)}, z=${x.evidence.z})` : esc(x.evidence.reason || "")}` : ""}</div></div>`).join("");
+}
+$("#hAdd").onclick = async () => {
+  try { await post("/api/rules/heuristic", {rule:$("#hRule").value, source:$("#hSrc").value, note:$("#hNote").value});
+    $("#hRule").value = $("#hNote").value = ""; loadRules(); } catch (e) { alert(e.message); } };
+
+async function loadScore(){
+  const p = await api("/api/predictions");
+  $("#predSum").innerHTML = Object.keys(p.summary).length ? `<table><tr><th>출처</th><th>채점된 통과 예측</th><th>브라이어(낮을수록 좋음)</th><th>적중률</th></tr>${Object.entries(p.summary).map(([k,v]) => `<tr><td>${esc(k)}</td><td>${v.n}</td><td>${v.brier}</td><td>${pct(v.hit_rate)}</td></tr>`).join("")}</table>` : `<div class="empty">채점된 예측이 아직 없습니다.</div>`;
+  $("#predRows").innerHTML = `<table class="small"><tr><th>일시</th><th>종류</th><th>대상</th><th>예측</th><th>결과</th><th>점수</th></tr>${p.rows.slice(0,200).map(r => `<tr><td>${esc(r.created_at)}</td><td>${esc(r.kind)}</td><td>${esc(r.subject || r.bill_id)}</td><td>${esc(r.predicted)}</td><td>${esc(r.outcome || "대기")}</td><td>${r.score == null ? "—" : r.score.toFixed(3)}</td></tr>`).join("")}</table>`;
+  $("#backtest").textContent = await api("/api/backtest");
+  const u = await api("/api/usage");
+  $("#usage").innerHTML = `<div class="small">호출 ${u.calls}회 · 누적 $${u.cost_usd} · 워게임 ${u.wargames || 0}판 평균 ${u.avg_per_wargame_usd == null ? "—" : "$" + u.avg_per_wargame_usd}</div>` +
+    `<div class="small muted">${Object.entries(u.by_purpose || {}).map(([k,v]) => `${esc(k)} ${v.calls}회 $${v.cost_usd}`).join(" · ")}</div>`;
+}
+
+(async () => { await loadStatus(); await loadCommittees(); await loadSeats(); })().catch(e => { $("#board").innerHTML = `<div class="bad">${esc(e.message)}</div>`; });
+</script>
+</body>
+</html>

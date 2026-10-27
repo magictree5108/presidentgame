@@ -7,3 +7,6 @@ data/*.sqlite-journal
 data/law_cache/
 data/logs/
 .pytest_cache/
+data/wargames/
+data/metrics/
+docs/api_samples/

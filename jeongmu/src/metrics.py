@@ -16,7 +16,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from config import DATA, METRICS_DB
+from config import METRICS_DB, METRICS_JSON
 from db import connect
 
 VOTED = ("찬성", "반대", "기권")
@@ -191,7 +191,7 @@ def compute(con, as_of: str) -> dict:
     return {"as_of": as_of, "members": members, "edges": edges, "precedents": precedent_stats(con, as_of)}
 
 
-def save(result: dict, path=METRICS_DB, json_dir: Path = DATA / "metrics"):
+def save(result: dict, path=METRICS_DB, json_dir: Path = METRICS_JSON):
     m = sqlite3.connect(str(path))
     m.executescript(METRICS_SCHEMA)
     a = result["as_of"]
