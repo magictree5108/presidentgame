@@ -1,0 +1,9 @@
+.env
+__pycache__/
+*.pyc
+data/cache/
+data/*.sqlite
+data/*.sqlite-journal
+data/law_cache/
+data/logs/
+.pytest_cache/
