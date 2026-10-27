@@ -72,3 +72,13 @@ python src/events.py
   - 관련 이유: 같은 호수의 긍정·부정 이유 중 같은 분야로 분류된 항목(증감 표시가 있거나 3% 이상)을 붙였다.
 - 사람 검토: `review_events.html`을 브라우저로 열어 사건마다 승인·수정·삭제를 고르고 **검토 결과 CSV 저장**을 누른다.
   받은 `events_reviewed.csv`를 `data/`에 넣으면 5단계에서 '승인'·'수정' 사건만 쓴다.
+
+## 4단계 기준선 모델
+```
+python src/baseline.py         # 기준선·잔차·조사 오차 → weekly.sqlite 의 baseline 테이블
+python src/baseline_chart.py   # 확인용 그래프 → data/baseline_chart.html
+```
+- 결과와 모델 선택 이유: `data/baseline_report.md`, 후보별 수치: `data/baseline_model_comparison.csv`, 집단별: `data/baseline_group_eval.csv`
+- baseline 테이블: 35개 집단(전체 + 직무 긍정률이 90% 이상 주에 있는 집단) × 112주.
+  실제 긍정률, 기준선, 잔차, 비교용 로그 감소 기준선과 잔차, 직전 조사 대비 변화와 잔차 변화,
+  표준오차(전체는 보고서 값, 없거나 집단이면 sqrt(p(1-p)/n) 계산값, `se_source`로 구분), 변화량 표준오차, 가장자리 표시(`edge`)

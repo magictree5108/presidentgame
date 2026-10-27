@@ -11,3 +11,12 @@ collect:
   list_url: https://www.gallup.co.kr/gallupdb/report.asp
   content_url: https://www.gallup.co.kr/gallupdb/reportContent.asp?seqNo={seq}
   years: [2022, 2023, 2024, 2025]
+
+baseline:
+  # 후보 모델: log(취임 후 주 수 로그 감소), exp(지수 감소), loess(국소 회귀, frac = 전체 중 몇 %의 점으로 이웃을 잡을지)
+  loess_fracs: [0.08, 0.1, 0.15, 0.2, 0.3, 0.5]
+  cv_block_weeks: 8          # 교차검증 때 한 번에 빼는 연속 주 수
+  # LOESS 창(이웃 점들이 걸치는 기간)이 이보다 짧으면 사건 효과까지 따라가므로 후보에서 뺀다.
+  # 케이스 감지 창(최대 3주)의 5배.
+  min_window_weeks: 15
+  min_coverage: 0.9          # 직무 긍정률이 있는 주가 이 비율 이상인 집단만 기준선을 만든다

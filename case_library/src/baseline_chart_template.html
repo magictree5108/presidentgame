@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>기준선 확인</title>
+<style>
+.viz-root{color-scheme:light;--surface-1:#fcfcfb;--text-primary:#0b0b0b;--text-secondary:#52514e;--grid:#e6e5e0;
+  --series-1:#2a78d6;--series-2:#eb6834;--ref:#8a8984;--edge:#efeee9}
+@media (prefers-color-scheme:dark){:root:where(:not([data-theme="light"])) .viz-root{color-scheme:dark;--surface-1:#1a1a19;
+  --text-primary:#f0efec;--text-secondary:#c3c2b7;--grid:#2e2e2c;--series-1:#3987e5;--series-2:#d95926;--ref:#8f8e88;--edge:#252523}}
+:root[data-theme="dark"] .viz-root{color-scheme:dark;--surface-1:#1a1a19;--text-primary:#f0efec;--text-secondary:#c3c2b7;
+  --grid:#2e2e2c;--series-1:#3987e5;--series-2:#d95926;--ref:#8f8e88;--edge:#252523}
+body{margin:0}
+.viz-root{background:var(--surface-1);color:var(--text-primary);font:14px/1.45 -apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;padding:16px}
+h1{font-size:17px;margin:0 0 2px}.sub{color:var(--text-secondary);font-size:13px;margin:0 0 10px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--text-secondary);margin-bottom:6px}
+.legend i{display:inline-block;width:18px;height:0;border-top:2px solid;vertical-align:middle;margin-right:6px}
+svg{width:100%;height:auto;display:block}
+.tip{position:fixed;pointer-events:none;background:var(--surface-1);border:1px solid var(--grid);border-radius:6px;padding:6px 8px;font-size:12px;display:none;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+</style></head>
+<body><div class="viz-root">
+<h1>전체 직무 긍정률과 기준선</h1>
+<p class="sub">한국갤럽 데일리 오피니언 제495~606호. 회색 띠 = 기준선 가장자리(신뢰도 낮음). 점에 올리면 값이 보입니다.</p>
+<div class="legend"><span><i style="border-color:var(--series-1)"></i>실제 긍정률</span>
+<span><i style="border-color:var(--series-2)"></i>선택 기준선(LOESS, 창 약 20주)</span>
+<span><i style="border-color:var(--ref);border-top-style:dashed"></i>비교: 로그 감소 모델</span></div>
+<svg id="c" viewBox="0 0 960 420" role="img" aria-label="주별 직무 긍정률과 기준선 선 그래프"></svg>
+<div class="tip" id="tip"></div></div>
+<script>
+const D=/*__DATA__*/[];
+const W=960,H=420,m={l:44,r:120,t:12,b:36},svg=document.getElementById("c"),NS="http://www.w3.org/2000/svg";
+const tmin=0,tmax=Math.max(...D.map(d=>d.t)),ymax=60;
+const x=t=>m.l+(t-tmin)/(tmax-tmin)*(W-m.l-m.r), y=v=>m.t+(1-v/ymax)*(H-m.t-m.b);
+const el=(n,a,p=svg)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);p.appendChild(e);return e};
+// 가장자리 띠
+let run=null;D.forEach((d,i)=>{if(d.edge&&run===null)run=i;if((!d.edge||i===D.length-1)&&run!==null){const j=d.edge?i:i-1;
+  el("rect",{x:x(D[run].t)-4,y:m.t,width:x(D[j].t)-x(D[run].t)+8,height:H-m.t-m.b,fill:"var(--edge)"});run=null}});
+for(let v=0;v<=ymax;v+=10){el("line",{x1:m.l,x2:W-m.r,y1:y(v),y2:y(v),stroke:"var(--grid)"});
+  el("text",{x:m.l-8,y:y(v)+4,"text-anchor":"end","font-size":11,fill:"var(--text-secondary)"}).textContent=v+"%"}
+["2022-05","2023-01","2024-01","2024-12"].forEach(s=>{const d=D.find(d=>d.week.startsWith(s.slice(0,4)+"년 "+(+s.slice(5))+"월"));
+  if(d)el("text",{x:x(d.t),y:H-12,"text-anchor":"middle","font-size":11,fill:"var(--text-secondary)"}).textContent=d.week.replace(/ \d주$/,"")});
+const path=(k,st,dash)=>el("path",{d:D.map((d,i)=>(i?"L":"M")+x(d.t)+","+y(d[k])).join(""),fill:"none",stroke:st,"stroke-width":2,"stroke-dasharray":dash||"","stroke-linejoin":"round"});
+path("bl","var(--ref)","5 4");path("b","var(--series-2)");path("y","var(--series-1)");
+const last=D[D.length-1];
+[["y","실제 "+last.y+"%","var(--text-primary)"],["b","기준선 "+last.b.toFixed(1)+"%","var(--text-secondary)"],["bl","로그 "+last.bl.toFixed(1)+"%","var(--text-secondary)"]]
+ .forEach(([k,t,c],i)=>el("text",{x:x(last.t)+8,y:y(last[k])+4+(k==="b"?10:0),"font-size":12,fill:c}).textContent=t);
+const cross=el("line",{y1:m.t,y2:H-m.b,stroke:"var(--text-secondary)","stroke-width":1,opacity:0});
+const dot=el("circle",{r:5,fill:"var(--series-1)",stroke:"var(--surface-1)","stroke-width":2,opacity:0});
+const tip=document.getElementById("tip");
+el("rect",{x:m.l,y:m.t,width:W-m.l-m.r,height:H-m.t-m.b,fill:"transparent"}).addEventListener("mousemove",ev=>{
+  const r=svg.getBoundingClientRect(),px=(ev.clientX-r.left)*W/r.width;
+  const d=D.reduce((a,b)=>Math.abs(x(b.t)-px)<Math.abs(x(a.t)-px)?b:a);
+  cross.setAttribute("x1",x(d.t));cross.setAttribute("x2",x(d.t));cross.setAttribute("opacity",.4);
+  dot.setAttribute("cx",x(d.t));dot.setAttribute("cy",y(d.y));dot.setAttribute("opacity",1);
+  tip.style.display="block";tip.style.left=(ev.clientX+12)+"px";tip.style.top=(ev.clientY+12)+"px";
+  tip.innerHTML=`<b>제${d.issue}호 ${d.week}</b><br>실제 ${d.y}% (±${(1.96*d.se).toFixed(1)}%p)<br>기준선 ${d.b.toFixed(1)}% · 잔차 ${(d.y-d.b).toFixed(1)}%p${d.edge?"<br>(가장자리)":""}`});
+svg.addEventListener("mouseleave",()=>{tip.style.display="none";cross.setAttribute("opacity",0);dot.setAttribute("opacity",0)});
+</script></body></html>
