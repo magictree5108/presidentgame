@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>사건 검토</title>
+<style>
+:root{
+  --bg:#f7f7f5; --panel:#ffffff; --ink:#1d1d1b; --muted:#6b6b66; --line:#e2e1dc;
+  --accent:#2f5d8a; --ok:#2e7d4f; --edit:#a86b00; --del:#b23a3a; --chip:#eef1f5;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#161615; --panel:#1f1f1d; --ink:#ecebe6; --muted:#a3a29b; --line:#34332f;
+    --accent:#8db6e0; --ok:#6cc08f; --edit:#e0b050; --del:#e57d7d; --chip:#2a2e34;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#161615; --panel:#1f1f1d; --ink:#ecebe6; --muted:#a3a29b; --line:#34332f;
+  --accent:#8db6e0; --ok:#6cc08f; --edit:#e0b050; --del:#e57d7d; --chip:#2a2e34;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--panel);border-bottom:1px solid var(--line);padding:12px 16px}
+h1{font-size:18px;margin:0 0 4px}
+.help{color:var(--muted);font-size:13px;margin:0 0 8px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+select,input[type=search],button{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:5px 8px}
+button{cursor:pointer}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.progress{margin-left:auto;color:var(--muted);font-variant-numeric:tabular-nums}
+main{max-width:1200px;margin:0 auto;padding:12px 16px 80px}
+.week{background:var(--panel);border:1px solid var(--line);border-radius:8px;margin:14px 0;overflow:hidden}
+.week-head{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline;padding:10px 12px;border-bottom:1px solid var(--line)}
+.week-head b{font-size:15px}
+.week-head a{color:var(--accent)}
+.week-head .sp{flex:1}
+details{padding:6px 12px;border-bottom:1px solid var(--line);color:var(--muted);font-size:13px}
+details pre{white-space:pre-wrap;font:inherit;margin:6px 0;color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0}
+.chip{background:var(--chip);border-radius:10px;padding:1px 8px;font-size:12px;color:var(--ink)}
+.tbl{width:100%;overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:760px}
+th,td{border-bottom:1px solid var(--line);padding:6px 8px;vertical-align:top;text-align:left}
+th{font-size:12px;color:var(--muted);font-weight:600}
+td.date{white-space:nowrap;color:var(--muted);width:90px}
+td.ev input,td.rel input{width:100%;border:1px solid transparent;background:transparent;padding:3px 4px;border-radius:4px;color:var(--ink);font:inherit}
+td.ev input:hover,td.rel input:hover,td.ev input:focus,td.rel input:focus{border-color:var(--line);background:var(--bg)}
+td.rel input{font-size:12px}
+td.st{white-space:nowrap;width:190px}
+td.st label{margin-right:6px;cursor:pointer}
+tr.s-승인{background:color-mix(in srgb,var(--ok) 9%,transparent)}
+tr.s-수정{background:color-mix(in srgb,var(--edit) 11%,transparent)}
+tr.s-삭제{background:color-mix(in srgb,var(--del) 9%,transparent)}
+tr.s-삭제 td.ev input{text-decoration:line-through;color:var(--muted)}
+.note{color:var(--muted);font-size:12px}
+.empty{color:var(--muted);padding:24px;text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <h1>사건 검토 (윤석열 정부, 한국갤럽 데일리 오피니언 '주요 사건')</h1>
+  <p class="help">
+    각 사건에서 <b>승인</b>(그대로 사용)·<b>수정</b>·<b>삭제</b>를 고르세요. 사건명·분야·관련 이유를 고치면 자동으로 '수정'이 됩니다.
+    작업 중인 내용은 이 브라우저에 자동 저장됩니다. 끝나면 <b>검토 결과 CSV 저장</b>을 눌러 받은 파일
+    <code>events_reviewed.csv</code>를 <code>case_library/data/</code> 폴더에 넣거나 대화창에 올려 주세요.
+    분야와 관련 이유는 키워드로 자동 분류한 값이라 틀린 것이 있을 수 있습니다.
+  </p>
+  <div class="bar">
+    <select id="fWeek"><option value="">모든 주</option></select>
+    <select id="fDom"><option value="">모든 분야</option></select>
+    <select id="fSt">
+      <option value="">모든 상태</option><option value="미검토">미검토</option>
+      <option value="승인">승인</option><option value="수정">수정</option><option value="삭제">삭제</option>
+    </select>
+    <input type="search" id="fQ" placeholder="사건 검색">
+    <button class="primary" id="save">검토 결과 CSV 저장</button>
+    <button id="loadBtn">저장한 CSV 불러오기</button>
+    <input type="file" id="loadFile" accept=".csv" hidden>
+    <span class="progress" id="prog"></span>
+  </div>
+</header>
+<main id="main"></main>
+<script>
+const DATA = /*__DATA__*/null;
+const KEY = "review_events_v1";
+const EDIT_FIELDS = ["event", "domain", "related_reasons"];
+let state = {};   // event_id -> {status, event, domain, related_reasons}
+try { state = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { state = {}; }
+const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} };
+
+const byId = Object.fromEntries(DATA.events.map(e => [e.event_id, e]));
+const cur = (e, f) => (state[e.event_id] && state[e.event_id][f] !== undefined) ? state[e.event_id][f] : e[f];
+const statusOf = e => (state[e.event_id] && state[e.event_id].status) || "미검토";
+
+function setField(id, f, v) {
+  const e = byId[id];
+  state[id] = state[id] || {};
+  state[id][f] = v;
+  const changed = EDIT_FIELDS.some(k => cur(e, k) !== e[k]);
+  if (f !== "status") state[id].status = changed ? "수정" : (state[id].status === "수정" ? "승인" : (state[id].status || "미검토"));
+  persist();
+}
+
+const weeks = [...new Set(DATA.events.map(e => e.issue))];
+const fWeek = document.getElementById("fWeek"), fDom = document.getElementById("fDom"),
+      fSt = document.getElementById("fSt"), fQ = document.getElementById("fQ");
+weeks.forEach(i => fWeek.add(new Option(`제${i}호 ${DATA.weeks[i].week_label}`, i)));
+DATA.domains.forEach(d => fDom.add(new Option(d, d)));
+
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function render() {
+  const w = fWeek.value, d = fDom.value, st = fSt.value, q = fQ.value.trim();
+  const main = document.getElementById("main");
+  let html = "";
+  for (const i of weeks) {
+    if (w && String(i) !== w) continue;
+    const evs = DATA.events.filter(e => e.issue === i &&
+      (!d || cur(e, "domain") === d) && (!st || statusOf(e) === st) &&
+      (!q || cur(e, "event").includes(q)));
+    if (!evs.length) continue;
+    const wk = DATA.weeks[i];
+    const notAsked = evs[0].approval_status === "not_asked";
+    html += `<section class="week" data-issue="${i}">
+      <div class="week-head"><b>제${i}호 · ${esc(wk.week_label)}</b>
+        <span class="note">조사 ${esc(evs[0].survey_period)}${notAsked ? " · 직무 평가 없음(직무 정지)" : ""}</span>
+        <span class="sp"></span>
+        <a href="${esc(wk.url)}" target="_blank" rel="noopener">원문</a>
+        <button data-bulk="${i}">이 주 미검토 모두 승인</button></div>
+      <details><summary>이번 주 해설 문단과 이유 변화 보기</summary>
+        <div class="chips">${wk.reasons.map(r => `<span class="chip">${esc(r)}</span>`).join("")}</div>
+        <pre>${esc(wk.commentary)}</pre></details>
+      <div class="tbl"><table><thead><tr><th>날짜</th><th>사건</th><th>분야</th><th>관련 평가 이유(자동)</th><th>검토</th></tr></thead><tbody>`;
+    for (const e of evs) {
+      const s = statusOf(e), dom = cur(e, "domain");
+      html += `<tr class="s-${s}" data-id="${e.event_id}">
+        <td class="date">${esc(e.date_text)}</td>
+        <td class="ev"><input data-f="event" value="${esc(cur(e, "event"))}">
+          ${e.source_line.includes(" / ") ? `<div class="note">원문: ${esc(e.source_line)}</div>` : ""}</td>
+        <td><select data-f="domain">${DATA.domains.map(x => `<option${x === dom ? " selected" : ""}>${x}</option>`).join("")}</select>
+          ${e.domain_candidates.includes("|") ? `<div class="note">후보: ${esc(e.domain_candidates.replaceAll("|", ", "))}</div>` : ""}</td>
+        <td class="rel"><input data-f="related_reasons" value="${esc(cur(e, "related_reasons"))}" placeholder="(없음)"></td>
+        <td class="st">${["승인","수정","삭제"].map(x => `<label><input type="radio" name="st-${e.event_id}" value="${x}"${s === x ? " checked" : ""}> ${x}</label>`).join("")}</td>
+      </tr>`;
+    }
+    html += `</tbody></table></div></section>`;
+  }
+  main.innerHTML = html || `<div class="empty">조건에 맞는 사건이 없습니다.</div>`;
+  updateProgress();
+}
+
+function updateProgress() {
+  const c = {미검토: 0, 승인: 0, 수정: 0, 삭제: 0};
+  DATA.events.forEach(e => c[statusOf(e)]++);
+  document.getElementById("prog").textContent =
+    `전체 ${DATA.events.length} · 미검토 ${c.미검토} · 승인 ${c.승인} · 수정 ${c.수정} · 삭제 ${c.삭제}`;
+}
+
+document.getElementById("main").addEventListener("change", ev => {
+  const t = ev.target, tr = t.closest("tr");
+  if (t.dataset.bulk) return;
+  if (!tr) return;
+  const id = tr.dataset.id;
+  if (t.type === "radio") setField(id, "status", t.value);
+  else if (t.dataset.f) setField(id, t.dataset.f, t.value);
+  const s = statusOf(byId[id]);
+  tr.className = `s-${s}`;
+  tr.querySelectorAll('input[type=radio]').forEach(r => r.checked = r.value === s);
+  updateProgress();
+});
+document.getElementById("main").addEventListener("click", ev => {
+  const i = ev.target.dataset && ev.target.dataset.bulk;
+  if (!i) return;
+  DATA.events.filter(e => String(e.issue) === i && statusOf(e) === "미검토")
+    .forEach(e => { state[e.event_id] = state[e.event_id] || {}; state[e.event_id].status = "승인"; });
+  persist(); render();
+});
+[fWeek, fDom, fSt].forEach(el => el.addEventListener("change", render));
+fQ.addEventListener("input", render);
+
+const COLS = ["event_id","issue","week_label","survey_period","event_date","date_text","event","source_line","domain",
+              "related_reasons","review_status","original_event","original_domain","original_related_reasons",
+              "source_issue","source_url"];
+const csvCell = v => { const s = String(v ?? ""); return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
+document.getElementById("save").addEventListener("click", () => {
+  const rows = DATA.events.map(e => ({...e, event: cur(e, "event"), domain: cur(e, "domain"),
+    related_reasons: cur(e, "related_reasons"), review_status: statusOf(e),
+    original_event: e.event, original_domain: e.domain, original_related_reasons: e.related_reasons}));
+  const text = "﻿" + [COLS.join(","), ...rows.map(r => COLS.map(c => csvCell(r[c])).join(","))].join("\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([text], {type: "text/csv;charset=utf-8"}));
+  a.download = "events_reviewed.csv"; a.click();
+});
+
+function parseCSV(text) {
+  const rows = []; let row = [], cell = "", q = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (q) { if (ch === '"') { if (text[i + 1] === '"') { cell += '"'; i++; } else q = false; } else cell += ch; }
+    else if (ch === '"') q = true;
+    else if (ch === ",") { row.push(cell); cell = ""; }
+    else if (ch === "\n" || ch === "\r") { if (ch === "\r" && text[i + 1] === "\n") i++; row.push(cell); rows.push(row); row = []; cell = ""; }
+    else cell += ch;
+  }
+  if (cell || row.length) { row.push(cell); rows.push(row); }
+  return rows;
+}
+document.getElementById("loadBtn").addEventListener("click", () => document.getElementById("loadFile").click());
+document.getElementById("loadFile").addEventListener("change", async ev => {
+  const f = ev.target.files[0]; if (!f) return;
+  const rows = parseCSV((await f.text()).replace(/^﻿/, ""));
+  const head = rows.shift(); const ix = k => head.indexOf(k);
+  let n = 0;
+  for (const r of rows) {
+    const id = r[ix("event_id")]; if (!byId[id]) continue;
+    state[id] = {status: r[ix("review_status")] || "미검토", event: r[ix("event")],
+                 domain: r[ix("domain")], related_reasons: r[ix("related_reasons")]};
+    n++;
+  }
+  persist(); render(); alert(`${n}개 사건의 검토 결과를 불러왔습니다.`);
+});
+
+render();
+</script>
+</body>
+</html>
