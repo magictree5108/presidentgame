@@ -49,20 +49,21 @@ def test_defection_pre_election(con, rule, elections) -> dict:
     for e in elections:
         ed = date.fromisoformat(e["date"])
         windows.append(((ed - timedelta(days=w)).isoformat(), e["date"]))
-    pre = [0, 0]
-    rest = [0, 0]
-    for d, n, k in data:
-        tgt = pre if any(a <= d < b for a, b in windows) else rest
-        tgt[0] += n
-        tgt[1] += k
-    if pre[0] == 0:
-        return {"result": "판단 불가", "reason": f"선거 전 {w}일 구간에 표결 기록 없음", "n_rest": rest[0]}
-    rp, rr = pre[1] / pre[0], rest[1] / rest[0] if rest[0] else None
-    # 두 비율 차이의 대략적 유의성(정규근사)
     import math
-    p = (pre[1] + rest[1]) / (pre[0] + rest[0])
-    se = math.sqrt(p * (1 - p) * (1 / pre[0] + 1 / rest[0])) if rest[0] and 0 < p < 1 else None
-    z = (rp - rr) / se if se else None
+    # 같은 표결 안의 의원 표는 서로 독립이 아니므로, 표결(의안) 단위 이탈률을 표본으로 비교한다(Welch t).
+    pre, rest = [], []
+    for d, n, k in data:
+        (pre if any(a <= d < b for a, b in windows) else rest).append(k / n)
+    if len(pre) < 5 or len(rest) < 5:
+        return {"result": "판단 불가", "reason": f"선거 전 {w}일 구간 표결 {len(pre)}건으로 표본 부족"}
+
+    def mv(x):
+        m = sum(x) / len(x)
+        return m, sum((v - m) ** 2 for v in x) / (len(x) - 1)
+    (mp, vp), (mr, vr) = mv(pre), mv(rest)
+    se = math.sqrt(vp / len(pre) + vr / len(rest))
+    z = (mp - mr) / se if se else None
+    rp, rr = mp, mr
     if z is None:
         verdict = "판단 불가"
     elif z > 1.96:
@@ -72,10 +73,10 @@ def test_defection_pre_election(con, rule, elections) -> dict:
     else:
         verdict = "판단 불가"
     return {"result": verdict, "pre_rate": round(rp, 4), "rest_rate": round(rr, 4) if rr is not None else None,
-            "n_pre_votes": pre[0], "n_rest_votes": rest[0], "z": round(z, 2) if z is not None else None,
+            "n_pre_votes": len(pre), "n_rest_votes": len(rest), "z": round(z, 2) if z is not None else None,
             "window_days": w, "elections": [e["name"] for e in elections],
-            "method": "표결별 같은 당 다수와 다른 표(찬성·반대·기권)의 비율. 선거일 전 window_days 구간 대 나머지. |z|>1.96 이면 판단.",
-            "limits": "22대 국회 안에서는 선거가 적어 표본이 작다. 지난 국회 표결 데이터를 넣으면 더 정확해진다."}
+            "method": "표결(의안)마다 '같은 당 다수와 다르게 던진 표'의 비율을 구하고, 선거일 전 window_days 구간 표결과 나머지 표결의 평균을 Welch t 로 비교. |t|>1.96 이면 판단. n 은 표결 건수.",
+            "limits": "22대 안에서는 지방선거 1번뿐이라 '그 시기에 어떤 법안이 올라왔는지'의 영향을 떼어낼 수 없다. 21대 등 지난 국회 총선 전후 표결을 넣으면 더 정확해진다."}
 
 
 TESTS = {"defection_pre_election": test_defection_pre_election}

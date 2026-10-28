@@ -121,6 +121,12 @@ SERVICES["seat_status"] = {
     "fields": {"party": "POLY_NM", "district": "N1", "proportional": "N2", "total": "N3", "pct": "N4"},
 }
 
+SERVICES["plenary_minutes"] = {
+    "code": "nzbyfwhwaoanttzje", "name": "본회의 회의록(안건 목록)", "params": {"DAE_NUM": "22"},  # CONF_DATE(연도) 필수
+    "status": "확인됨(2026-10-28 실호출)",
+    "fields": {"date": "CONF_DATE", "agenda": "SUB_NAME", "title": "TITLE", "pdf": "PDF_LINK_URL"},
+}
+
 # 아직 서비스 코드를 찾지 못해 check_apis.py 가 OPENSRVAPI 목록에서 이름으로 찾아야 하는 것
 TO_DISCOVER = {
     "bill_review": ["의안 심사정보", "심사정보"],

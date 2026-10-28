@@ -117,7 +117,8 @@ def bills(q: str = "", limit: int = 30):
     c = con()
     rows = c.execute(
         """SELECT bill_id, bill_no, bill_name, proposer, propose_dt, committee, stage, proc_result, detail_link
-           FROM bills WHERE bill_name LIKE ? ORDER BY propose_dt DESC LIMIT ?""", (f"%{q}%", min(limit, 200))).fetchall()
+           FROM bills WHERE bill_name LIKE ?
+           ORDER BY (bill_name LIKE ?) DESC, propose_dt DESC LIMIT ?""", (f"%{q}%", f"{q}%", min(limit, 200))).fetchall()
     return [dict(r) for r in rows]
 
 

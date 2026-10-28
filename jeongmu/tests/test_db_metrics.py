@@ -17,10 +17,13 @@ def test_seats_on_dates():
 
 
 def test_stage():
-    assert compute_stage({"proc_result": "대안반영폐기"}) == "폐기·철회"
+    assert compute_stage({"proc_result": "대안반영폐기"}) == "대안 반영"
+    assert compute_stage({"proc_result": "철회"}) == "폐기·철회"
     assert compute_stage({"proc_result": "수정가결"}) == "본회의 통과"
     assert compute_stage({"law_submit_dt": "2024-01-01"}) == "법사위 심사"
     assert compute_stage({"cmt_present_dt": "2024-01-01"}) == "소관위 심사"
+    assert compute_stage({"committee": "가위원회"}) == "소관위 심사"
+    assert compute_stage({}) == "접수"
 
 
 def test_member_metrics():

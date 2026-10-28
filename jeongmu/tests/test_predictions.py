@@ -27,4 +27,4 @@ def test_backtest_and_scoring(tmp_path):
 def test_h1_runs():
     con = make()
     ev = h1(con, {"test": {"window_days": 90}}, [{"name": "가상선거", "date": "2024-10-01"}])
-    assert ev["result"] in ("판단 불가", "데이터로 확인", "반증") and ev["n_pre_votes"] > 0
+    assert ev["result"] == "판단 불가" and "표본 부족" in ev["reason"]  # 가상 표결 2건뿐

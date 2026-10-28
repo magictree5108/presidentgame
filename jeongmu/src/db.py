@@ -65,6 +65,8 @@ def compute_stage(b: dict) -> str:
     """법안 행의 날짜·결과 칸으로 진행 단계를 정한다."""
     res = (b.get("proc_result") or "").strip()
     if res:
+        if "반영" in res:  # 대안반영폐기·수정안반영폐기: 내용은 대안에 들어감
+            return "대안 반영"
         if any(k in res for k in ("폐기", "부결", "철회", "반려")):
             return "폐기·철회"
         if "가결" in res:
@@ -74,7 +76,7 @@ def compute_stage(b: dict) -> str:
         return "본회의 대기"
     if b.get("law_submit_dt") or b.get("cmt_proc_dt"):
         return "법사위 심사"
-    if b.get("cmt_present_dt"):
+    if b.get("cmt_present_dt") or b.get("committee"):  # 소관위가 정해졌으면 회부된 것으로 본다
         return "소관위 심사"
     return "접수"
 

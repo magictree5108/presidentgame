@@ -1,1 +1,1 @@
-bill_id,bill_name,request_dt,revote_dt,revote_result,source
+bill_id,bill_name,request_dt,revote_dt,revote_result,requester,source

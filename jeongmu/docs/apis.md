@@ -28,7 +28,14 @@
 | API 목록 | 열린국회정보 OpenAPI 목록 | `OPENSRVAPI` | — | — | 확인됨 (280개) | nureongso |
 | 위원회 위원(위원장·간사·위원) | 위원회 위원 명단 | `nktulghcadyhmiqxi` | — | DEPT_CD, DEPT_NM, JOB_RES_NM, HG_NM, POLY_NM, MONA_CD (연락처·보좌진 칸은 저장 안 함) | 확인됨 (474명, 위원회 중복 포함) | 포털 API 명세서 |
 | 위원회 현황 | 위원회 현황 정보 | `nxrvzonlafugpqjuh` | — | HR_DEPT_CD, COMMITTEE_NAME, CMT_DIV_NM, HG_NM(위원장), HG_NM_LIST(간사), LIMIT_CNT, CURR_CNT | 확인됨 (359건) | 포털 API 명세서 |
-| 회의록 목록 | 본회의 회의록 / 위원회 회의록 / 의안별 회의록 목록 | (명세서에서 확인 예정) | — | — | 목록에서 찾음, 코드 미확인 | OPENSRVAPI |
+| 본회의 회의록(안건 목록) | 본회의 회의록 | `nzbyfwhwaoanttzje` | DAE_NUM, CONF_DATE(연도) | CONF_DATE, TITLE, SUB_NAME(안건명), PDF_LINK_URL | 확인됨 (22대 안건 2,965건, '재의의 건' 27건) | 포털 API 명세서 |
+| 의안별 회의록 | 의안별 회의록 목록 | `VCONFBILLCONFLIST` | BILL_ID | CONF_DT, CONF_KND, DOWN_URL | 명세서 확인(미사용) | 포털 API 명세서 |
+| 현직 임기·당선 정당 | 국회의원 의원이력 | `nexgtxtmaamffofof` | — | MONA_CD, FRTO_DATE, PROFILE_SJ | 확인됨 (보궐·승계 시작일) | 포털 API 명세서 |
+| 전직 임기 | 역대 국회의원 의원이력 | `nfzegpkvaclgtscxt` | PROFILE_UNIT_CD=100022 | MONA_CD, FRTO_DATE, PROFILE_SJ | 확인됨 (22대 퇴직 22명) | 포털 API 명세서 |
+| 전직 인적사항 | 역대 국회의원 인적사항 | `npffdutiapkzbfyvr` | UNIT_CD=100022 | MONA_CD, HG_NM, POLY_NM, ORIG_NM | 확인됨 | 포털 API 명세서 |
+| 공식 의석수 | 정당 및 교섭단체 의석수 현황 | `nepjpxkkabqiqpbvk` | — | POLY_NM, N1(지역), N2(비례), N3(계) | 확인됨 (대조 검증에 사용) | 포털 API 명세서 |
+
+**주의:** 본회의 표결정보(`nojepdqqaweusdfbi`)의 POLY_NM 은 표결 당시가 아니라 현재(마지막) 소속이다. 법안 API의 처리결과는 거부(재의요구)를 반영하지 않는다.
 
 참고한 문서
 - velog "OpenAPI - '의안' 관련 사용 참고 문서": https://velog.io/@assembly101/OpenAPI-의안-관련-사용-참고-문서-작성-진행중

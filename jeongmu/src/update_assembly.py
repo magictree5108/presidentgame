@@ -10,6 +10,7 @@
 import argparse
 import csv
 import json
+import re
 import sys
 from datetime import date, datetime, timedelta
 
@@ -343,6 +344,32 @@ def build_terms_and_parties(con) -> None:
     log(f"의원직 기간 {len(terms)}건, 수동 당적 이력 {len(manual)}명 반영")
 
 
+# ---------------------------------------------------------------- 재의요구(거부권)
+REVOTE = re.compile(r"^\s*\d+\.\s*(.+?)\s*재의의 건\((대통령|정부) 제출\)")
+
+
+def load_revotes(con) -> int:
+    """본회의 회의록 안건 목록에서 '… 재의의 건'을 찾아 재의요구 이력으로 남긴다.
+    법안 API는 거부된 법안도 처음 가결 결과(원안·수정가결)로 남겨 두므로 이 표로 따로 표시한다."""
+    s = SERVICES["plenary_minutes"]
+    found = {}
+    for y in range(int(TERM_START[:4]), date.today().year + 1):
+        for r in api.fetch_all(s["code"], {**s["params"], "CONF_DATE": str(y)}, use_cache=False):
+            m = REVOTE.match(r.get("SUB_NAME") or "")
+            if m:
+                found[(r["CONF_DATE"], m.group(1))] = (m.group(2), r.get("PDF_LINK_URL"), r.get("TITLE"))
+    con.execute("DELETE FROM vetoes WHERE source LIKE '본회의 회의록%'")
+    for (d, name), (who, pdf, title) in sorted(found.items()):
+        b = con.execute(
+            """SELECT bill_id FROM bills WHERE (bill_name = ? OR bill_name LIKE ?) AND proc_result LIKE '%가결%'
+               AND plenary_dt < ? ORDER BY plenary_dt DESC LIMIT 1""", (name, name + "(%", d)).fetchone()
+        con.execute("INSERT INTO vetoes VALUES(?,?,?,?,?,?,?)",
+                    (b[0] if b else None, name, None, d, None, "대통령" if who == "대통령" else "정부(권한대행)",
+                     f"본회의 회의록 안건 '{title}' {pdf or ''}"))
+    log(f"재의 표결 안건 {len(found)}건(회의록)")
+    return len(found)
+
+
 # ---------------------------------------------------------------- 수동 보정
 def apply_manual(con) -> None:
     """data/member_terms.csv, data/party_changes.csv, data/vetoes.csv 를 반영한다.
@@ -372,12 +399,13 @@ def apply_manual(con) -> None:
                              "수동: " + r["source"]))
     p = DATA / "vetoes.csv"
     if p.exists():
-        con.execute("DELETE FROM vetoes")
+        con.execute("DELETE FROM vetoes WHERE source LIKE '수동%'")
         for r in csv.DictReader(p.open(encoding="utf-8")):
-            if r.get("source") and r.get("bill_name") and r.get("request_dt"):
-                con.execute("INSERT INTO vetoes VALUES(?,?,?,?,?,?)",
-                            (r.get("bill_id") or None, r["bill_name"], r["request_dt"],
-                             r.get("revote_dt") or None, r.get("revote_result") or None, r["source"]))
+            if r.get("source") and r.get("bill_name"):
+                con.execute("INSERT INTO vetoes VALUES(?,?,?,?,?,?,?)",
+                            (r.get("bill_id") or None, r["bill_name"], r.get("request_dt") or None,
+                             r.get("revote_dt") or None, r.get("revote_result") or None,
+                             r.get("requester") or None, "수동: " + r["source"]))
 
 
 def main(argv=None):
@@ -402,6 +430,7 @@ def main(argv=None):
             con.commit()
             load_member_votes(con, ids, use_cache=use_cache, only_new=not a.full)
             con.commit()
+        load_revotes(con)
         apply_manual(con)  # 수동 당적·기간을 먼저 넣고
         build_terms_and_parties(con)  # 나머지를 공식 의원이력으로 채운다
         con.execute("INSERT OR REPLACE INTO meta VALUES('last_update', ?)", (datetime.now().isoformat(timespec="seconds"),))

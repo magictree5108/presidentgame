@@ -127,14 +127,15 @@ CREATE TABLE IF NOT EXISTS member_votes (
 );
 CREATE INDEX IF NOT EXISTS idx_mv_member ON member_votes(member_id);
 
--- 정부 재의요구(거부권) 이력: 공식 API가 확인되기 전까지 수동 입력(data/vetoes.csv)
+-- 정부 재의요구(거부권) 이력. 본회의 회의록 안건('… 재의의 건')에서 자동 수집 + data/vetoes.csv 수동 보충
 CREATE TABLE IF NOT EXISTS vetoes (
-    bill_id     TEXT,
-    bill_name   TEXT NOT NULL,
-    request_dt  TEXT NOT NULL,
-    revote_dt   TEXT,
-    revote_result TEXT,
-    source      TEXT NOT NULL
+    bill_id       TEXT,
+    bill_name     TEXT NOT NULL,
+    request_dt    TEXT,               -- 재의요구일(회의록에는 없음, 수동 보충)
+    revote_dt     TEXT,               -- 재의 표결 본회의 날짜
+    revote_result TEXT,               -- 회의록 목록에는 결과가 없어 수동 보충
+    requester     TEXT,               -- 대통령 제출 / 정부 제출(권한대행)
+    source        TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS meta (
