@@ -176,7 +176,7 @@ def ai_response(g: dict, actor: dict, options: list[dict]) -> dict | None:
     schema = {"type": "object", "additionalProperties": False, "required": ["choice", "reason"],
               "properties": {"choice": {"type": "integer"}, "reason": {"type": "string"}}}
     sys_p = ("너는 한국 국회 워게임의 한 세력을 맡는다. 주어진 '가능한 수' 목록 번호 중 하나만 고른다. "
-             "목록 밖의 수는 고를 수 없다. 이유는 현재 상태와 그 세력의 입장만으로 한두 문장.")
+             "목록 밖의 수는 고를 수 없다. 이유는 현재 상태와 그 세력의 입장만으로 한국어 한두 문장.")
     state = {k: g[k] for k in ("turn", "day", "seats", "total", "bills", "filibuster")}
     recent = [{"actor": e["actor"], "move": e["move"]["type"], "effect": e["effect"]} for e in g["log"][-8:]]
     user = (f"세력: {actor['name']} (입장: {actor['stance']}, 연합: {_support(g, actor['name'])})\n"
@@ -225,7 +225,9 @@ def play_turn(g: dict, player_move: dict, use_ai: bool = False) -> dict:
             continue
         opts = legal_options(g, a)
         choice = None
-        if use_ai and opts:
+        # 비용 관리: AI 응수는 의석 10석 이상 정당과 대통령·의장만. 나머지는 규칙 기반.
+        major = a["kind"] != "party" or g["seats"].get(a["name"], 0) >= 10
+        if use_ai and opts and major:
             try:
                 choice = ai_response(g, a, opts)
             except Exception as ex:

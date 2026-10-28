@@ -83,3 +83,11 @@ def test_negotiating_group_and_mediation():
 def test_cloture_requires_active_filibuster():
     v = check(STATE, {"type": "filibuster", "action": "cloture_file", "bill": "B2", "supporters": ["갑당"]})
     assert not v["allowed"] and "진행 중인" in v["reason"]
+
+
+def test_plenary_blocked_during_filibuster_and_before_stage():
+    v = check(STATE, {"type": "plenary_pass", "bill": "B1", "supporters": ["갑당"]})
+    assert not v["allowed"]  # B1 무제한토론 중
+    st = {**STATE, "filibuster": {}}
+    v = check(st, {"type": "plenary_pass", "bill": "B1", "supporters": ["갑당"]})
+    assert not v["allowed"] and "소관위 심사" in v["reason"]

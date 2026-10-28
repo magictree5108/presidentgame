@@ -133,17 +133,55 @@ def build_bundle(con, issue: dict, on: str) -> tuple[Bundle, dict]:
                       data={"period": pname, **pc})
     base = law_base(title)
     if base:
-        sim = con.execute(
-            """SELECT bill_name, propose_dt, proc_result, plenary_dt, detail_link FROM bills
-               WHERE bill_name LIKE ? AND bill_id != ? ORDER BY propose_dt DESC LIMIT 30""",
-            (f"{base}%", issue.get("bill_id", ""))).fetchall()
-        if sim:
-            done = [s for s in sim if s["proc_result"]]
-            res = {}
-            for s in done:
-                res[s["proc_result"]] = res.get(s["proc_result"], 0) + 1
-            B.add("선례", f"같은 법률('{base}')을 고치는 22대 법안 {len(sim)}건, 처리된 {len(done)}건의 결과 {res}",
-                  data=[dict(s) for s in sim[:10]])
+        like = (f"{base} %", f"{base}(%", base)
+        where = "(bill_name LIKE ? OR bill_name LIKE ? OR bill_name = ?) AND bill_id != ?"
+        args = (*like, issue.get("bill_id", ""))
+        n_all = con.execute(f"SELECT COUNT(*) FROM bills WHERE {where}", args).fetchone()[0]
+        res = dict(con.execute(f"SELECT proc_result, COUNT(*) FROM bills WHERE {where} AND proc_result IS NOT NULL "
+                               "GROUP BY proc_result", args).fetchall())
+        if n_all:
+            B.add("선례", f"같은 법률('{base}')을 고치는 22대 법안 {n_all}건, 처리된 {sum(res.values())}건의 결과 {res}")
+        # 같은 법률 개정안의 과거 본회의 표결: 정당별(표결일 기준 당적) 찬반
+        from db import party_lookup
+        party_at = party_lookup(con)
+        past = con.execute(
+            """SELECT bill_id, bill_name, vote_date, yes, no, abstain FROM votes
+               WHERE (bill_name LIKE ? OR bill_name LIKE ?) AND vote_date < ? ORDER BY vote_date DESC LIMIT 5""",
+            (f"{base} %", f"{base}(%", on)).fetchall()
+        for v in past:
+            tally: dict = {}
+            for mv in con.execute("SELECT member_id, vote FROM member_votes WHERE bill_id=? AND vote IN ('찬성','반대','기권')",
+                                  (v["bill_id"],)):
+                p = party_at(mv["member_id"], v["vote_date"]) or "미확인"
+                t = tally.setdefault(p, {"찬성": 0, "반대": 0, "기권": 0})
+                t[mv["vote"]] += 1
+            brief = ", ".join(f"{p} 찬{t['찬성']}/반{t['반대']}/기{t['기권']}" for p, t in
+                              sorted(tally.items(), key=lambda x: -sum(x[1].values())))
+            B.add("기록", f"[과거 표결] {v['vote_date']} '{v['bill_name']}' 찬성 {v['yes']} 반대 {v['no']} 기권 {v['abstain']} "
+                  f"— 정당별: {brief}", data={"bill_id": v["bill_id"], "by_party": tally})
+    # 위원장 대안이면: 대안에 반영된 원래 법안들과 그 발의자 정당
+    if bill and (bill["proposer_kind"] == "위원장" or "(대안)" in (bill["bill_name"] or "")) and base:
+        src = con.execute(
+            """SELECT bill_id, bill_name, proposer FROM bills
+               WHERE (bill_name LIKE ? OR bill_name = ?) AND proc_result LIKE '대안반영%' AND committee = ?
+                 AND cmt_proc_dt BETWEEN date(?, '-14 days') AND date(?, '+1 days')""",
+            (f"{base}%", base, committee, bill["propose_dt"], bill["propose_dt"])).fetchall()
+        if src:
+            pm = current_party_map(con, on)
+            parties: dict = {}
+            leads = []
+            for sb in src:
+                for sp in con.execute("SELECT member_id, name, role FROM bill_sponsors WHERE bill_id=?", (sb["bill_id"],)):
+                    p = pm.get(sp["member_id"], "미확인")
+                    parties[p] = parties.get(p, 0) + 1
+                    if sp["role"] == "lead":
+                        leads.append(f"{sp['name']}({p})")
+            ctx["sponsor_parties"] = parties
+            if not ctx.get("lead_party") and leads:
+                ctx["lead_party"] = max(parties, key=parties.get)
+            B.add("기록", f"이 대안에 반영된 원래 법안 {len(src)}건(같은 위원회, 위원회 처리일 기준 추정 연결). "
+                  f"대표발의 {', '.join(leads[:8])}; 발의자 정당 분포(중복 포함) {parties}",
+                  data=[dict(x) for x in src])
     rules = load_rules()
     for r in rules:
         if r["id"] in ("R1", "R3", "R4", "R5", "R6", "R8", "R9", "R19"):
@@ -165,7 +203,11 @@ JUDGE_SYSTEM = """너는 한국 국회 정무 분석관이다. 아래 근거 목
 - 모든 판단 문장에 사용한 근거 번호를 refs 에 단다. 근거 목록에 없는 사실·수치·발언을 만들지 않는다.
 - 근거가 부족하면 그렇다고 쓰고 refs 를 비운다(화면에 '근거 약함'으로 표시된다).
 - 특정 정당에 유리하게 쓰지 않는다. 어느 관점에서 보든 같은 기준으로 판단한다.
-- party_stances 의 stance 는 찬성/반대/유동 중 하나. 정당 입장을 보여주는 근거가 없으면 유동으로 두고 refs 를 비운다."""
+- party_stances 의 stance 는 찬성/반대/유동 중 하나.
+  · 이 법안에 대한 직접 근거(당론 보도, 발의자 구성)가 있으면 그것으로 정한다.
+  · 직접 근거가 없어도 같은 법률 개정안의 과거 본회의 표결에서 그 정당이 일관되게(예: 90% 이상) 한쪽으로 표결했다면
+    그 방향으로 추정할 수 있다. 이때 reason 을 '간접 근거:'로 시작하고 근거 번호를 단다.
+  · 과거 표결이 엇갈리거나 근거가 전혀 없으면 유동으로 두고, 근거가 없을 때는 refs 를 비운다."""
 
 JUDGE_SCHEMA = {
     "type": "object", "additionalProperties": False,

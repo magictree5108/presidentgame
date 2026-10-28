@@ -88,6 +88,10 @@ def check_move(state: dict, move: dict) -> Verdict:
     th = rule.get("threshold", {})
 
     if mtype == "plenary_pass":
+        if state.get("filibuster", {}).get(move.get("bill"), {}).get("active"):
+            return Verdict(False, rule["id"], "불가: 무제한토론 진행 중에는 표결할 수 없음(국회법 제106조의2 ⑦)", [])
+        if bill and not (bill.get("stage") == "본회의 대기" or bill.get("fast_track") and bill.get("stage") != "정부이송"):
+            return Verdict(False, rule["id"], f"불가: 현재 단계 '{bill.get('stage')}'에서는 본회의 표결을 할 수 없음", [])
         ok = _check(checks, "출석(지지 세력만으로)", th["attendance"], total, have)
         # 의결은 출석 기준이므로 전원 출석을 가정한 최소 확보 의석으로 본다
         ok_vote = _check(checks, "찬성(전원 출석 가정)", th["approve"], total, have)
