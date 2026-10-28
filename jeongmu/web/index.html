@@ -60,6 +60,15 @@ dialog h2{font-size:12px;margin:12px 0 4px;color:var(--dim);letter-spacing:.12em
 @media(max-width:700px){header{position:static}}
 .empty{padding:16px;border:1px dashed var(--line);border-radius:6px;color:var(--dim)}
 pre{white-space:pre-wrap;font:12px/1.5 ui-monospace,monospace}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+.card{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px;min-width:0}
+.card h3{margin:0 0 4px;font-size:14px}
+.card ol{margin:6px 0;padding-left:18px}
+.card li{margin:2px 0}
+.chip2{display:inline-block;font-size:11px;padding:1px 6px;border-radius:10px;border:1px solid var(--line);margin-right:4px}
+.risk0,.risk1{color:var(--ok)}.risk2,.risk3{color:var(--warn)}.risk4,.risk5{color:var(--bad)}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-top:4px}
+.bar i{display:block;height:100%;background:var(--accent)}
 .tree ul{list-style:none;padding-left:18px;margin:4px 0}
 .tree li{padding:2px 0}
 a{color:var(--accent)}
@@ -69,7 +78,8 @@ a{color:var(--accent)}
 <header>
   <h1>정무<span>상황실</span></h1>
   <nav id="tabs">
-    <button data-tab="room" class="on">작전상황실</button>
+    <button data-tab="strat" class="on">정무 전략</button>
+    <button data-tab="room">작전상황실</button>
     <button data-tab="actors">행위자</button>
     <button data-tab="gov">정부 지휘계통</button>
     <button data-tab="rules">규칙집</button>
@@ -78,7 +88,17 @@ a{color:var(--accent)}
   <div id="statusbar"></div>
 </header>
 
-<main id="tab-room" class="on">
+<main id="tab-strat" class="on">
+  <section class="panel"><h2>과제</h2><div id="stHead"><div class="muted small">불러오는 중…</div></div></section>
+  <section class="panel"><h2>상황 판단</h2><div id="stSit"></div></section>
+  <section class="panel"><h2>진단: 무엇이 지지율을 움직이나</h2><div id="stDiag"></div></section>
+  <section class="panel"><h2>전략 카드 <span class="tag AI추정">AI 추정</span></h2><div id="stCards" class="cards"></div></section>
+  <section class="panel"><h2>전개 시나리오 <span class="tag AI추정">AI 추정</span></h2><div id="stScen"></div></section>
+  <section class="panel"><h2>주시할 지표 · 채점 예측</h2><div id="stWatch"></div></section>
+  <section class="panel"><h2>근거 목록</h2><div id="stEv" class="small"></div></section>
+</main>
+
+<main id="tab-room">
   <div class="col">
     <section class="panel">
       <h2>상황판</h2>
@@ -186,8 +206,37 @@ let S = {seats:null, colors:{}, sel:null, game:null, net:null, cmts:{}};
 document.querySelectorAll("#tabs button").forEach(b => b.onclick = () => {
   document.querySelectorAll("#tabs button").forEach(x => x.classList.toggle("on", x === b));
   document.querySelectorAll("main").forEach(m => m.classList.toggle("on", m.id === "tab-" + b.dataset.tab));
-  ({actors:loadActors, gov:loadGov, rules:loadRules, score:loadScore})[b.dataset.tab]?.();
+  ({actors:loadActors, gov:loadGov, rules:loadRules, score:loadScore, strat:loadStrategy, room:()=>{ if(!S.seats) loadSeats(); }})[b.dataset.tab]?.();
 });
+
+async function loadStrategy(){
+  let r;
+  try { r = await api("/api/strategy/latest"); } catch (e) { $("#stHead").innerHTML = `<div class="empty">${esc(e.message)}</div>`; return; }
+  const ev = r.evidence || [];
+  const refs = x => x.weak ? `<span class="tag 약함">근거 약함</span>` : refList(x.refs, ev);
+  $("#stHead").innerHTML = `<div class="big" style="font-size:18px">${esc(r.goal)}</div>
+    <div class="small muted">관점: <b>${esc(r.side)}</b> · 기준일 ${esc(r.on)} · 근거 ${ev.length}개 · 비용 $${r.cost_usd} · 실행 ID ${esc(r.run_id)}</div>
+    <div class="small muted">여론조사 수치는 언론 보도에서 자동 추출(조사기관별 방식 차이 큼, 같은 기관 추세로만 비교). 전략·확률·효과는 AI 추정.</div>`;
+  $("#stSit").innerHTML = `<div class="small" style="line-height:1.7">${esc(r.situation.text)} ${refs(r.situation)}</div>`;
+  $("#stDiag").innerHTML = `<table class="small"><tr><th>방향</th><th>비중</th><th>요인</th><th>근거·논리</th></tr>${r.diagnosis.map(d =>
+    `<tr><td class="${d.direction === "하락 요인" ? "bad" : "ok"}">${esc(d.direction)}</td><td>${esc(d.weight)}</td><td><b>${esc(d.driver)}</b></td><td>${esc(d.rationale)} ${refs(d)}</td></tr>`).join("")}</table>`;
+  $("#stCards").innerHTML = r.strategies.map(c => `<div class="card">
+    <div class="small muted">${esc(c.kind)} · 대상: ${esc(c.target_audience)}</div>
+    <h3>${esc(c.name)}</h3>
+    <div><span class="chip2">기대 ${c.expected_pp_low}~${c.expected_pp_high}%p / ${c.weeks}주</span><span class="chip2 risk${c.legal_risk}">법적 리스크 ${c.legal_risk}/5</span><span class="chip2 risk${c.backlash_risk}">역풍 ${c.backlash_risk}/5</span></div>
+    <ol class="small">${c.steps.map(x => `<li>${esc(x)}</li>`).join("")}</ol>
+    <div class="small"><b>상대 대응</b> ${esc(c.opponent_counter)}</div>
+    <div class="small"><b>재반격</b> ${esc(c.counter_to_counter)}</div>
+    <div class="small muted" style="margin-top:4px">${esc(c.rationale)} ${refs(c)}</div></div>`).join("");
+  $("#stScen").innerHTML = r.scenarios.map(x => `<div style="margin-bottom:10px"><div class="small"><b>${Math.round(x.probability * 100)}% · ${esc(x.name)}</b> ${refs(x)}</div>
+    <div class="bar"><i style="width:${Math.round(x.probability * 100)}%"></i></div>
+    <div class="small muted">${x.path.map(esc).join(" → ")}</div><div class="small">결말: ${esc(x.end_state)}</div></div>`).join("");
+  $("#stWatch").innerHTML = `<ul class="small">${r.watch.map(w => `<li>${esc(w)}</li>`).join("")}</ul>
+    <table class="small"><tr><th>조사기관</th><th>대상</th><th>기한</th><th>예측 범위</th></tr>${r.predictions.map(p =>
+    `<tr><td>${esc(p.pollster)}</td><td>${esc(p.target_kind)} ${esc(p.target)}</td><td>${esc(p.by_date)}</td><td>${p.low}~${p.high}%</td></tr>`).join("")}</table>
+    <div class="small muted">기한이 지나면 실제 조사로 채점해 '적중 기록'에 남깁니다.</div>`;
+  $("#stEv").innerHTML = ev.map(e => `<div><b>${e.ref}</b> ${tag(e.label)} ${esc(e.text)} ${e.link ? `<a href="${esc(e.link)}" target="_blank" rel="noopener">링크</a>` : ""}</div>`).join("");
+}
 
 async function loadStatus(){
   const s = await api("/api/status");
@@ -441,7 +490,7 @@ async function loadScore(){
     `<div class="small muted">${Object.entries(u.by_purpose || {}).map(([k,v]) => `${esc(k)} ${v.calls}회 $${v.cost_usd}`).join(" · ")}</div>`;
 }
 
-(async () => { await loadStatus(); await loadCommittees(); await loadSeats(); })().catch(e => { $("#board").innerHTML = `<div class="bad">${esc(e.message)}</div>`; });
+(async () => { await loadStatus(); loadStrategy(); await loadCommittees(); await loadSeats(); })().catch(e => { $("#board").innerHTML = `<div class="bad">${esc(e.message)}</div>`; });
 </script>
 </body>
 </html>

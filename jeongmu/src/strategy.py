@@ -169,7 +169,9 @@ SYSTEM = """너는 한국 정치의 최고 수준 정무 전략가다. 사용자
 - 다음은 실행 계획으로 내지 않는다(효과가 있어 보여도): 허위 사실 유포·조작, 매수·금품, 해킹·불법 정보 취득, 협박,
   댓글부대·가짜계정 같은 조직적 여론조작. 상대가 그런 수를 쓸 가능성은 위협으로 분석해도 된다.
 - 기대 효과는 지지율 %p 범위와 걸리는 주(週)로 쓰되, 근거가 약하면 범위를 넓게 잡는다.
-- 예측(predictions)은 나중에 실제 여론조사로 채점할 수 있게 구체적으로 쓴다(조사기관, 대상, 기한, 범위)."""
+- 예측(predictions)은 나중에 실제 여론조사로 채점할 수 있게 구체적으로 쓴다(조사기관, 대상, 기한, 범위).
+- 여론조사 수치는 보도에서 자동 추출한 값이라 일부 오류가 있을 수 있다. 조사기관마다 방식(전화면접/ARS)이 달라 수준 차이가 크니
+  기관 간 수치를 직접 비교하지 말고 같은 기관 안의 추세로 판단한다. 한 번만 튀는 급변은 신중히 해석한다."""
 
 SCHEMA = {
     "type": "object", "additionalProperties": False,
@@ -231,7 +233,7 @@ def run(goal: str, side: str, on: str | None = None, estimate_only: bool = False
     before = usage_summary()["cost_usd"]
     prompt = (f"진영: {side}\n목표: {goal}\n기준일: {on}\n\n근거 목록:\n{B.as_prompt()}\n\n"
               "진단 → 전략 카드 6~10개(서로 다른 종류, 실전형) → 전개 시나리오 3~4개(확률 합 1) → 주시할 지표 → 채점 가능한 예측 순으로.")
-    out = call_json(SYSTEM, prompt, SCHEMA, purpose="strategy", run_id=run_id, effort="high", max_tokens=32000)
+    out = call_json(SYSTEM, prompt, SCHEMA, purpose="strategy", run_id=run_id, effort="high", max_tokens=20000)  # 비용 상한(출력 최대 약 $0.40)
     valid = B.refs()
     out["situation"] = check_refs([out["situation"]], valid)[0]
     for k in ("diagnosis", "strategies", "scenarios"):

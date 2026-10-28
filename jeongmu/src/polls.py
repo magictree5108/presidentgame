@@ -181,6 +181,13 @@ def series(target_kind: str, target: str, pollster: str | None = None, include_u
         mode = max(set(vals), key=vals.count)  # 같은 조사의 여러 보도 중 가장 많이 나온 값(지역·계층 수치 배제 효과)
         out.append({"pollster": pl, "date": d, "value": mode, "n_reports": len(vs),
                     "urls": [u for v, u in vs if v == mode][:3], "label": "보도"})
+    # 지역·계층 하위 수치가 전국 수치로 잘못 뽑힌 경우를 거른다: 같은 기관 중앙값에서 크게 벗어난 값 제외
+    import statistics
+    by_pl = {}
+    for x in out:
+        by_pl.setdefault(x["pollster"], []).append(x["value"])
+    med = {pl: statistics.median(v) for pl, v in by_pl.items()}
+    out = [x for x in out if abs(x["value"] - med[x["pollster"]]) <= max(8.0, 0.25 * med[x["pollster"]])]
     out.sort(key=lambda x: (x["pollster"], x["date"] or ""))
     # 같은 조사가 여러 날 보도되면(조사일 미기재 → 보도일 사용) 4일 안의 같은 기관·같은 값은 하나로 합친다
     merged = []

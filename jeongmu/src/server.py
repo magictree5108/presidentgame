@@ -267,3 +267,11 @@ def backtest_report():
 def usage():
     from llm import usage_summary
     return usage_summary()
+
+
+@app.get("/api/strategy/latest")
+def strategy_latest():
+    d = jload(DATA / "strategy" / "latest.json")
+    if not d:
+        raise HTTPException(404, "아직 전략 분석이 없습니다. python src/strategy.py --goal ... --side ...")
+    return d

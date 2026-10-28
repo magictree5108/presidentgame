@@ -33,6 +33,10 @@ def build() -> dict:
         "/api/backtest": server.backtest_report(),
         "/api/usage": server.usage(),
     }
+    try:
+        snap["/api/strategy/latest"] = server.strategy_latest()
+    except Exception:
+        pass
     al = server.alerts()
     if not isinstance(al, list) or not al:  # 오늘 기사가 없으면 가장 최근 날짜 알림
         from news import nconnect, alerts
@@ -92,7 +96,7 @@ window.fetch = async (p, opt) => {
 </script>
 """
 
-BANNER = """<div class="snapbar">미리보기 · {asof} 기준 실제 데이터 · 판단은 본회의 대기 법안 {n}건만(규칙 기반, AI 미사용) · AI 판단·워게임은 내 PC에서</div>"""
+BANNER = """<div class="snapbar">미리보기 · {asof} 기준 실제 데이터 · 정무 전략은 마지막 분석 결과 · 법안 판단은 본회의 대기 {n}건만(규칙 기반) · 새 분석·워게임은 요청 시 실행</div>"""
 
 
 def main():
