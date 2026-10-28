@@ -33,7 +33,7 @@ def _cache_path(service: str, params: dict) -> Path:
 
 
 def call(service: str, params: dict | None = None, *, page: int = 1, size: int = 100,
-         use_cache: bool = True, retries: int = 6) -> tuple[list[dict], int]:
+         use_cache: bool = True, retries: int = 10) -> tuple[list[dict], int]:
     """한 페이지를 가져온다. (rows, 전체 건수) 반환."""
     global _last_call
     key = env("ASSEMBLY_API_KEY")
@@ -57,7 +57,7 @@ def call(service: str, params: dict | None = None, *, page: int = 1, size: int =
             except (requests.RequestException, ValueError) as e:
                 if attempt == retries - 1:
                     raise AssemblyAPIError(f"{service} 요청 실패: {e}") from e
-                time.sleep(2 ** (attempt + 1))
+                time.sleep(min(2 ** (attempt + 1), 30))
         cp.parent.mkdir(parents=True, exist_ok=True)
         cp.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
     return parse(service, data)

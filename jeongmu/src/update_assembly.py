@@ -417,7 +417,7 @@ def main(argv=None):
         load_other_bills(con, use_cache=use_cache)
         con.commit()
         if not a.no_votes:
-            ids = load_bill_votes(con, use_cache=False)
+            ids = load_bill_votes(con, use_cache=use_cache)  # 마지막 페이지는 fetch_all 이 항상 새로 받음
             con.commit()
             load_member_votes(con, ids, use_cache=use_cache, only_new=not a.full)
             con.commit()
