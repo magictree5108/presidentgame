@@ -20,6 +20,8 @@ HEADERS = {"User-Agent": "Mozilla/5.0 (jeongmu research tool)", "Accept": "appli
 # 1000건짜리 큰 페이지(약 1MB)는 전송 중 끊기는 일이 잦아 100건 단위로 받는다
 MIN_INTERVAL = 1.0
 _last_call = 0.0
+# 연결을 재사용해야 끊김이 거의 없다(매번 새 연결이면 절반가량 끊김, 2026-10-28 측정)
+_session = requests.Session()
 
 
 class AssemblyAPIError(RuntimeError):
@@ -50,14 +52,14 @@ def call(service: str, params: dict | None = None, *, page: int = 1, size: int =
                 time.sleep(wait)
             _last_call = time.time()
             try:
-                r = requests.get(BASE + service, params={"KEY": key, **q}, headers=HEADERS, timeout=60)
+                r = _session.get(BASE + service, params={"KEY": key, **q}, headers=HEADERS, timeout=(10, 60))
                 r.raise_for_status()
                 data = r.json()
                 break
             except (requests.RequestException, ValueError) as e:
                 if attempt == retries - 1:
                     raise AssemblyAPIError(f"{service} 요청 실패: {e}") from e
-                time.sleep(min(2 ** (attempt + 1), 30))
+                time.sleep(min(2 + attempt * 2, 20))
         cp.parent.mkdir(parents=True, exist_ok=True)
         cp.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
     return parse(service, data)
