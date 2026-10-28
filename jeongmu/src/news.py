@@ -56,20 +56,40 @@ def clean(s: str) -> str:
     return html.unescape(re.sub(r"<[^>]+>", "", s or "")).strip()
 
 
+HUB = "https://naverapihub.apigw.ntruss.com/search/v1/news"  # 네이버 클라우드 NAVER API HUB(2026~ 신규 발급)
+_mode = None
+
+
 def search(query: str, display: int = 100, start: int = 1) -> list[dict]:
+    """뉴스 검색. NAVER API HUB 키와 예전 개발자센터 키를 모두 지원한다(같은 NAVER_CLIENT_ID/SECRET 칸).
+    처음 호출에서 HUB → 개발자센터 순으로 시도해 되는 쪽을 기억한다. 하루 25,000회 한도."""
+    global _mode
     cid, sec = env("NAVER_CLIENT_ID"), env("NAVER_CLIENT_SECRET")
     if not (cid and sec):
         raise RuntimeError("NAVER_CLIENT_ID/NAVER_CLIENT_SECRET이 .env에 없습니다.")
-    for i in range(4):
-        r = requests.get(API, params={"query": query, "display": display, "start": start, "sort": "date"},
-                         headers={"X-Naver-Client-Id": cid, "X-Naver-Client-Secret": sec}, timeout=30)
-        if r.status_code == 429:
-            time.sleep(2 ** (i + 1))
+    targets = {
+        "hub": (HUB, {"X-NCP-APIGW-API-KEY-ID": cid, "X-NCP-APIGW-API-KEY": sec}),
+        "dev": (API, {"X-Naver-Client-Id": cid, "X-Naver-Client-Secret": sec}),
+    }
+    order = [_mode] if _mode else ["hub", "dev"]
+    params = {"query": query, "display": display, "start": start, "sort": "date"}
+    last = None
+    for mode in order:
+        url, headers = targets[mode]
+        for i in range(4):
+            r = requests.get(url, params=params, headers=headers, timeout=30)
+            if r.status_code == 429:
+                time.sleep(2 ** (i + 1))
+                continue
+            break
+        if r.status_code in (401, 403) and not _mode:
+            last = r
             continue
         r.raise_for_status()
+        _mode = mode
         time.sleep(1)  # 요청 간격 1초
         return r.json().get("items", [])
-    return []
+    raise RuntimeError(f"네이버 검색 인증 실패({last.status_code if last is not None else '?'}): 키를 확인하세요")
 
 
 # ------------------------------------------------------------------ 동명이인 판별 규칙
@@ -117,8 +137,9 @@ def match_member(text: str, m: dict) -> tuple[bool, str, float]:
 # ------------------------------------------------------------------ AI 추출
 EXTRACT_SYSTEM = """너는 국회 동향 기록원이다. 기사 제목과 짧은 요약문만 보고, 지정된 인물·기관에 대해
 기사에 명시된 사실만 뽑는다. 범주: 입장 표명 / 발의·표결 예고 / 갈등 / 협력 / 지역구 현안.
-해당되는 것이 없으면 빈 목록을 낸다. 추측·해석·평가는 쓰지 않는다. 요약은 한두 문장, 기사 문장을 그대로 옮기지 말고
-'누가 무엇을 했다/밝혔다' 형태로 쓴다."""
+해당되는 것이 없으면 빈 목록을 낸다. 추측·해석·평가는 쓰지 않는다.
+요약 규칙(저작권): 기사 문장을 복사하지 않는다. 원문과 같은 어절이 다섯 개 이상 이어지면 안 된다.
+'[누가] [무엇에 대해] [어떤 행동/입장]' 형태의 40자 안팎 한 문장으로 직접 다시 쓴다. 예: '가나다 의원, ○○법 개정안 반대 입장 표명'."""
 EXTRACT_SCHEMA = {
     "type": "object", "additionalProperties": False, "required": ["facts"],
     "properties": {"facts": {"type": "array", "items": {
@@ -129,8 +150,9 @@ EXTRACT_SCHEMA = {
 
 def extract(title: str, desc: str, entity: str) -> list[dict]:
     from llm import call_json
+    from llm import CHEAP_MODEL
     out = call_json(EXTRACT_SYSTEM, f"대상: {entity}\n제목: {title}\n요약문: {desc}", EXTRACT_SCHEMA,
-                    purpose="news_extract", effort="low", max_tokens=2000)
+                    purpose="news_extract", effort="low", max_tokens=2000, model=CHEAP_MODEL)
     return out["facts"]
 
 

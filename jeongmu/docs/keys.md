@@ -26,19 +26,22 @@ python -m pip install -r requirements.txt
 4. `.env` 의 `ASSEMBLY_API_KEY=` 뒤에 붙여넣기
 5. 확인: `python src/check_apis.py` → `docs/api_check.md` 에 서비스별 "확인됨"이 나오면 성공
 
-## 2. 네이버 검색 API → `NAVER_CLIENT_ID`, `NAVER_CLIENT_SECRET`
+## 2. 네이버 뉴스 검색 키 → `NAVER_CLIENT_ID`, `NAVER_CLIENT_SECRET`
 
-1. https://developers.naver.com 접속 → 네이버 아이디로 로그인
-2. 위 메뉴 **Application** → **애플리케이션 등록**
-3. 애플리케이션 이름: `정무상황실` / 사용 API: **검색** 선택
-4. 비로그인 오픈 API 서비스 환경: **WEB 설정** → 웹 서비스 URL `http://localhost` → **등록하기**
-5. **내 애플리케이션** 화면의 **Client ID**, **Client Secret** 을 `.env` 에 각각 붙여넣기
-   (하루 검색 25,000회까지 무료. 의원 300명 + 부처 약 20개면 하루 1회 실행에 충분)
+2026년부터 네이버 검색 API는 **네이버 클라우드의 NAVER API HUB**에서 새로 발급합니다(네이버 개발자센터 목록에는 '검색'이 없을 수 있음). 하루 25,000회 한도.
+
+1. https://www.ncloud.com 접속 → 네이버 아이디로 로그인(처음이면 회원가입·결제수단 등록 요구가 있을 수 있음)
+2. 오른쪽 위 **콘솔** → 왼쪽 위 **Menu** → **All Services → Application Services → NAVER API HUB**
+3. 왼쪽 **Application** → **[Application 등록]** → 사용할 API에서 **검색** 선택 → **[다음]** → 이름 `정무상황실` → **[완료]**
+4. 만든 Application 선택 → **API 관리 → [인증 정보]** → **Client ID**, **Client Secret** 복사
+5. `.env` 의 `NAVER_CLIENT_ID=`, `NAVER_CLIENT_SECRET=` 뒤에 붙여넣기
+
+예전에 네이버 개발자센터(developers.naver.com)에서 받은 검색 키가 있다면 그 키도 같은 칸에 넣으면 그대로 작동합니다(프로그램이 두 방식을 자동으로 시도).
 
 ## 3. Anthropic API 키 → `ANTHROPIC_API_KEY`
 
 1. https://platform.claude.com 접속 → 가입·로그인
-2. **Settings → Billing** 에서 결제 수단 등록·크레딧 충전 (판단 1회 수백 원 이하로 추정 — 아직 실측 전. 실제 비용은 화면 '적중 기록 → AI 비용'에 기록됨)
+2. **Settings → Billing** 에서 결제 수단 등록·크레딧 충전 (실측: 판단 1회 70~110원, 워게임 1판 130~170원, 기사 1건 추출 약 0.2원. 실제 비용은 화면 '적중 기록 → AI 비용'에 기록됨)
 3. **API Keys → Create Key** → 이름 `jeongmu` → 만들어진 키(`sk-ant-...`)를 바로 복사 (다시 볼 수 없음)
 4. `.env` 의 `ANTHROPIC_API_KEY=` 뒤에 붙여넣기
 
