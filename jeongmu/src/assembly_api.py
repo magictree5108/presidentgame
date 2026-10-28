@@ -15,6 +15,8 @@ import requests
 from config import CACHE, env
 
 BASE = "https://open.assembly.go.kr/portal/openapi/"
+# 브라우저 식별 헤더가 없으면 서버가 "Bad Request."로 거절한다(2026-10-28 확인)
+HEADERS = {"User-Agent": "Mozilla/5.0 (jeongmu research tool)", "Accept": "application/json"}
 MIN_INTERVAL = 1.0
 _last_call = 0.0
 
@@ -30,7 +32,7 @@ def _cache_path(service: str, params: dict) -> Path:
 
 
 def call(service: str, params: dict | None = None, *, page: int = 1, size: int = 1000,
-         use_cache: bool = True, retries: int = 4) -> tuple[list[dict], int]:
+         use_cache: bool = True, retries: int = 6) -> tuple[list[dict], int]:
     """한 페이지를 가져온다. (rows, 전체 건수) 반환."""
     global _last_call
     key = env("ASSEMBLY_API_KEY")
@@ -47,7 +49,7 @@ def call(service: str, params: dict | None = None, *, page: int = 1, size: int =
                 time.sleep(wait)
             _last_call = time.time()
             try:
-                r = requests.get(BASE + service, params={"KEY": key, **q}, timeout=60)
+                r = requests.get(BASE + service, params={"KEY": key, **q}, headers=HEADERS, timeout=60)
                 r.raise_for_status()
                 data = r.json()
                 break

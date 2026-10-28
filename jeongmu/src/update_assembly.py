@@ -21,6 +21,13 @@ from config import DATA, TERM_START
 from db import compute_stage, connect
 
 TODAY = date.today().isoformat()
+# 실존 인물 보호: 연락처·생년월일·보좌진 등은 원본(raw_json)에도 남기지 않는다
+PRIVATE_FIELDS = {"TEL_NO", "E_MAIL", "BTH_DATE", "BTH_GBN_NM", "STAFF", "SECRETARY", "SECRETARY2",
+                  "ASSEM_ADDR", "ASSEM_TEL", "ASSEM_EMAIL", "ROOM_NO", "MEM_TITLE", "SEX_GBN_NM"}
+
+
+def public(r: dict) -> dict:
+    return {k: v for k, v in r.items() if k not in PRIVATE_FIELDS}
 
 
 def log(msg: str) -> None:
@@ -30,7 +37,10 @@ def log(msg: str) -> None:
 def norm_date(v):
     if not v:
         return None
-    s = str(v).strip().replace(".", "-").replace("/", "-")[:10]
+    s = str(v).strip().replace(".", "-").replace("/", "-")
+    if len(s) >= 8 and s[:8].isdigit():  # '20261001 150401' 형식
+        s = s[:8]
+    s = s[:10]
     if len(s) == 8 and s.isdigit():
         s = f"{s[:4]}-{s[4:6]}-{s[6:]}"
     try:
@@ -78,7 +88,7 @@ def load_members(con, use_cache=True) -> int:
              pick(r, "members", "name_eng"), pick(r, "members", "district"),
              pick(r, "members", "elect_type"), pick(r, "members", "reelection"),
              pick(r, "members", "units"), party, pick(r, "members", "committees"),
-             pick(r, "members", "homepage"), json.dumps(r, ensure_ascii=False), TODAY),
+             pick(r, "members", "homepage"), json.dumps(public(r), ensure_ascii=False), TODAY),
         )
         # 의원직 기간: 처음 보는 현직 의원은 기본값으로 임기 시작일부터 현직.
         # (보궐·승계 의원의 실제 시작일은 data/member_terms.csv 로 보정)
@@ -138,6 +148,86 @@ def name_index(con) -> dict[str, list[str]]:
 
 
 # ---------------------------------------------------------------- 법안
+def save_sponsors(con, bid, b, idx):
+    """대표·공동발의자. API가 주는 의원코드(RST_MONA_CD/PUBL_MONA_CD)를 이름과 짝지어 쓰고,
+    코드가 없을 때만 이름으로 찾는다(동명이인이면 비움)."""
+    def pairs(names, ids):
+        ns, cs = split_names(names), split_names(ids)
+        return list(zip(ns, cs)) if len(ns) == len(cs) else [(n, None) for n in ns]
+    seen = set()
+    for role, nm_key, id_key in (("lead", "lead", "lead_id"), ("co", "co", "co_ids")):
+        for nm, mid in pairs(b.get(nm_key), b.get(id_key)):
+            if nm in seen:
+                continue
+            seen.add(nm)
+            if not mid:
+                ids = idx.get(nm, [])
+                mid = ids[0] if len(ids) == 1 else None
+            con.execute("INSERT OR IGNORE INTO bill_sponsors VALUES(?,?,?,?)", (bid, mid, nm, role))
+
+
+def load_other_bills(con, use_cache=True) -> int:
+    """의원 발의 API에 없는 법안(위원장 대안, 정부 제출 등)을 의안검색 API로 보충한다."""
+    s = SERVICES["all_bills"]
+    idx = name_index(con)
+    have = {r[0] for r in con.execute("SELECT bill_id FROM bills")}
+    n = 0
+    for r in api.fetch_all(s["code"], s["params"], use_cache=use_cache):
+        bid = pick(r, "all_bills", "bill_id")
+        if not bid or bid in have:
+            continue
+        b = {k: pick(r, "all_bills", k) for k in s["fields"]}
+        for k in ("propose_dt", "cmt_present_dt", "cmt_proc_dt", "law_submit_dt", "law_proc_dt", "plenary_dt"):
+            b[k] = norm_date(b[k])
+        b["stage"] = compute_stage(b)
+        con.execute(
+            """INSERT OR REPLACE INTO bills(bill_id,bill_no,bill_name,proposer_kind,proposer,propose_dt,
+                 committee,committee_id,cmt_present_dt,cmt_proc_dt,cmt_result,law_submit_dt,
+                 law_proc_dt,law_result,plenary_dt,proc_result,stage,detail_link,raw_json,updated_at)
+               VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+            (bid, b["bill_no"], b["bill_name"], b["proposer_kind"], b["proposer"], b["propose_dt"],
+             b["committee"], b["committee_id"], b["cmt_present_dt"], b["cmt_proc_dt"], b["cmt_result"],
+             b["law_submit_dt"], b["law_proc_dt"], b["law_result"], b["plenary_dt"], b["proc_result"],
+             b["stage"], b["detail_link"], json.dumps(r, ensure_ascii=False), TODAY))
+        if b.get("lead"):
+            save_sponsors(con, bid, b, idx)
+        n += 1
+    log(f"위원장 대안·정부안 등 보충 {n}건")
+    return n
+
+
+def load_committees(con) -> int:
+    """위원회 현황과 위원 명단(현재 시점 스냅샷). 바뀐 부분만 날짜를 남긴다.
+    연락처·보좌진 정보는 저장하지 않는다."""
+    s = SERVICES["committees"]
+    for r in api.fetch_all(s["code"], use_cache=False):
+        con.execute("INSERT OR REPLACE INTO committees VALUES(?,?,?,?)",
+                    (pick(r, "committees", "committee_id"), pick(r, "committees", "name"),
+                     pick(r, "committees", "kind"),
+                     json.dumps({k: r.get(v) for k, v in s["fields"].items()}, ensure_ascii=False)))
+    s = SERVICES["committee_members"]
+    first = con.execute("SELECT COUNT(*) FROM committee_roles").fetchone()[0] == 0
+    current = set()
+    n = 0
+    for r in api.fetch_all(s["code"], use_cache=False):
+        row = {k: pick(r, "committee_members", k) for k in s["fields"]}
+        key = (row["committee"], row["member_id"], row["role"])
+        current.add(key)
+        exists = con.execute(
+            "SELECT 1 FROM committee_roles WHERE committee=? AND member_id=? AND role=? AND end_date IS NULL", key).fetchone()
+        if not exists:
+            con.execute("INSERT INTO committee_roles VALUES(?,?,?,?,?,?,?,?,?)",
+                        (row["committee_id"], row["committee"], row["member_id"], row["name"], row["role"],
+                         row["party"], None if first else TODAY, None,
+                         f"{s['code']} 명단 {TODAY}" + ("(최초 수집: 시작일 미상)" if first else "(변동 감지일)")))
+        n += 1
+    for r in con.execute("SELECT rowid, committee, member_id, role FROM committee_roles WHERE end_date IS NULL").fetchall():
+        if (r["committee"], r["member_id"], r["role"]) not in current:
+            con.execute("UPDATE committee_roles SET end_date=? WHERE rowid=?", (TODAY, r["rowid"]))
+    log(f"위원회 위원 {n}명(위원회 중복 포함)")
+    return n
+
+
 def load_bills(con, use_cache=True) -> int:
     s = SERVICES["bills"]
     idx = name_index(con)
@@ -169,12 +259,7 @@ def load_bills(con, use_cache=True) -> int:
              b["plenary_dt"], b["proc_result"], b["stage"], b["detail_link"],
              json.dumps(r, ensure_ascii=False), TODAY),
         )
-        sponsors = [(nm, "lead") for nm in split_names(b["lead"])]
-        sponsors += [(nm, "co") for nm in split_names(b["co"]) if nm not in dict(sponsors)]
-        for nm, role in sponsors:
-            ids = idx.get(nm, [])
-            mid = ids[0] if len(ids) == 1 else None  # 동명이인이면 비워 둔다
-            con.execute("INSERT OR IGNORE INTO bill_sponsors VALUES(?,?,?,?)", (bid, mid, nm, role))
+        save_sponsors(con, bid, b, idx)
         n += 1
         if n % 2000 == 0:
             con.commit()
@@ -325,7 +410,11 @@ def main(argv=None):
     try:
         load_members(con, use_cache=False)  # 의원 명단은 매번 새로 받아 변동을 감지
         con.commit()
+        load_committees(con)
+        con.commit()
         load_bills(con, use_cache=use_cache)
+        con.commit()
+        load_other_bills(con, use_cache=use_cache)
         con.commit()
         if not a.no_votes:
             ids = load_bill_votes(con, use_cache=False)
