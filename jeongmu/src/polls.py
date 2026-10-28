@@ -63,7 +63,8 @@ def pconnect():
     return con
 
 
-def collect(dry_run: bool) -> dict:
+def collect(dry_run: bool, budget_usd: float | None = None) -> dict:
+    """budget_usd: 이번 실행의 AI 비용 상한. 닿으면 즉시 멈춘다(이미 처리한 건 저장됨, 다시 돌리면 이어서)."""
     con = pconnect()
     seen, todo = set(), []
     stats = {"queries": 0, "results": 0, "candidates": 0, "new": 0, "extracted": 0, "values": 0}
@@ -97,8 +98,22 @@ def collect(dry_run: bool) -> dict:
                 break
     if dry_run:
         return stats
-    from llm import CHEAP_MODEL, call_json
+    from llm import CHEAP_MODEL, call_json, cost_usd
+    todo.sort(key=lambda x: x[3] or "", reverse=True)  # 최근 기사부터
+    spent = 0.0
+    import llm as _llm
+    _orig_log = _llm.log_usage
+
+    def _track(purpose, usage, run_id=None, model=_llm.MODEL):
+        nonlocal spent
+        spent += cost_usd(usage, model)
+        return _orig_log(purpose, usage, run_id, model)
+    _llm.log_usage = _track
     for url, title, desc, pub, q in todo:
+        if budget_usd is not None and spent >= budget_usd:
+            print(f"예산 상한 ${budget_usd} 도달 → 중단 (사용 ${spent:.4f})")
+            stats["stopped_by_budget"] = True
+            break
         con.execute("INSERT OR IGNORE INTO poll_articles(url,title,pub_date,press_domain,query,collected_at) VALUES(?,?,?,?,?,?)",
                     (url, title, pub, urlparse(url).netloc, q, datetime.now().isoformat(timespec="seconds")))
         try:
@@ -119,6 +134,7 @@ def collect(dry_run: bool) -> dict:
         if stats["extracted"] % 50 == 0:
             con.commit()
     con.commit()
+    stats["spent_usd"] = round(spent, 4)
     return stats
 
 
@@ -144,9 +160,10 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("cmd", choices=["collect", "show"])
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--budget-usd", type=float, help="이번 실행 AI 비용 상한(달러). 닿으면 멈춤")
     a = ap.parse_args()
     if a.cmd == "collect":
-        st = collect(a.dry_run)
+        st = collect(a.dry_run, a.budget_usd)
         print(st)
         if a.dry_run:
             n = st["new"]
