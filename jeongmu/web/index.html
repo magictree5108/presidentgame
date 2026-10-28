@@ -227,6 +227,8 @@ async function loadStrategy(){
     <ol class="small">${c.steps.map(x => `<li>${esc(x)}</li>`).join("")}</ol>
     <div class="small"><b>상대 대응</b> ${esc(c.opponent_counter)}</div>
     <div class="small"><b>재반격</b> ${esc(c.counter_to_counter)}</div>
+    ${(c.principles || []).length ? `<div class="small" style="margin-top:4px"><b>근거 원칙</b> ${c.principles.map(id => { const p = (r.playbook || {})[id] || {};
+      return `<span class="chip2" title="${esc((p.book || "") + " · " + (p.loc || "") + (p.fails && p.fails !== "—" ? " · 실패조건: " + p.fails : ""))}">${esc(id)} ${esc(p.title || "")}</span>`; }).join("")}</div>` : ""}
     <div class="small muted" style="margin-top:4px">${esc(c.rationale)} ${refs(c)}</div></div>`).join("");
   $("#stScen").innerHTML = r.scenarios.map(x => `<div style="margin-bottom:10px"><div class="small"><b>${Math.round(x.probability * 100)}% · ${esc(x.name)}</b> ${refs(x)}</div>
     <div class="bar"><i style="width:${Math.round(x.probability * 100)}%"></i></div>

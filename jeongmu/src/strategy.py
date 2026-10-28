@@ -22,6 +22,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from config import DATA
 from db import connect, seats_on
 from engine import Bundle
+import playbook
 
 OUT_DIR = DATA / "strategy"
 
@@ -170,6 +171,10 @@ SYSTEM = """너는 한국 정치의 최고 수준 정무 전략가다. 사용자
   댓글부대·가짜계정 같은 조직적 여론조작. 상대가 그런 수를 쓸 가능성은 위협으로 분석해도 된다.
 - 기대 효과는 지지율 %p 범위와 걸리는 주(週)로 쓰되, 근거가 약하면 범위를 넓게 잡는다.
 - 예측(predictions)은 나중에 실제 여론조사로 채점할 수 있게 구체적으로 쓴다(조사기관, 대상, 기한, 범위).
+- 원칙집(책 8권 요약, [D3]·[W20] 같은 원칙 번호)을 전략 설계의 도구로 쓴다. 전략 카드마다 principles 에 근거 원칙 1~3개를 단다.
+  원칙의 '실패조건'에 해당하는 상황이면 backlash_risk 를 올리고 rationale 에 그 이유를 쓴다.
+  '방어' 원칙은 상대가 쓸 수를 예상해 opponent_counter·방어·수습 카드에 쓴다.
+  뻔한 수(상대·언론이 예상할 대응)보다 원칙을 조합한 예상 밖의 수를 우선한다(W24, W20, L31, T6).
 - 여론조사 수치는 보도에서 자동 추출한 값이라 일부 오류가 있을 수 있다. 조사기관마다 방식(전화면접/ARS)이 달라 수준 차이가 크니
   기관 간 수치를 직접 비교하지 말고 같은 기관 안의 추세로 판단한다. 한 번만 튀는 급변은 신중히 해석한다."""
 
@@ -186,7 +191,8 @@ SCHEMA = {
                            "refs": {"type": "array", "items": {"type": "string"}}}}},
         "strategies": {"type": "array", "items": {"type": "object", "additionalProperties": False,
             "required": ["name", "kind", "steps", "target_audience", "expected_pp_low", "expected_pp_high", "weeks",
-                         "legal_risk", "backlash_risk", "opponent_counter", "counter_to_counter", "rationale", "refs"],
+                         "legal_risk", "backlash_risk", "opponent_counter", "counter_to_counter", "rationale", "refs",
+                         "principles"],
             "properties": {"name": {"type": "string"},
                            "kind": {"type": "string", "enum": ["프레임", "의제 전환", "공세", "쐐기", "연대", "정책 승부수",
                                                                "인사", "시점", "조직·당내", "언론·메시지", "방어·수습"]},
@@ -196,7 +202,8 @@ SCHEMA = {
                            "weeks": {"type": "integer"},
                            "legal_risk": {"type": "integer"}, "backlash_risk": {"type": "integer"},
                            "opponent_counter": {"type": "string"}, "counter_to_counter": {"type": "string"},
-                           "rationale": {"type": "string"}, "refs": {"type": "array", "items": {"type": "string"}}}}},
+                           "rationale": {"type": "string"}, "refs": {"type": "array", "items": {"type": "string"}},
+                           "principles": {"type": "array", "items": {"type": "string"}}}}},
         "scenarios": {"type": "array", "items": {"type": "object", "additionalProperties": False,
             "required": ["name", "probability", "path", "end_state", "refs"],
             "properties": {"name": {"type": "string"}, "probability": {"type": "number"},
@@ -212,7 +219,7 @@ SCHEMA = {
 
 # 실측 기반 대략 단가(Opus 5.5): 입력 $4/MTok, 출력 $20/MTok. 전략 1회는 출력·추론이 길다.
 def estimate_usd(bundle: Bundle) -> tuple[float, float]:
-    in_tok = len(SYSTEM + bundle.as_prompt()) / 1.6 + 2500  # 한국어 대략 1.6자/토큰 + 스키마
+    in_tok = len(SYSTEM + bundle.as_prompt() + playbook.as_prompt()) / 1.6 + 2500  # 한국어 대략 1.6자/토큰 + 스키마
     lo = in_tok * 4 / 1e6 + 6000 * 20 / 1e6
     hi = in_tok * 4 / 1e6 + 20000 * 20 / 1e6
     return round(lo, 3), round(hi, 3)
@@ -232,12 +239,15 @@ def run(goal: str, side: str, on: str | None = None, estimate_only: bool = False
     run_id = "st_" + uuid.uuid4().hex[:10]
     before = usage_summary()["cost_usd"]
     prompt = (f"진영: {side}\n목표: {goal}\n기준일: {on}\n\n근거 목록:\n{B.as_prompt()}\n\n"
+              f"원칙집:\n{playbook.as_prompt()}\n\n"
               "진단 → 전략 카드 6~10개(서로 다른 종류, 실전형) → 전개 시나리오 3~4개(확률 합 1) → 주시할 지표 → 채점 가능한 예측 순으로.")
     out = call_json(SYSTEM, prompt, SCHEMA, purpose="strategy", run_id=run_id, effort="high", max_tokens=20000)  # 비용 상한(출력 최대 약 $0.40)
     valid = B.refs()
     out["situation"] = check_refs([out["situation"]], valid)[0]
     for k in ("diagnosis", "strategies", "scenarios"):
         out[k] = check_refs(out[k], valid)
+    out["strategies"] = playbook.check_principles(out["strategies"])
+    res["playbook"] = playbook.lookup()
     res.update(out)
     res["evidence"] = B.items
     res["run_id"] = run_id

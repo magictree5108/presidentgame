@@ -275,3 +275,9 @@ def strategy_latest():
     if not d:
         raise HTTPException(404, "아직 전략 분석이 없습니다. python src/strategy.py --goal ... --side ...")
     return d
+
+
+@app.get("/api/playbook")
+def playbook_all():
+    import playbook
+    return playbook.load()
