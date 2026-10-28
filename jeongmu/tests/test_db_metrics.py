@@ -51,3 +51,11 @@ def test_no_future_leak():
     g = r["precedents"]["가위원회"]
     assert g["n_bills"] == 3 and g["n_passed"] == 1  # B4 는 2024-12-05 에 가결 → 아직 모름
     assert g["pending_rate"] == round(2 / 3, 4)
+
+
+def test_precedent_by_period():
+    from metrics import precedent_by_period
+    r = precedent_by_period(make(), "2025-12-31")
+    # 가상 법안은 모두 2024년 7~8월 발의 → 윤석열 정부 시기에만 잡힌다
+    assert r["윤석열 정부"]["by_committee"]["전체"]["n_bills"] == 4
+    assert "전체" not in r["이재명 정부"]["by_committee"]

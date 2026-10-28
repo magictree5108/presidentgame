@@ -123,6 +123,14 @@ def build_bundle(con, issue: dict, on: str) -> tuple[Bundle, dict]:
                   f"(통과율 {prec['pass_rate']}), 계류율 {prec['pending_rate']}, 법사위 단계 정체율 "
                   f"{prec['stalled_at_judiciary_rate']}, 대안반영폐기율 {prec['alt_reflected_rate']}, "
                   f"가결까지 중앙값 {prec['median_days_to_plenary']}일(n={prec['n_with_duration']})", data=prec)
+        from metrics import precedent_by_period
+        for pname, pd in precedent_by_period(con, on).items():
+            pc = pd["by_committee"].get(committee)
+            if pc and pc["n_bills"]:
+                B.add("선례", f"[{pname} 시기({pd['start']}~{pd['end'] or '현재'}) 발의분] {committee} {pc['n_bills']}건 중 "
+                      f"가결 {pc['n_passed']}건(통과율 {pc['pass_rate']}), 계류율 {pc['pending_rate']}, "
+                      f"가결까지 중앙값 {pc['median_days_to_plenary']}일 — 여야가 바뀌었으므로 현재 시기 통계를 우선 참고",
+                      data={"period": pname, **pc})
     base = law_base(title)
     if base:
         sim = con.execute(
@@ -285,9 +293,13 @@ def judge(issue: dict, on: str | None = None, use_ai: bool = True, record_predic
         pp_refs = [r for r in ai["pass_prob_refs"] if r in valid]
     else:
         stances, judgments, risks = default_stances(ctx), [], []
-        prec = next((i["data"] for i in B.items if i["label"] == "선례" and isinstance(i["data"], dict)), None)
-        pass_prob = prec["pass_rate"] if prec and prec.get("pass_rate") is not None else None
-        pp_refs = [i["ref"] for i in B.items if i["label"] == "선례"][:1]
+        # 현재 정부 시기 통계가 있으면 그것을, 없으면 22대 전체 통계를 쓴다
+        precs = [i for i in B.items if i["label"] == "선례" and isinstance(i["data"], dict)
+                 and i["data"].get("pass_rate") is not None]
+        cur = [i for i in precs if "period" in i["data"] and i["data"].get("n_decided", 0) >= 10]
+        pick = (cur or precs)[-1] if (cur or precs) else None
+        pass_prob = pick["data"]["pass_rate"] if pick else None
+        pp_refs = [pick["ref"]] if pick else []
     fc = member_forecast(con, ctx, stances, metrics if metrics is not None else load_member_metrics())
     cv = casting_votes(fc, ctx["seats"]["total"] or TOTAL_SEATS)
     path = process_path(ctx, stances)

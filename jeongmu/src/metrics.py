@@ -119,9 +119,12 @@ def _days(a, b):
         return None
 
 
-def precedent_stats(con, as_of: str, key: str = "committee") -> dict:
-    """위원회별 선례 통계. key 는 committee 만 지원(분야=소관위원회로 본다)."""
-    bills = con.execute("SELECT * FROM bills WHERE propose_dt <= ?", (as_of,)).fetchall()
+def precedent_stats(con, as_of: str, key: str = "committee", start: str | None = None, end: str | None = None) -> dict:
+    """위원회별 선례 통계. key 는 committee 만 지원(분야=소관위원회로 본다).
+    start/end 를 주면 그 기간에 발의된 법안만 본다(정부 시기별 비교용)."""
+    bills = con.execute(
+        "SELECT * FROM bills WHERE propose_dt <= ? AND propose_dt >= ? AND propose_dt <= ?",
+        (as_of, start or "0000", end or "9999")).fetchall()
     vetoed = {r[0] for r in con.execute("SELECT bill_id FROM vetoes WHERE bill_id IS NOT NULL")}
     groups: dict[str, list] = defaultdict(list)
     for b in bills:
@@ -163,6 +166,20 @@ def precedent_stats(con, as_of: str, key: str = "committee") -> dict:
     return out
 
 
+def precedent_by_period(con, as_of: str) -> dict:
+    """data/government_periods.json 의 정부 시기별 위원회 선례 통계."""
+    p = Path(__file__).resolve().parent.parent / "data" / "government_periods.json"
+    if not p.exists():
+        return {}
+    out = {}
+    for per in json.loads(p.read_text(encoding="utf-8"))["periods"]:
+        if per["start"] > as_of:
+            continue
+        out[per["name"]] = {"start": per["start"], "end": per["end"],
+                            "by_committee": precedent_stats(con, as_of, start=per["start"], end=per["end"])}
+    return out
+
+
 METRICS_SCHEMA = """
 CREATE TABLE IF NOT EXISTS member_metrics (member_id TEXT, as_of TEXT, data TEXT, PRIMARY KEY(member_id, as_of));
 CREATE TABLE IF NOT EXISTS edges (a TEXT, b TEXT, w INTEGER, cross_party INTEGER, as_of TEXT);
@@ -188,7 +205,8 @@ def compute(con, as_of: str) -> dict:
             "top_cosponsors": [{"member_id": p, "name": names.get(p), "shared_bills": w} for p, w in partners.get(mid, [])],
             "bipartisan_share": bip.get(mid),
         }
-    return {"as_of": as_of, "members": members, "edges": edges, "precedents": precedent_stats(con, as_of)}
+    return {"as_of": as_of, "members": members, "edges": edges, "precedents": precedent_stats(con, as_of),
+            "precedents_by_period": precedent_by_period(con, as_of)}
 
 
 def save(result: dict, path=METRICS_DB, json_dir: Path = METRICS_JSON):
@@ -207,7 +225,7 @@ def save(result: dict, path=METRICS_DB, json_dir: Path = METRICS_JSON):
     json_dir.mkdir(parents=True, exist_ok=True)
     (json_dir / "members.json").write_text(json.dumps({"as_of": a, "members": result["members"]}, ensure_ascii=False), encoding="utf-8")
     (json_dir / "network.json").write_text(json.dumps({"as_of": a, "edges": result["edges"]}, ensure_ascii=False), encoding="utf-8")
-    (json_dir / "precedents.json").write_text(json.dumps({"as_of": a, "by_committee": result["precedents"]}, ensure_ascii=False, indent=1), encoding="utf-8")
+    (json_dir / "precedents.json").write_text(json.dumps({"as_of": a, "by_committee": result["precedents"], "by_period": result.get("precedents_by_period", {})}, ensure_ascii=False, indent=1), encoding="utf-8")
 
 
 if __name__ == "__main__":
