@@ -17,6 +17,7 @@ from config import CACHE, env
 BASE = "https://open.assembly.go.kr/portal/openapi/"
 # 브라우저 식별 헤더가 없으면 서버가 "Bad Request."로 거절한다(2026-10-28 확인)
 HEADERS = {"User-Agent": "Mozilla/5.0 (jeongmu research tool)", "Accept": "application/json"}
+# 1000건짜리 큰 페이지(약 1MB)는 전송 중 끊기는 일이 잦아 100건 단위로 받는다
 MIN_INTERVAL = 1.0
 _last_call = 0.0
 
@@ -31,7 +32,7 @@ def _cache_path(service: str, params: dict) -> Path:
     return CACHE / "assembly" / service / f"{h}.json"
 
 
-def call(service: str, params: dict | None = None, *, page: int = 1, size: int = 1000,
+def call(service: str, params: dict | None = None, *, page: int = 1, size: int = 100,
          use_cache: bool = True, retries: int = 6) -> tuple[list[dict], int]:
     """한 페이지를 가져온다. (rows, 전체 건수) 반환."""
     global _last_call
@@ -80,7 +81,7 @@ def parse(service: str, data: dict) -> tuple[list[dict], int]:
     return rows, total
 
 
-def fetch_all(service: str, params: dict | None = None, *, size: int = 1000,
+def fetch_all(service: str, params: dict | None = None, *, size: int = 100,
               use_cache: bool = True, max_pages: int = 10000):
     """모든 페이지를 차례로 내보낸다."""
     page = 1

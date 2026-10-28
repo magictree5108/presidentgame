@@ -50,7 +50,7 @@ def main():
     # API 목록에서 아직 코드를 모르는 것 찾기
     lines += ["", "## OPENSRVAPI 목록에서 찾은 후보", ""]
     try:
-        catalog = list(api.fetch_all("OPENSRVAPI", {}, use_cache=False, size=1000))
+        catalog = list(api.fetch_all("OPENSRVAPI", {}, use_cache=False))
         (OUT / "OPENSRVAPI.json").write_text(json.dumps(catalog, ensure_ascii=False, indent=2), encoding="utf-8")
         for key, words in TO_DISCOVER.items():
             hits = [c for c in catalog if any(w.replace(" ", "") in json.dumps(c, ensure_ascii=False).replace(" ", "") for w in words)]
