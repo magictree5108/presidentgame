@@ -156,7 +156,8 @@ def extract(title: str, desc: str, entity: str) -> list[dict]:
     return out["facts"]
 
 
-def collect(max_members: int | None = None, do_extract: bool = True) -> dict:
+def collect(max_members: int | None = None, do_extract: bool = True, dry_run: bool = False) -> dict:
+    """dry_run: 검색·판별만 하고 DB 저장·AI 호출 없이 'AI가 처리할 새 기사 수'만 센다(비용 0원)."""
     acon = connect()
     ncon = nconnect()
     members = [dict(r) for r in acon.execute("SELECT member_id, name, current_party AS party, district FROM members")]
@@ -190,6 +191,11 @@ def collect(max_members: int | None = None, do_extract: bool = True) -> dict:
             else:
                 ok, rule, sc = (name in title + desc), "이름 포함", 1.0
             if not ok:
+                continue
+            if dry_run:
+                done = ncon.execute("SELECT 1 FROM facts WHERE url=? AND entity_id=?", (url, eid)).fetchone()
+                stats["matched"] += 1
+                stats["to_extract"] = stats.get("to_extract", 0) + (0 if done else 1)
                 continue
             new = ncon.execute("SELECT 1 FROM articles WHERE url=?", (url,)).fetchone() is None
             ncon.execute("INSERT OR IGNORE INTO articles VALUES(?,?,?,?,?,?,?)",
@@ -264,9 +270,15 @@ if __name__ == "__main__":
     ap.add_argument("cmd", choices=["collect", "sample", "fprate"])
     ap.add_argument("--max-members", type=int)
     ap.add_argument("--no-extract", action="store_true")
+    ap.add_argument("--dry-run", action="store_true", help="AI 없이 처리할 기사 수만 세어 비용 추정")
     a = ap.parse_args()
     if a.cmd == "collect":
-        print(collect(a.max_members, not a.no_extract))
+        st = collect(a.max_members, not a.no_extract, a.dry_run)
+        print(st)
+        if a.dry_run:
+            n = st.get("to_extract", 0)
+            print(f"AI 추출 대상 {n}건 → 예상 비용 약 ${n * 0.00012:.3f}~${n * 0.0003:.3f} "
+                  f"(약 {n * 0.00012 * 1400:.0f}~{n * 0.0003 * 1400:.0f}원, Haiku 실측 1건 $0.00012 기준)")
     elif a.cmd == "sample":
         make_sample()
     else:
