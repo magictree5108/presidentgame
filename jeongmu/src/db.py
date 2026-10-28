@@ -77,3 +77,18 @@ def compute_stage(b: dict) -> str:
     if b.get("cmt_present_dt"):
         return "소관위 심사"
     return "접수"
+
+
+def party_lookup(con):
+    """(member_id, 날짜) → 그날의 소속 정당. 당적 이력(party_affiliations) 기준.
+    표결정보 API의 정당 값은 '현재 소속'이라 과거 표결 분석에 쓰면 안 된다."""
+    segs: dict[str, list] = {}
+    for r in con.execute("SELECT member_id, party, start_date, end_date FROM party_affiliations ORDER BY start_date"):
+        segs.setdefault(r[0], []).append((r[2], r[3], r[1]))
+
+    def party_at(member_id, on):
+        for start, end, party in segs.get(member_id, []):
+            if start <= on and (end is None or end > on):
+                return party
+        return None
+    return party_at

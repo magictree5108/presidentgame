@@ -11,7 +11,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from config import DATA
-from db import connect
+from db import connect, party_lookup
 
 PATH = DATA / "rules_heuristic.json"
 VOTED = ("찬성", "반대", "기권")
@@ -19,8 +19,11 @@ VOTED = ("찬성", "반대", "기권")
 
 def _vote_level_defections(con):
     """표결별 (vote_date, n_party_line, n_defect)."""
-    rows = con.execute(
-        "SELECT bill_id, party, vote, vote_date FROM member_votes WHERE vote IN ('찬성','반대','기권')").fetchall()
+    party_at = party_lookup(con)
+    rows = [{"bill_id": r[0], "party": party_at(r[1], r[3]), "vote": r[2], "vote_date": r[3]}
+            for r in con.execute("SELECT bill_id, member_id, vote, vote_date FROM member_votes "
+                                 "WHERE vote IN ('찬성','반대','기권')")]
+    rows = [r for r in rows if r["party"] not in (None, "무소속")]
     by = defaultdict(Counter)
     dates = {}
     for r in rows:

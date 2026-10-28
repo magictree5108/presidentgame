@@ -100,6 +100,27 @@ SERVICES["committees"] = {
                "chair": "HG_NM", "secretaries": "HG_NM_LIST", "limit": "LIMIT_CNT", "current": "CURR_CNT"},
 }
 
+SERVICES["member_history"] = {
+    "code": "nexgtxtmaamffofof", "name": "국회의원 의원이력(현직)", "params": {},
+    "status": "확인됨(2026-10-28 실호출, 코드는 포털 명세서)",
+    "fields": {"member_id": "MONA_CD", "name": "HG_NM", "period": "FRTO_DATE", "profile": "PROFILE_SJ"},
+}
+SERVICES["former_member_history"] = {
+    "code": "nfzegpkvaclgtscxt", "name": "역대 국회의원 의원이력(전직)", "params": {"PROFILE_UNIT_CD": "100022"},
+    "status": "확인됨(2026-10-28 실호출, 22대 전직 22명)",
+    "fields": {"member_id": "MONA_CD", "name": "HG_NM", "period": "FRTO_DATE", "profile": "PROFILE_SJ"},
+}
+SERVICES["former_members"] = {
+    "code": "npffdutiapkzbfyvr", "name": "역대 국회의원 인적사항", "params": {"UNIT_CD": "100022"},
+    "status": "확인됨(2026-10-28 실호출)",
+    "fields": {"member_id": "MONA_CD", "name": "HG_NM", "party": "POLY_NM", "district": "ORIG_NM"},
+}
+SERVICES["seat_status"] = {
+    "code": "nepjpxkkabqiqpbvk", "name": "정당 및 교섭단체 의석수 현황(공식)", "params": {},
+    "status": "확인됨(2026-10-28 실호출)",
+    "fields": {"party": "POLY_NM", "district": "N1", "proportional": "N2", "total": "N3", "pct": "N4"},
+}
+
 # 아직 서비스 코드를 찾지 못해 check_apis.py 가 OPENSRVAPI 목록에서 이름으로 찾아야 하는 것
 TO_DISCOVER = {
     "bill_review": ["의안 심사정보", "심사정보"],

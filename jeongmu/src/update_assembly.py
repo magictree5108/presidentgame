@@ -90,53 +90,13 @@ def load_members(con, use_cache=True) -> int:
              pick(r, "members", "units"), party, pick(r, "members", "committees"),
              pick(r, "members", "homepage"), json.dumps(public(r), ensure_ascii=False), TODAY),
         )
-        # 의원직 기간: 처음 보는 현직 의원은 기본값으로 임기 시작일부터 현직.
-        # (보궐·승계 의원의 실제 시작일은 data/member_terms.csv 로 보정)
-        if not con.execute("SELECT 1 FROM member_terms WHERE member_id=?", (mid,)).fetchone():
-            first_run = con.execute("SELECT value FROM meta WHERE key='first_roster_date'").fetchone()
-            start = TERM_START if not first_run else TODAY
-            reason = "총선 당선(기본값)" if not first_run else "명단 신규 등장(감지일, 보정 필요)"
-            con.execute(
-                "INSERT INTO member_terms VALUES(?,?,?,?,?,?)",
-                (mid, start, reason, None, None, f"{s['code']} 명단 {TODAY}"),
-            )
-        # 당적 스냅샷 변화 감지
-        if party:
-            cur = con.execute(
-                "SELECT party,start_date FROM party_affiliations WHERE member_id=? AND end_date IS NULL",
-                (mid,),
-            ).fetchone()
-            if cur is None:
-                start = con.execute(
-                    "SELECT start_date FROM member_terms WHERE member_id=? ORDER BY start_date DESC",
-                    (mid,),
-                ).fetchone()[0]
-                con.execute("INSERT OR IGNORE INTO party_affiliations VALUES(?,?,?,?,?)",
-                            (mid, party, start, None, f"{s['code']} 명단 {TODAY}"))
-            elif cur["party"] != party:
-                con.execute(
-                    "UPDATE party_affiliations SET end_date=? WHERE member_id=? AND end_date IS NULL",
-                    (TODAY, mid),
-                )
-                con.execute("INSERT OR REPLACE INTO party_affiliations VALUES(?,?,?,?,?)",
-                            (mid, party, TODAY, None,
-                             f"명단 당적 변경 감지 {TODAY}(실제 변경일은 보정 필요)"))
-                log(f"당적 변경 감지: {pick(r, 'members', 'name')} {cur['party']} → {party}")
-
-    # 명단에서 사라진 현직 → 의원직 종료(사유 미확인)로 기록
-    if rows:
-        for row in con.execute("SELECT member_id FROM member_terms WHERE end_date IS NULL").fetchall():
-            if row["member_id"] not in current_ids:
-                con.execute(
-                    "UPDATE member_terms SET end_date=?, end_reason=? WHERE member_id=? AND end_date IS NULL",
-                    (TODAY, "명단에서 사라짐(사유·날짜 보정 필요)", row["member_id"]),
-                )
-                con.execute(
-                    "UPDATE party_affiliations SET end_date=? WHERE member_id=? AND end_date IS NULL",
-                    (TODAY, row["member_id"]),
-                )
-                log(f"명단에서 사라진 의원: {row['member_id']}")
-        con.execute("INSERT OR IGNORE INTO meta VALUES('first_roster_date', ?)", (TODAY,))
+        # 당적 스냅샷: 바뀐 날만 남긴다. 당적 이력(party_affiliations)은 build_terms_and_parties 가 다시 만든다.
+        last = con.execute("SELECT party FROM party_snapshots WHERE member_id=? ORDER BY seen_date DESC LIMIT 1",
+                           (mid,)).fetchone()
+        if party and (last is None or last[0] != party):
+            con.execute("INSERT OR REPLACE INTO party_snapshots VALUES(?,?,?)", (mid, TODAY, party))
+            if last is not None:
+                log(f"당적 변경 감지: {pick(r, 'members', 'name')} {last[0]} → {party} (실제 변경일은 party_changes.csv 로 보정)")
     return len(rows)
 
 
@@ -317,49 +277,70 @@ def load_member_votes(con, bill_ids, use_cache=True, only_new=True) -> int:
     return n
 
 
-# ---------------------------------------------------------------- 당적 이력 재구성
-def rebuild_party_history_from_votes(con) -> int:
-    """의원별 표결 기록의 '표결 당시 정당' 값으로 당적 변경을 찾는다.
+# ---------------------------------------------------------------- 의원직 기간·당적 이력
+def _frto(v):
+    """'2024.05.30 ~ 2026.04.30' → ('2024-05-30', '2026-05-01'). 종료일은 '그 다음날'(이 날부터 아님)로 저장."""
+    a, _, b = (v or "").partition("~")
+    start = norm_date(a.strip())
+    end = norm_date(b.strip())
+    if end:
+        end = (date.fromisoformat(end) + timedelta(days=1)).isoformat()
+    return start, end
 
-    표결 기록으로는 정확한 변경일을 알 수 없어서, 변경 전 마지막 표결일 다음날을 시작일로 둔다.
-    source 에 '표결기록 추정'이라고 남기고, data/party_changes.csv 에 확인된 날짜가 있으면 그게 우선이다.
-    """
-    changes = 0
-    members = [r[0] for r in con.execute(
-        "SELECT DISTINCT member_id FROM member_votes WHERE member_id IS NOT NULL")]
-    for mid in members:
-        seq = con.execute(
-            """SELECT vote_date, party FROM member_votes
-               WHERE member_id=? AND party IS NOT NULL AND vote_date IS NOT NULL
-               ORDER BY vote_date""", (mid,)).fetchall()
-        if not seq:
+
+def build_terms_and_parties(con) -> None:
+    """의원직 기간: 열린국회정보 의원이력(현직)·역대 의원이력(전직) 공식 날짜.
+    당적 이력: data/party_changes.csv(출처 필수)가 있으면 그것, 없으면 일일 당적 스냅샷.
+    주의: 본회의 표결정보 API의 POLY_NM 은 '표결 당시'가 아니라 '현재(마지막) 소속'이라 당적 이력에 쓰지 않는다."""
+    # 전직 의원 인적사항(공개 필드만)
+    s = SERVICES["former_members"]
+    for r in api.fetch_all(s["code"], s["params"], use_cache=False):
+        mid = r.get("MONA_CD")
+        if not mid or con.execute("SELECT 1 FROM members WHERE member_id=?", (mid,)).fetchone():
             continue
-        runs = []  # (party, first_date, last_date)
-        for d, p in seq:
-            if runs and runs[-1][0] == p:
-                runs[-1][2] = d
-            else:
-                runs.append([p, d, d])
-        if len(runs) < 2:
+        con.execute(
+            """INSERT INTO members(member_id,name,name_hanja,name_eng,district,elect_type,reelection,units,
+                 current_party,raw_json,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?)""",
+            (mid, r.get("HG_NM"), r.get("HJ_NM"), r.get("ENG_NM"), r.get("ORIG_NM"), r.get("ELECT_GBN_NM"),
+             r.get("REELE_GBN_NM"), r.get("UNITS"), r.get("POLY_NM"), json.dumps(public(r), ensure_ascii=False), TODAY))
+    terms = []
+    for key in ("member_history", "former_member_history"):
+        s = SERVICES[key]
+        for r in api.fetch_all(s["code"], s["params"], use_cache=False):
+            if str(r.get("UNIT_CD") or r.get("PROFILE_UNIT_CD") or "") not in ("100022", "") \
+                    or not str(r.get("PROFILE_SJ", "")).startswith("제22대"):
+                continue
+            start, end = _frto(r.get("FRTO_DATE"))
+            if start:
+                terms.append((r["MONA_CD"], start, end, r.get("PROFILE_SJ"), s["code"]))
+    if not terms:
+        log("의원이력 응답이 비어 기간 재구성을 건너뜀")
+        return
+    con.execute("DELETE FROM member_terms WHERE source NOT LIKE '수동%'")
+    for mid, start, end, prof, code in terms:
+        reason = "총선 당선" if start == TERM_START else "보궐선거 당선·비례 승계 등(의원이력 시작일)"
+        con.execute("INSERT OR REPLACE INTO member_terms VALUES(?,?,?,?,?,?)",
+                    (mid, start, reason, end, "퇴직(사유는 의원이력에 없음)" if end else None,
+                     f"열린국회정보 {code}: {prof}"))
+    # 당적 이력
+    con.execute("DELETE FROM party_affiliations WHERE source NOT LIKE '수동%'")
+    manual = {r[0] for r in con.execute("SELECT DISTINCT member_id FROM party_affiliations")}
+    for mid, start, end, prof, code in terms:
+        if mid in manual:
             continue
-        manual = con.execute(
-            "SELECT 1 FROM party_affiliations WHERE member_id=? AND source LIKE '수동%'", (mid,)).fetchone()
-        if manual:
-            continue
-        term_start = con.execute(
-            "SELECT MIN(start_date) FROM member_terms WHERE member_id=?", (mid,)).fetchone()[0] or TERM_START
-        con.execute("DELETE FROM party_affiliations WHERE member_id=?", (mid,))
-        for i, (p, first, last) in enumerate(runs):
-            start = term_start if i == 0 else (
-                date.fromisoformat(runs[i - 1][2]) + timedelta(days=1)).isoformat()
-            end = None if i == len(runs) - 1 else (
-                date.fromisoformat(last) + timedelta(days=1)).isoformat()
+        snaps = con.execute("SELECT seen_date, party FROM party_snapshots WHERE member_id=? ORDER BY seen_date",
+                            (mid,)).fetchall()
+        if not snaps:
+            p = con.execute("SELECT current_party FROM members WHERE member_id=?", (mid,)).fetchone()
+            snaps = [(start, p[0] if p else None)]
+        for i, (seen, party) in enumerate(snaps):
+            seg_start = start if i == 0 else seen
+            seg_end = snaps[i + 1][0] if i + 1 < len(snaps) else end
+            src = ("당적 변경 기록 없음 → 현재(마지막) 소속을 임기 전체에 적용" if i == 0
+                   else f"일일 명단에서 {seen} 변경 감지(실제 변경일은 보정 필요)")
             con.execute("INSERT OR REPLACE INTO party_affiliations VALUES(?,?,?,?,?)",
-                        (mid, p, start, end,
-                         f"표결기록 추정(변경 전후 표결일 {last if end else first})"))
-        changes += len(runs) - 1
-    log(f"표결기록으로 추정한 당적 변경 {changes}건")
-    return changes
+                        (mid, party, seg_start, seg_end, src))
+    log(f"의원직 기간 {len(terms)}건, 수동 당적 이력 {len(manual)}명 반영")
 
 
 # ---------------------------------------------------------------- 수동 보정
@@ -421,8 +402,8 @@ def main(argv=None):
             con.commit()
             load_member_votes(con, ids, use_cache=use_cache, only_new=not a.full)
             con.commit()
-            rebuild_party_history_from_votes(con)
-        apply_manual(con)
+        apply_manual(con)  # 수동 당적·기간을 먼저 넣고
+        build_terms_and_parties(con)  # 나머지를 공식 의원이력으로 채운다
         con.execute("INSERT OR REPLACE INTO meta VALUES('last_update', ?)", (datetime.now().isoformat(timespec="seconds"),))
         con.commit()
     except api.AssemblyAPIError as e:

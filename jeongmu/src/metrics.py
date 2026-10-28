@@ -17,7 +17,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from config import METRICS_DB, METRICS_JSON
-from db import connect
+from db import connect, party_lookup
 
 VOTED = ("찬성", "반대", "기권")
 
@@ -25,15 +25,18 @@ VOTED = ("찬성", "반대", "기권")
 def member_vote_metrics(con, as_of: str) -> dict[str, dict]:
     """당론 이탈률과 출석률.
 
-    이탈: 같은 표결에서 같은 당(표결 당시 정당) 투표자 다수와 다르게 표결. 다수가 동률이면 그 표결은 제외.
+    이탈: 같은 표결에서 같은 당(표결일 기준 당적 이력) 투표자 다수와 다르게 표결. 무소속·당적 미확인은 제외. 다수가 동률이면 그 표결은 제외.
     출석: 표결 기록이 있는 본회의 표결 중 '불참'이 아닌 비율.
     """
-    rows = con.execute(
-        "SELECT bill_id, member_id, name, party, vote FROM member_votes WHERE vote_date <= ? AND member_id IS NOT NULL",
-        (as_of,)).fetchall()
+    party_at = party_lookup(con)
+    rows = [{"bill_id": r[0], "member_id": r[1], "vote": r[3],
+             "party": party_at(r[1], r[2]) or "미확인"}
+            for r in con.execute(
+                "SELECT bill_id, member_id, vote_date, vote FROM member_votes WHERE vote_date <= ? AND member_id IS NOT NULL",
+                (as_of,))]
     by_bill_party: dict[tuple, Counter] = defaultdict(Counter)
     for r in rows:
-        if r["vote"] in VOTED:
+        if r["vote"] in VOTED and r["party"] not in ("무소속", "미확인"):
             by_bill_party[(r["bill_id"], r["party"])][r["vote"]] += 1
     majority = {}
     for k, c in by_bill_party.items():

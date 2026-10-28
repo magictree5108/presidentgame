@@ -38,6 +38,14 @@ CREATE TABLE IF NOT EXISTS party_affiliations (
     PRIMARY KEY (member_id, start_date)
 );
 
+-- 일일 명단의 소속 정당 기록(바뀐 날만). 당적 변경을 앞으로 자동 감지하는 데 쓴다.
+CREATE TABLE IF NOT EXISTS party_snapshots (
+    member_id TEXT NOT NULL,
+    seen_date TEXT NOT NULL,
+    party     TEXT,
+    PRIMARY KEY (member_id, seen_date)
+);
+
 CREATE TABLE IF NOT EXISTS committees (
     committee_id TEXT PRIMARY KEY,
     name         TEXT NOT NULL,
@@ -112,7 +120,7 @@ CREATE TABLE IF NOT EXISTS member_votes (
     bill_id   TEXT NOT NULL,
     member_id TEXT,
     name      TEXT NOT NULL,
-    party     TEXT,                   -- 표결 당시 소속(API 제공값)
+    party     TEXT,                   -- API 제공값. 주의: 표결 당시가 아니라 현재(마지막) 소속
     vote      TEXT NOT NULL,          -- 찬성/반대/기권/불참
     vote_date TEXT,
     PRIMARY KEY (bill_id, name, member_id)
