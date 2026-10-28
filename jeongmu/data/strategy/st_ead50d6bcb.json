@@ -1,0 +1,4796 @@
+{
+ "goal": "더불어민주당과 이재명 대통령의 지지율 회복 및 국민의힘 역전 저지",
+ "side": "더불어민주당",
+ "on": "2026-10-28",
+ "n_evidence": 245,
+ "estimate_usd": [
+  0.264,
+  0.784
+ ],
+ "estimate_krw": [
+  370,
+  1098
+ ],
+ "playbook": {
+  "D1": {
+   "title": "모든 권력은 '없어서는 안 될 지지층'에 달려 있다",
+   "book": "Bueno de Mesquita & Smith, The Dictator's Handbook",
+   "loc": "1장 Three Political Dimensions",
+   "mode": "공격",
+   "fails": "필수층만 챙기면 중도(교체 가능층)를 잃는다. 민주국가는 필수층이 커서 공공재(정책 성과)로 보상해야 한다."
+  },
+  "D2": {
+   "title": "민주정치는 '더 인기 있는 정책 아이디어' 군비경쟁",
+   "book": "Bueno de Mesquita & Smith, The Dictator's Handbook",
+   "loc": "2장 Democracy Is an Arms Race for Good Ideas",
+   "mode": "공격",
+   "fails": "재정·실현성 없는 약속은 다음 국면에서 '거짓말' 프레임의 재료가 된다."
+  },
+  "D3": {
+   "title": "상대 연합이 갈라지는 질문을 공개적으로 강요하라",
+   "book": "Bueno de Mesquita & Smith, The Dictator's Handbook",
+   "loc": "2장 Coalition Dynamics(링컨-더글러스)",
+   "mode": "공격",
+   "fails": "우리 연합도 같은 질문에 갈라지는지 먼저 점검. 억지 쟁점은 '정쟁' 역풍."
+  },
+  "D4": {
+   "title": "선택권자 풀을 넓혀 새 지지층을 만들라",
+   "book": "Bueno de Mesquita & Smith, The Dictator's Handbook",
+   "loc": "2장 Coalition Dynamics(1864 부재자투표)",
+   "mode": "공격",
+   "fails": "룰 변경이 노골적이면 '게임의 규칙 조작' 프레임."
+  },
+  "D5": {
+   "title": "표는 개인이 아니라 블록 대표를 통해 움직인다",
+   "book": "Bueno de Mesquita & Smith, The Dictator's Handbook",
+   "loc": "3장 Democrats Aren't Angels(블록 투표)",
+   "mode": "공격",
+   "fails": "매수·이권 거래는 불법이며 폭로되면 치명상. 정책 약속과 공개 협약으로만."
+  },
+  "D6": {
+   "title": "핵심 지지층을 당연시하지 마라",
+   "book": "Bueno de Mesquita & Smith, The Dictator's Handbook",
+   "loc": "1장 Rules 4·5, 6장 Cautionary Tales",
+   "mode": "방어",
+   "fails": "핵심층만 보상하면 '팬덤 정치' 프레임."
+  },
+  "D7": {
+   "title": "현직은 '죽거나, 너무 많이 갖거나, 정책을 틀리거나, 측근이 흔들릴 때' 무너진다",
+   "book": "Bueno de Mesquita & Smith, The Dictator's Handbook",
+   "loc": "2장 결론, 3장 Leader Survival",
+   "mode": "공격",
+   "fails": "신호를 과대해석해 너무 일찍 치면 상대를 결집시킨다."
+  },
+  "D8": {
+   "title": "민주국가의 시위는 정책 경고장, 불씨는 '충격 사건'",
+   "book": "Bueno de Mesquita & Smith, The Dictator's Handbook",
+   "loc": "8장 Protest in Democracy / Shocks Raise Revolts",
+   "mode": "방어",
+   "fails": "—"
+  },
+  "P1": {
+   "title": "'있어야 할 정치'가 아니라 '실제 정치'를 보라",
+   "book": "Machiavelli, The Prince (Cambridge, Skinner & Price 역)",
+   "loc": "XV장",
+   "mode": "공격",
+   "fails": "수단이 드러나면 평판 손실이 효과를 넘어선다(P5)."
+  },
+  "P2": {
+   "title": "남의 돈으로는 후하게, 내 돈으로는 인색하게",
+   "book": "Machiavelli, The Prince (Cambridge, Skinner & Price 역)",
+   "loc": "XVI장",
+   "mode": "공격",
+   "fails": "재정 건전성 공방에서 '포퓰리즘' 역공."
+  },
+  "P3": {
+   "title": "사랑보다 두려움, 그러나 절대 미움은 피하라",
+   "book": "Machiavelli, The Prince (Cambridge, Skinner & Price 역)",
+   "loc": "XVII장",
+   "mode": "공격",
+   "fails": "강경 일변도는 '독선' 프레임."
+  },
+  "P4": {
+   "title": "여우와 사자: 함정을 알아보는 꾀와 늑대를 쫓는 힘",
+   "book": "Machiavelli, The Prince (Cambridge, Skinner & Price 역)",
+   "loc": "XVIII장",
+   "mode": "공격",
+   "fails": "약속 파기·이중 플레이는 기록이 남는 시대엔 '말 바꾸기' 데이터베이스가 된다(L3 반전)."
+  },
+  "P5": {
+   "title": "미움과 경멸을 피하라: 우유부단·경박함이 경멸을 부른다",
+   "book": "Machiavelli, The Prince (Cambridge, Skinner & Price 역)",
+   "loc": "XIX장",
+   "mode": "방어",
+   "fails": "책임 전가가 노골적이면 '꼬리 자르기' 프레임."
+  },
+  "P6": {
+   "title": "처음에 의심했던 자가 더 충성한다 / 불만으로 온 지지자는 붙잡기 어렵다",
+   "book": "Machiavelli, The Prince (Cambridge, Skinner & Price 역)",
+   "loc": "XX장",
+   "mode": "공격",
+   "fails": "영입 인사가 과거 발언으로 역공받을 수 있다(사전 검증)."
+  },
+  "P7": {
+   "title": "적과 싸워 이기는 모습이 권력을 키운다",
+   "book": "Machiavelli, The Prince (Cambridge, Skinner & Price 역)",
+   "loc": "XX장(적을 사다리로)",
+   "mode": "공격",
+   "fails": "싸움만 보이면 피로감·'정쟁' 역풍. 싸움 뒤 성과 장면이 꼭 따라와야 한다."
+  },
+  "P8": {
+   "title": "큰 과업과 연속적 행보로 사람들을 기대 속에 붙잡아라",
+   "book": "Machiavelli, The Prince (Cambridge, Skinner & Price 역)",
+   "loc": "XXI장",
+   "mode": "공격",
+   "fails": "성과 없는 이벤트 연발은 '보여주기' 프레임."
+  },
+  "P9": {
+   "title": "아첨꾼을 피하는 법: 묻고 싶을 때만, 정해진 사람에게 솔직하게",
+   "book": "Machiavelli, The Prince (Cambridge, Skinner & Price 역)",
+   "loc": "XXIII장",
+   "mode": "방어",
+   "fails": "—"
+  },
+  "P10": {
+   "title": "운명은 절반, 나머지 절반은 대비: 둑을 미리 쌓아라 / 때에 맞는 방식",
+   "book": "Machiavelli, The Prince (Cambridge, Skinner & Price 역)",
+   "loc": "XXV장",
+   "mode": "공격",
+   "fails": "과감함이 체질이면 신중해야 할 국면에서 무너진다(율리우스 2세)."
+  },
+  "P11": {
+   "title": "고통은 한꺼번에, 혜택은 조금씩",
+   "book": "Machiavelli, The Prince (Cambridge, Skinner & Price 역)",
+   "loc": "VIII장",
+   "mode": "공격",
+   "fails": "한꺼번에 몰면 그 순간 낙폭이 크다 → 선거·재보선과 떨어진 시점에."
+  },
+  "P12": {
+   "title": "귀족은 지배하려 하고 민중은 지배당하지 않기만 바란다",
+   "book": "Machiavelli, The Prince (Cambridge, Skinner & Price 역)",
+   "loc": "IX장",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "P13": {
+   "title": "문제는 멀리서 보일 때 처리하라",
+   "book": "Machiavelli, The Prince (Cambridge, Skinner & Price 역)",
+   "loc": "III장",
+   "mode": "공격",
+   "fails": "작은 일을 키워 오히려 이슈화할 수 있다(L36)."
+  },
+  "L3": {
+   "title": "의도를 숨겨라",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 3",
+   "mode": "공격",
+   "fails": "이미 '꼼수' 평판이 있으면 숨길수록 위선으로 보인다 → 차라리 솔직한 승부사 이미지(반전)."
+  },
+  "L4": {
+   "title": "필요한 것보다 적게 말하라",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 4",
+   "mode": "공격",
+   "fails": "침묵이 '회피·무책임'으로 읽히는 위기 국면(참사·의혹)에선 역효과."
+  },
+  "L5": {
+   "title": "평판은 권력의 초석: 내 평판은 지키고, 상대 평판의 틈을 공략",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 5",
+   "mode": "공격",
+   "fails": "반전 없음(책). 단 사실이 틀리면 공격이 우리 평판을 깎는다 → 근거 확인 필수."
+  },
+  "L6": {
+   "title": "주목을 끌어라(초기에는 어디에나 보이게)",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 6",
+   "mode": "공격",
+   "fails": "자극적 노출이 '기행·막말' 평판으로 변한다."
+  },
+  "L8": {
+   "title": "상대가 내 판으로 오게 하라 / 반대로 기습으로 주도권을",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 8",
+   "mode": "공격",
+   "fails": "미끼가 뻔하면 무시당하고 우리만 소모."
+  },
+  "L9": {
+   "title": "논쟁이 아니라 행동으로 이겨라",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 9",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "L11": {
+   "title": "상대가 나를 필요로 하게 하라",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 11",
+   "mode": "공격",
+   "fails": "독점적 태도는 반(反)연대를 결집."
+  },
+  "L13": {
+   "title": "도움을 청할 때는 상대의 이익에 호소하라",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 13",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "L15": {
+   "title": "적을 완전히 무너뜨려라(반쯤 남기면 복수한다)",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 15",
+   "mode": "공격",
+   "fails": "과잉 공세는 동정 여론·결집 효과(W1 반전, L47)."
+  },
+  "L16": {
+   "title": "부재로 존재감을 키워라(자리 잡은 뒤에만)",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 16",
+   "mode": "공격",
+   "fails": "위기 때 부재는 '숨었다' 프레임."
+  },
+  "L17": {
+   "title": "예측 불가능성 / 반전: 익숙한 패턴 뒤의 일격",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 17",
+   "mode": "공격",
+   "fails": "일관성 없는 지도자는 '경멸'(P5)."
+  },
+  "L20": {
+   "title": "섣불리 한쪽에 서지 마라(캐스팅보트의 힘)",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 20",
+   "mode": "공격",
+   "fails": "오래 끌면 양쪽 모두에게 버림."
+  },
+  "L22": {
+   "title": "항복 전술: 약할 땐 체면 싸움 말고 물러서서 시간 벌기",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 22",
+   "mode": "방어",
+   "fails": "사과가 '자백'으로 법적 리스크가 될 수 있다 → 법률 검토."
+  },
+  "L23": {
+   "title": "힘을 집중하라 / 반전: 약자는 분산 게릴라",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 23",
+   "mode": "공격",
+   "fails": "단일 후원자·단일 의제 의존은 그것이 무너지면 같이 무너진다."
+  },
+  "L25": {
+   "title": "스스로를 재창조하라",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 25",
+   "mode": "공격",
+   "fails": "과잉 연출은 어색함(책: 반전 없음, 단 과장 금지)."
+  },
+  "L26": {
+   "title": "[방어] 희생양·대리인 전술 탐지",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 26",
+   "mode": "방어",
+   "fails": "—"
+  },
+  "L27": {
+   "title": "믿음의 욕구: 대의와 의례를 주라",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 27",
+   "mode": "공격",
+   "fails": "성과 없는 열광은 실망의 크기로 돌아온다."
+  },
+  "L28": {
+   "title": "대담하게 들어가라(계획 끝의 한 수로)",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 28",
+   "mode": "공격",
+   "fails": "대담함 남발은 '폭주' 평판."
+  },
+  "L29": {
+   "title": "끝까지 계획하라",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 29",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "L31": {
+   "title": "선택지를 통제하라: 어느 쪽을 골라도 내게 유리한 양자택일",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 31",
+   "mode": "공격",
+   "fails": "선택지가 노골적 함정이면 '정치 공작' 프레임."
+  },
+  "L32": {
+   "title": "사람들의 희망(판타지)에 호소하라",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 32",
+   "mode": "공격",
+   "fails": "실현 안 되면 배신감."
+  },
+  "L33": {
+   "title": "[방어] 약점 공략 전술 탐지",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 33",
+   "mode": "방어",
+   "fails": "—"
+  },
+  "L35": {
+   "title": "타이밍의 기술",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 35",
+   "mode": "공격",
+   "fails": "반전 없음(책)."
+  },
+  "L36": {
+   "title": "하찮은 공격은 무시하라(단, 몰래 감시)",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 36",
+   "mode": "방어",
+   "fails": "초기 무시가 의혹 고착을 부를 수 있다(P13과 균형)."
+  },
+  "L37": {
+   "title": "강렬한 장면을 연출하라",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 37",
+   "mode": "공격",
+   "fails": "반전 없음. 단 연출이 들키면 '쇼' 프레임."
+  },
+  "L39": {
+   "title": "물을 흐려 물고기를 잡아라(상대를 화나게, 나는 냉정)",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 39",
+   "mode": "공격",
+   "fails": "상대가 오히려 결집·강경화할 수 있다."
+  },
+  "L41": {
+   "title": "위대한 전임자의 그림자에서 벗어나라",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 41",
+   "mode": "공격",
+   "fails": "지지층이 전임자를 사랑하면 차별화가 배신으로 읽힌다."
+  },
+  "L42": {
+   "title": "목자를 치면 양들이 흩어진다",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 42",
+   "mode": "공격",
+   "fails": "표적이 된 인물이 순교자·대권주자로 커질 수 있다(L15 반전)."
+  },
+  "L43": {
+   "title": "마음을 얻어라(강압은 반작용을 부른다)",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 43",
+   "mode": "공격",
+   "fails": "반전 없음."
+  },
+  "L44": {
+   "title": "거울 효과: 상대의 행동을 그대로 비춰라",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 44",
+   "mode": "공격",
+   "fails": "똑같이 하면 '물타기'로 보일 수 있다."
+  },
+  "L45": {
+   "title": "변화를 외치되 한꺼번에 너무 많이 바꾸지 마라",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 45",
+   "mode": "공격",
+   "fails": "반전: 고통스러운 과거와 단절이 필요할 땐 단절 자체가 메시지(나폴레옹)."
+  },
+  "L46": {
+   "title": "너무 완벽해 보이지 마라",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 46",
+   "mode": "방어",
+   "fails": "—"
+  },
+  "L47": {
+   "title": "목표에 도달하면 멈춰라",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 47",
+   "mode": "방어",
+   "fails": "—"
+  },
+  "L48": {
+   "title": "형태를 갖지 마라(물처럼), 칠 때는 집중",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 48",
+   "mode": "공격",
+   "fails": "'무원칙' 공격."
+  },
+  "L1": {
+   "title": "윗사람보다 빛나지 마라",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 1",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "L2": {
+   "title": "친구를 과신 말고 적을 활용하라",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 2",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "L12": {
+   "title": "선택적 정직·관대함으로 경계를 푼다",
+   "book": "Robert Greene, The 48 Laws of Power",
+   "loc": "Law 12",
+   "mode": "공격",
+   "fails": "이미 불신 관계면 효과 없음."
+  },
+  "W1": {
+   "title": "적을 선포하라(대립 구도로 목적과 결속)",
+   "book": "Robert Greene, The 33 Strategies of War",
+   "loc": "1 Polarity",
+   "mode": "공격",
+   "fails": "적을 너무 많이 만들면 반대 연합 형성."
+  },
+  "W2": {
+   "title": "지난 전쟁을 반복하지 마라",
+   "book": "Robert Greene, The 33 Strategies of War",
+   "loc": "2 Guerrilla-War-of-the-Mind",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "W4": {
+   "title": "배수진: 물러설 곳 없는 상황이 최대 힘을 낸다 / 절박한 상대와는 싸우지 마라",
+   "book": "Robert Greene, The 33 Strategies of War",
+   "loc": "4 Death-Ground",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "W5": {
+   "title": "집단사고를 피하고 단일 지휘를 세워라 / 상대의 공동지휘를 노려라",
+   "book": "Robert Greene, The 33 Strategies of War",
+   "loc": "5 Command-and-Control",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "W7": {
+   "title": "전쟁을 성전으로: 대의로 사기를 올려라 / 공포·불만은 초기에 차단",
+   "book": "Robert Greene, The 33 Strategies of War",
+   "loc": "7 Morale",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "W8": {
+   "title": "싸움을 골라라(숨은 비용 계산)",
+   "book": "Robert Greene, The 33 Strategies of War",
+   "loc": "8 Perfect-Economy",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "W9": {
+   "title": "먼저 치지 말고 상대가 움직인 뒤 반격하라",
+   "book": "Robert Greene, The 33 Strategies of War",
+   "loc": "9 Counterattack",
+   "mode": "공격",
+   "fails": "반격 타이밍을 놓치면 수세 고착."
+  },
+  "W10": {
+   "title": "억지: 건드리면 비싸다는 평판",
+   "book": "Robert Greene, The 33 Strategies of War",
+   "loc": "10 Deterrence",
+   "mode": "방어",
+   "fails": "고소 남발은 '입막음' 프레임."
+  },
+  "W11": {
+   "title": "공간을 내주고 시간을 사라",
+   "book": "Robert Greene, The 33 Strategies of War",
+   "loc": "11 Nonengagement",
+   "mode": "방어",
+   "fails": "회피가 길면 '도망' 프레임."
+  },
+  "W12": {
+   "title": "전투에서 지고 전쟁에서 이겨라",
+   "book": "Robert Greene, The 33 Strategies of War",
+   "loc": "12 Grand Strategy",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "W13": {
+   "title": "적을 알라: 군대가 아니라 지휘관의 마음",
+   "book": "Robert Greene, The 33 Strategies of War",
+   "loc": "13 Intelligence",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "W14": {
+   "title": "속도와 기습으로 저항을 압도하라",
+   "book": "Robert Greene, The 33 Strategies of War",
+   "loc": "14 Blitzkrieg",
+   "mode": "공격",
+   "fails": "준비 안 된 속도는 실수 연발."
+  },
+  "W15": {
+   "title": "관계의 성격 자체를 정의하라",
+   "book": "Robert Greene, The 33 Strategies of War",
+   "loc": "15 Forcing",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "W16": {
+   "title": "무게중심을 쳐라",
+   "book": "Robert Greene, The 33 Strategies of War",
+   "loc": "16 Center-of-Gravity",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "W17": {
+   "title": "각개격파: 큰 적을 부분으로 나눠라",
+   "book": "Robert Greene, The 33 Strategies of War",
+   "loc": "17 Divide-and-Conquer",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "W18": {
+   "title": "정면에 시선을 묶고 측면을 쳐라",
+   "book": "Robert Greene, The 33 Strategies of War",
+   "loc": "18 Turning",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "W19": {
+   "title": "포위: 사방에서 압박하고 외부 연결을 끊어라",
+   "book": "Robert Greene, The 33 Strategies of War",
+   "loc": "19 Annihilation",
+   "mode": "공격",
+   "fails": "실패 시 상대 결집·역공."
+  },
+  "W20": {
+   "title": "기동으로 약한 위치에 몰아넣어라: 모든 선택지가 나쁜 딜레마",
+   "book": "Robert Greene, The 33 Strategies of War",
+   "loc": "20 Ripening-for-the-Sickle",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "W21": {
+   "title": "협상하며 전진하라 / 과도한 승리는 복수를 부른다",
+   "book": "Robert Greene, The 33 Strategies of War",
+   "loc": "21 Diplomatic-War",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "W22": {
+   "title": "끝내는 법을 알라: 출구 없는 싸움에 들어가지 마라",
+   "book": "Robert Greene, The 33 Strategies of War",
+   "loc": "22 Exit",
+   "mode": "공격",
+   "fails": "반전 없음."
+  },
+  "W23": {
+   "title": "[방어] 오인 유도·역정보 탐지",
+   "book": "Robert Greene, The 33 Strategies of War",
+   "loc": "23 Misperception",
+   "mode": "방어",
+   "fails": "—"
+  },
+  "W24": {
+   "title": "정공과 기습: 평범함으로 기대를 고정한 뒤 비범한 수",
+   "book": "Robert Greene, The 33 Strategies of War",
+   "loc": "24 Ordinary-Extraordinary",
+   "mode": "공격",
+   "fails": "반전 없음(예상된 방향의 공격은 무의미)."
+  },
+  "W25": {
+   "title": "도덕적 고지를 점령하라 / 위선을 드러내라",
+   "book": "Robert Greene, The 33 Strategies of War",
+   "loc": "25 Righteous",
+   "mode": "공격",
+   "fails": "우리 쪽 위선 기록이 있으면 거울(L44)로 돌아온다 → 사전 점검."
+  },
+  "W26": {
+   "title": "표적을 주지 마라",
+   "book": "Robert Greene, The 33 Strategies of War",
+   "loc": "26 Strategy of the Void",
+   "mode": "방어",
+   "fails": "—"
+  },
+  "W27": {
+   "title": "남의 이익을 위하는 듯 내 이익을 키워라 / 상대 연합엔 불화를",
+   "book": "Robert Greene, The 33 Strategies of War",
+   "loc": "27 Alliance",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "W28": {
+   "title": "[방어] 내부 경쟁자의 '스스로 무너지게 하기' 전술 탐지",
+   "book": "Robert Greene, The 33 Strategies of War",
+   "loc": "28 One-Upmanship",
+   "mode": "방어",
+   "fails": "—"
+  },
+  "W29": {
+   "title": "조금씩 베어 물어라(기정사실화)",
+   "book": "Robert Greene, The 33 Strategies of War",
+   "loc": "29 Fait Accompli",
+   "mode": "공격",
+   "fails": "'우회 입법' 프레임."
+  },
+  "W30": {
+   "title": "마음에 침투하라: 스스로 결론 내렸다고 느끼게",
+   "book": "Robert Greene, The 33 Strategies of War",
+   "loc": "30 Communication",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "W31": {
+   "title": "[방어] 내부 침투 탐지 / 합법적 형태: 상대 쟁점에 합류해 내 것으로",
+   "book": "Robert Greene, The 33 Strategies of War",
+   "loc": "31 Inner-Front",
+   "mode": "방어",
+   "fails": "—"
+  },
+  "W32": {
+   "title": "[방어] 순응하는 척하며 지배하는 전술 탐지",
+   "book": "Robert Greene, The 33 Strategies of War",
+   "loc": "32 Passive-Aggression",
+   "mode": "방어",
+   "fails": "—"
+  },
+  "W33": {
+   "title": "[방어] 공포·혼란 유발에 대한 대응: 과잉 반응하지 마라",
+   "book": "Robert Greene, The 33 Strategies of War",
+   "loc": "33 Chain-Reaction",
+   "mode": "방어",
+   "fails": "—"
+  },
+  "F1": {
+   "title": "코끼리를 생각하지 마: 상대 프레임을 부정하면 강화된다",
+   "book": "George Lakoff, Don't Think of an Elephant! (2014 개정판)",
+   "loc": "Part I Framing 101",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "F2": {
+   "title": "정치는 가족 도덕 모델의 경쟁",
+   "book": "George Lakoff, Don't Think of an Elephant! (2014 개정판)",
+   "loc": "Part I(엄격한 아버지 / 자애로운 부모)",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "F3": {
+   "title": "단어 하나가 프레임 전체를 실어 나른다",
+   "book": "George Lakoff, Don't Think of an Elephant! (2014 개정판)",
+   "loc": "Part I(tax relief)",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "F4": {
+   "title": "직접 인과 vs 체계적 인과: 체계적 원인은 이름을 붙여야 보인다",
+   "book": "George Lakoff, Don't Think of an Elephant! (2014 개정판)",
+   "loc": "Part II Systemic Causation",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "F5": {
+   "title": "사적인 것은 공적인 것에 기대어 있다",
+   "book": "George Lakoff, Don't Think of an Elephant! (2014 개정판)",
+   "loc": "Part II The Private Depends on the Public",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "F6": {
+   "title": "상대에게 응답하는 법: 가치로 시작하고, 그들 언어를 쓰지 말고, 공세로 전환",
+   "book": "George Lakoff, Don't Think of an Elephant! (2014 개정판)",
+   "loc": "Part V How to Respond to Conservatives",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "F7": {
+   "title": "재프레이밍은 반복과 인프라로 완성된다",
+   "book": "George Lakoff, Don't Think of an Elephant! (2014 개정판)",
+   "loc": "Introduction: Reframing Is Social Change",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "C1": {
+   "title": "표를 세라: 존슨은 표결 전에 결과를 알았다",
+   "book": "Robert A. Caro, Master of the Senate",
+   "loc": "Part III~IV 전반",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "C2": {
+   "title": "자리 배분으로 충성을 만든다(존슨 룰)",
+   "book": "Robert A. Caro, Master of the Senate",
+   "loc": "24 The 'Johnson Rule'",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "C3": {
+   "title": "양쪽 모두가 '이겼다'고 말할 수 있는 수정안",
+   "book": "Robert A. Caro, Master of the Senate",
+   "loc": "PART V The Great Cause(1957 민권법)",
+   "mode": "공격",
+   "fails": "양쪽 강성층 모두에게 '배신' 비판."
+  },
+  "C4": {
+   "title": "다른 의제로 표를 산다(의제 간 교환)",
+   "book": "Robert A. Caro, Master of the Senate",
+   "loc": "38 Hells Canyon",
+   "mode": "공격",
+   "fails": "'밀실 거래' 프레임 → 공개적 패키지로."
+  },
+  "C5": {
+   "title": "실력자의 후원을 얻어라(러셀)",
+   "book": "Robert A. Caro, Master of the Senate",
+   "loc": "7 Russell, Part II",
+   "mode": "공격",
+   "fails": "후원자가 몰락하면 같이 흔들린다(L23 반전)."
+  },
+  "C6": {
+   "title": "절차가 곧 권력: 의사일정·만장일치 합의를 장악하라",
+   "book": "Robert A. Caro, Master of the Senate",
+   "loc": "Part IV Using It, 25 The Leader",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "C7": {
+   "title": "[방어 사례] 청문회 낙인 공세",
+   "book": "Robert A. Caro, Master of the Senate",
+   "loc": "11~12 The Hearing / The Debate(릴런드 올즈)",
+   "mode": "방어",
+   "fails": "—"
+  },
+  "S1": {
+   "title": "스스로 손을 묶는 자가 협상력을 갖는다",
+   "book": "Thomas C. Schelling, The Strategy of Conflict",
+   "loc": "2 Bargaining Power: The Power to Bind Oneself",
+   "mode": "공격",
+   "fails": "양쪽이 다 묶이면 충돌(벼랑 끝)."
+  },
+  "S2": {
+   "title": "초점(focal point): 명시적 합의 없이도 사람들이 수렴하는 지점",
+   "book": "Thomas C. Schelling, The Strategy of Conflict",
+   "loc": "3 Bargaining, Communication, and Limited War(초점)",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "S3": {
+   "title": "위협과 약속은 '신뢰성'이 전부",
+   "book": "Thomas C. Schelling, The Strategy of Conflict",
+   "loc": "5 Enforcement, Communication, and Strategic Moves",
+   "mode": "공격",
+   "fails": "실행 못 한 위협은 다음 위협의 가치를 없앤다."
+  },
+  "S4": {
+   "title": "우연에 일부를 맡기는 위협(벼랑 끝 전술)",
+   "book": "Thomas C. Schelling, The Strategy of Conflict",
+   "loc": "8 The Threat That Leaves Something to Chance",
+   "mode": "공격",
+   "fails": "실제로 파국이 나면 책임 귀속 싸움에서 질 수 있다."
+  },
+  "S5": {
+   "title": "갈등은 순수 대립이 아니라 '공통 이익이 섞인 흥정'",
+   "book": "Thomas C. Schelling, The Strategy of Conflict",
+   "loc": "Part I 전반(부분적 이해 공유)",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "T1": {
+   "title": "싸우지 않고 이기는 것이 최상",
+   "book": "Sun Tzu, The Art of War (Giles 역)",
+   "loc": "III. Attack by Stratagem",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "T2": {
+   "title": "지피지기 백전불태",
+   "book": "Sun Tzu, The Art of War (Giles 역)",
+   "loc": "III. Attack by Stratagem",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "T3": {
+   "title": "다섯 요소로 먼저 계산하라(도·천·지·장·법)",
+   "book": "Sun Tzu, The Art of War (Giles 역)",
+   "loc": "I. Laying Plans",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "T4": {
+   "title": "전쟁은 궤도(詭道): 능하면 못하는 듯, 가까우면 먼 듯",
+   "book": "Sun Tzu, The Art of War (Giles 역)",
+   "loc": "I. Laying Plans(병자궤도야)",
+   "mode": "공격",
+   "fails": "기만이 드러나면 신뢰 자본 상실."
+  },
+  "T5": {
+   "title": "먼저 지지 않을 태세를 갖추고 적의 틈을 기다려라",
+   "book": "Sun Tzu, The Art of War (Giles 역)",
+   "loc": "IV. Tactical Dispositions",
+   "mode": "방어",
+   "fails": "—"
+  },
+  "T6": {
+   "title": "정(正)으로 맞서고 기(奇)로 이긴다 / 세(勢)",
+   "book": "Sun Tzu, The Art of War (Giles 역)",
+   "loc": "V. Energy(정·기)",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "T7": {
+   "title": "실(實)을 피하고 허(虛)를 쳐라 / 물처럼",
+   "book": "Sun Tzu, The Art of War (Giles 역)",
+   "loc": "VI. Weak Points and Strong",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "T8": {
+   "title": "돌아가는 길을 곧은 길로(우직지계)",
+   "book": "Sun Tzu, The Art of War (Giles 역)",
+   "loc": "VII. Maneuvering(우직지계)",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "T9": {
+   "title": "포위하면 반드시 한쪽을 터 줘라(위사필궐), 궁지의 적을 몰아붙이지 마라",
+   "book": "Sun Tzu, The Art of War (Giles 역)",
+   "loc": "VII~VIII(위사필궐)",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "T10": {
+   "title": "적이 오지 않을 것에 기대지 말고 내가 대비한 것을 믿어라 / 장수의 다섯 위험",
+   "book": "Sun Tzu, The Art of War (Giles 역)",
+   "loc": "VIII. Variation in Tactics",
+   "mode": "방어",
+   "fails": "—"
+  },
+  "T11": {
+   "title": "사지(死地)에 두면 살아난다 / 적이 아끼는 것을 먼저 빼앗아라",
+   "book": "Sun Tzu, The Art of War (Giles 역)",
+   "loc": "XI. The Nine Situations",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "T12": {
+   "title": "정보에 돈을 아끼는 자는 최악의 장수",
+   "book": "Sun Tzu, The Art of War (Giles 역)",
+   "loc": "XIII. The Use of Spies",
+   "mode": "공격",
+   "fails": "—"
+  },
+  "T13": {
+   "title": "졸속은 들었어도 교묘한 장기전은 못 봤다",
+   "book": "Sun Tzu, The Art of War (Giles 역)",
+   "loc": "II. Waging War",
+   "mode": "공격",
+   "fails": "—"
+  }
+ },
+ "situation": {
+  "text": "기준일 2026-10-28. 민주당은 161석으로 원내 과반입니다[E1]. 그러나 여론 지형은 '대통령은 바닥을 다지는데 당은 추락하는' 탈동조화 국면입니다. 리얼미터 기준 대통령 국정 긍정은 34.8%로 9월 말 37.9%에서 다시 밀렸고[E2], 부정은 62.3%까지 올랐습니다[E6]. 같은 기관의 정당 지지는 국민의힘 42.6%, 민주당 36%로 국민의힘이 앞서 있습니다[E8][E11]. 한국갤럽은 대통령 긍정 40%[E3], 민주당 37%, 국민의힘 28%로 아직 민주당 우위입니다[E9][E12]. 다만 국민의힘은 10/10 24%에서 10/22 28%로 3주 연속 올랐습니다[E12]. NBS는 대통령 긍정이 50%에서 44%로 내려갔고[E4], 민주당은 41%에서 33%로 하락했습니다[E10]. 언론 헤드라인은 '민주당 이재명 취임 후 최저, 국힘 첫 40% 돌파'[E64], '대통령은 반등했는데 민주당은 추락'[E66], '국힘·조국 최고치, 민주 최저치'[E67]로 수렴하고 있습니다. 조희대 대법원장 탄핵에는 반대가 50.3%이고, 중도층에서도 반대가 과반입니다[E65][E67]. 강선우 의원은 공천헌금 1억원으로 1심 징역 2년 6개월을 받고 법정구속됐으며[E82][E90], 사퇴 종용 의혹으로 김현지 제1부속실장이 공수처에 고발됐습니다[E84]. 김민석 대표의 '지지율 10% 상승' 장담은 '결정장애' 비판으로 돌아왔습니다[E62]. 코인 과세는 당정이 결론을 못 내고 있습니다[E155]. 상대 쪽에서는 오세훈 시장이 2심 무죄 뒤 '별의 순간'이 거론되며[E131] 오세훈-한동훈-이준석 연결설이 돌고 있습니다[E130][E135]. 향후 3주 일정은 다음과 같습니다. 11/2~6 조작기소 특검법 법사위 상정(공소취소 조항이 쟁점)[E95], 11/4~5 예결위 종합정책질의[E97], 11/5 조희대 국정조사 계획서 처리 목표와 윤석열 항소심 최종의견[E98][E99], 11월 중순~말 주택공급 대책과 2차 공공기관 이전 발표[E101], 11/30 예산 심사 기한[E105], 12/3 계엄 2주년[E111].",
+  "refs": [
+   "E1",
+   "E2",
+   "E3",
+   "E4",
+   "E6",
+   "E8",
+   "E9",
+   "E10",
+   "E11",
+   "E12",
+   "E62",
+   "E64",
+   "E65",
+   "E66",
+   "E67",
+   "E82",
+   "E84",
+   "E90",
+   "E95",
+   "E97",
+   "E98",
+   "E99",
+   "E101",
+   "E105",
+   "E111",
+   "E130",
+   "E131",
+   "E135",
+   "E155"
+  ],
+  "label": "AI 추정",
+  "weak": false
+ },
+ "diagnosis": [
+  {
+   "driver": "사법부 대결 피로: 조희대 탄핵 드라이브와 공소취소 조항 특검",
+   "direction": "하락 요인",
+   "weight": "상",
+   "rationale": "탄핵 반대가 50.3%이고 중도층도 과반이 반대합니다[E65][E67]. 언론은 이를 민주당 지지율 최저치와 같은 기사로 묶고 있습니다[E63][E64]. 공소취소 조항이 붙은 특검법은 국민의힘이 '대통령 방탄' 프레임을 걸기 가장 쉬운 재료이고[E95][E61], 11/2~6 상정으로 프레임이 고착될 위험이 큽니다. 오세훈 무죄를 탄핵 사유로 거론한 발언까지 나와[E129][E176] '판결이 마음에 안 들면 탄핵' 이미지가 굳고 있습니다. 경험칙: 중도층은 사법 공방을 '정쟁'으로 분류하고 집권당에 책임을 묻습니다.",
+   "refs": [
+    "E61",
+    "E63",
+    "E64",
+    "E65",
+    "E67",
+    "E95",
+    "E129",
+    "E176"
+   ],
+   "label": "AI 추정",
+   "weak": false
+  },
+  {
+   "driver": "공천헌금 실형(강선우)과 대통령실 연루 의혹(김현지 고발)",
+   "direction": "하락 요인",
+   "weight": "상",
+   "rationale": "강선우 의원은 1심 실형 후 법정구속됐고, 본인과 검찰 양쪽이 모두 항소했습니다[E74][E80][E91]. 구속영장 신청 보도도 이어지며 뉴스 사이클이 길어지고 있습니다[E70]. 사퇴 종용 의혹이 김현지 부속실장 고발로 번져[E84] 당 문제가 대통령실로 옮겨붙는 경로가 열렸고, 국민의힘은 '김현지 관리?' 문구로 이를 정조준하고 있습니다[E73]. 경험칙: 돈 문제는 이념과 무관하게 중도·무당층을 이탈시킵니다.",
+   "refs": [
+    "E70",
+    "E73",
+    "E74",
+    "E80",
+    "E84",
+    "E91"
+   ],
+   "label": "AI 추정",
+   "weak": false
+  },
+  {
+   "driver": "지도부 우유부단·정책 혼선(코인 과세 결론 지연, 대표의 과잉 약속)",
+   "direction": "하락 요인",
+   "weight": "중",
+   "rationale": "코인 과세는 4번째 유예 가능성만 거론될 뿐 당정 결론이 없습니다[E154][E155]. 국민의힘은 이 '결론 지연'을 바로 공략하고 있습니다[E157]. 김민석 대표의 '10% 상승' 장담은 결정장애 비판으로 돌아왔습니다[E62]. P5 기준으로 우유부단은 경멸 단계로 넘어가는 신호입니다.",
+   "refs": [
+    "E62",
+    "E154",
+    "E155",
+    "E157"
+   ],
+   "label": "AI 추정",
+   "weak": false
+  },
+  {
+   "driver": "부동산·인사 악재의 누적 잔상",
+   "direction": "하락 요인",
+   "weight": "중",
+   "rationale": "9월 갤럽 하락 요인으로 부동산과 인사가 지목됐고[E48][E49], 개각이 '악수'로 평가됐습니다[E42]. 리얼미터 부정평가는 60% 안팎에서 내려오지 않고 있습니다[E6].",
+   "refs": [
+    "E6",
+    "E42",
+    "E48",
+    "E49"
+   ],
+   "label": "AI 추정",
+   "weak": false
+  },
+  {
+   "driver": "국민의힘 대안 인물 부상(오세훈 무죄 후 결집, 이준석 접근)",
+   "direction": "하락 요인",
+   "weight": "중",
+   "rationale": "국민의힘 내부에서 '오세훈 별의 순간' 발언[E131], 오세훈-한동훈 협력설[E130], 이준석의 오세훈 접근[E135]이 나왔습니다. '대안이 생겼다'는 인식은 국민의힘 지지 상승과 동시에 나타나고 있습니다[E11][E12]. 경험칙: 상대 진영에 간판이 생기면 반사 지지가 고정 지지로 바뀝니다.",
+   "refs": [
+    "E11",
+    "E12",
+    "E130",
+    "E131",
+    "E135"
+   ],
+   "label": "AI 추정",
+   "weak": false
+  },
+  {
+   "driver": "개혁 성향 지지층의 조국혁신당 이탈",
+   "direction": "하락 요인",
+   "weight": "중",
+   "rationale": "리얼미터 조국혁신당 지지는 3.9%에서 6.9%로 올랐습니다[E15]. 조국혁신당은 '즉각 탄핵 발의'로 민주당보다 선명성을 앞세우고 있습니다[E180]. 민주당이 강경으로 가면 중도를 잃고, 온건으로 가면 좌측을 잃는 협공 구조입니다. D1·D6에 따라 필수층 분리 관리가 필요합니다.",
+   "refs": [
+    "E15",
+    "E67",
+    "E180"
+   ],
+   "label": "AI 추정",
+   "weak": false
+  },
+  {
+   "driver": "대통령 지지율 하락세 정지와 당-대통령 격차",
+   "direction": "상승 요인",
+   "weight": "중",
+   "rationale": "갤럽 대통령 긍정은 37%에서 40%로 회복했고[E3], 언론도 '하락 멈춤'으로 보도합니다[E60]. 당 지지율은 이에 못 미칩니다[E66]. 즉 하락의 주원인은 대통령 국정보다 당의 행태(사법 대결·비리)라는 진단이 가능하고, 이는 당 쪽 악재만 정리하면 회복 여지가 있다는 뜻입니다. 9/29 갤럽 31.5%처럼 한 번만 튄 값은 신중히 해석해야 합니다[E3].",
+   "refs": [
+    "E3",
+    "E60",
+    "E66"
+   ],
+   "label": "AI 추정",
+   "weak": false
+  },
+  {
+   "driver": "11월 민생 일정(주택공급·공공기관 이전·예산)과 상대 측 약점",
+   "direction": "상승 요인",
+   "weight": "중",
+   "rationale": "11월 중 주택공급 대책과 2차 공공기관 이전 발표가 예정돼 있고[E101], 예산 심사가 국면을 생활 의제로 돌릴 수 있습니다[E94][E97]. 상대 측에는 한강버스 적자·수수료 문제[E77][E137], 권성동 통일교 자금 재판[E86], 부산시당의 '호남 반도체 전력' 지역 갈등 논평[E117]이라는 공개 약점이 있습니다.",
+   "refs": [
+    "E77",
+    "E86",
+    "E94",
+    "E97",
+    "E101",
+    "E117",
+    "E137"
+   ],
+   "label": "AI 추정",
+   "weak": false
+  }
+ ],
+ "strategies": [
+  {
+   "name": "공천헌금 원스트라이크 제도화 + 책임라인 선제 공개",
+   "kind": "방어·수습",
+   "steps": [
+    "10/30 예산 공청회 이전: 최고위가 '공천 대가 금품은 1심 유죄 시 당적 정리, 해당 지역 무공천'을 당헌 개정안으로 의결합니다. 강선우 개인 문제를 제도 문제로 전환합니다.",
+    "같은 날: 대통령실은 김현지 실장 고발 건에 대해 '공수처 수사에 전면 협조, 연락·보고 경위 타임라인 자진 공개' 입장을 낸 뒤 이후 침묵합니다(L4).",
+    "11/3까지: 권성동 통일교 자금 재판[E86]은 당이 직접 거론하지 않습니다. 대신 '정치자금 범죄 공천 배제 기준을 여야 공통 정치개혁특위 안건으로 올리자'고 공개 제안합니다(거울 효과는 제도 제안으로만 씁니다).",
+    "종료 조건: 강선우 관련 보도량이 주간 기준 절반 이하로 줄면 추가 메시지를 중단합니다."
+   ],
+   "target_audience": "중도·무당층, 50대 이상 도덕성 민감층",
+   "expected_pp_low": 0.5,
+   "expected_pp_high": 2,
+   "weeks": 3,
+   "legal_risk": 1,
+   "backlash_risk": 2,
+   "opponent_counter": "국민의힘은 '꼬리 자르기, 몸통은 김현지'라며 대통령실 보고라인 공세를 계속하고[E73][E84], 국정감사 증인 채택을 요구할 것입니다.",
+   "counter_to_counter": "L26을 역으로 씁니다. 타임라인을 먼저 공개해 '숨길 것 없음'을 장면화합니다. 이어 국민의힘이 같은 원스트라이크 기준을 자당 정치자금 재판 인사에게 적용할지 예/아니오로 묻는 공개질의를 냅니다. 응하면 공동 성과가 되고, 거부하면 내로남불 프레임이 됩니다.",
+   "rationale": "강선우 사건은 1심 실형·구속·쌍방 항소로 뉴스 사이클이 길어지고 있습니다[E80][E82][E91]. 버티면 대통령실 의혹[E84]까지 끌고 들어옵니다. L22·W26에 따라 공격 대상을 제도로 흡수합니다. 경험칙: 비리 사건은 '당의 대응 속도'가 지지율 낙폭을 결정합니다. 사과문 문안은 법률 검토를 거쳐 개인 범죄 인정이 아닌 '공천 시스템 책임' 언어로 씁니다(L22 실패조건 대비).",
+   "refs": [
+    "E73",
+    "E80",
+    "E82",
+    "E84",
+    "E86",
+    "E91"
+   ],
+   "principles": [
+    "L22",
+    "W26",
+    "L26"
+   ],
+   "label": "AI 추정",
+   "weak": false
+  },
+  {
+   "name": "공소취소 조항 자진 삭제 + 조희대 탄핵 보류, 국정조사로 일원화",
+   "kind": "시점",
+   "steps": [
+    "11/1(일) 법사위 상정 전날: 원내대표가 '특검법에서 공소취소 조항을 빼고 진상규명 조항만 남긴다'고 전격 발표합니다. 상대가 예상하는 강행이 아닌 반전 수입니다(L17·W24).",
+    "같은 발표에서 '조희대 대법원장 탄핵은 국정조사 결과를 보고 판단한다'고 순서를 못 박습니다. 11/5 국조 계획서 처리[E98]에 집중하되, 국조의 명칭과 목표를 '재판 신뢰 회복 조사'로 정의합니다(F1·L45).",
+    "당 지도부 전원에게 '판결을 탄핵 사유로 거론 금지' 지침을 내립니다(오세훈 무죄 연동 발언[E129][E176] 재발 차단).",
+    "핵심 지지층 보상(D6): 같은 주에 윤석열 항소심 최종의견[E99]에 맞춰 '내란 재판 신속 종결 촉구' 원내 결의를 내 개혁 서사를 유지합니다.",
+    "종료 조건: 리얼미터 대통령 부정평가가 2주 연속 60% 미만이 되면 국조 일정만 관리하고 추가 사법 카드는 쓰지 않습니다."
+   ],
+   "target_audience": "중도층(탄핵 반대 과반층), 수도권 30~50대",
+   "expected_pp_low": 1,
+   "expected_pp_high": 3,
+   "weeks": 4,
+   "legal_risk": 0,
+   "backlash_risk": 3,
+   "opponent_counter": "국민의힘은 '방탄 들키자 후퇴, 처음부터 방탄이었다'는 자백 프레임을 씁니다. 조국혁신당은 '민주당 변절'로 선명성 경쟁을 벌여 개혁층 이탈을 노립니다[E180].",
+   "counter_to_counter": "국민의힘에는 '조항을 뺐으니 진상규명 특검에 찬성하라'고 표결을 강제합니다(L31). 찬성하면 특검 정당성이 확보되고, 반대하면 '진상규명 반대'가 됩니다. 조국혁신당에는 국조 특위 위원 배분과 질의 순서를 양보해 공개 무대를 줍니다(L13). 탄핵의 '시점'만 다를 뿐 방향은 같다는 공동 기자회견으로 갈등을 관리합니다.",
+   "rationale": "탄핵 반대 50.3%, 중도 과반 반대[E65][E67]는 사법 대결이 현재 최대 감점 요인임을 보여줍니다. 공소취소 조항은 쟁점 그 자체입니다[E95]. W22(출구 없는 싸움 금지)와 L47(멈출 때 멈추기)에 해당합니다. 강성층·조국혁신당 반발이 D6 실패조건에 걸리므로 backlash를 3으로 올렸습니다. 경험칙: 중도층 회복이 지지층 이탈보다 순증 효과가 큽니다. 다만 단기적으로 좌측 이탈 1%p 안팎은 감수해야 합니다.",
+   "refs": [
+    "E65",
+    "E67",
+    "E95",
+    "E98",
+    "E99",
+    "E129",
+    "E176",
+    "E180"
+   ],
+   "principles": [
+    "W22",
+    "L17",
+    "L47"
+   ],
+   "label": "AI 추정",
+   "weak": false
+  },
+  {
+   "name": "'부정선거론 동의합니까' 예/아니오 공개질의",
+   "kind": "쐐기",
+   "steps": [
+    "투표지 공개검증 결과가 나오는 시점(검증 일정 확정 즉시): 민주당 행안위 간사 명의로 국민의힘 대표, 오세훈 시장, 한동훈 전 대표에게 동일 질문을 공개 서한으로 보냅니다. 질문은 '이번 검증 결과를 수용하고 부정선거 주장을 공식 철회하겠습니까?'입니다.",
+    "현장 고성·몸싸움[E236]과 촬영 공방[E238]을 주도한 국민의힘 의원들의 공개 행보를 원문 링크와 함께 정리해 배포합니다. 해석은 덧붙이지 않습니다(L5).",
+    "11/4~5 종합정책질의[E97]에서 선관위·행안부 장관에게 검증 비용과 행정력 소모를 질의해 '국가 행정력을 음모론에 쓰고 있다'는 장면을 만듭니다.",
+    "오세훈·한동훈이 '수용'이라 답하면 '국민의힘 지도부는?'으로 공을 넘깁니다. 답하지 않으면 매주 같은 질문을 반복합니다(F7)."
+   ],
+   "target_audience": "국민의힘 지지층 중 중도보수·수도권 온건층, 국민의힘 대권주자 지지층",
+   "expected_pp_low": 0.5,
+   "expected_pp_high": 2,
+   "weeks": 4,
+   "legal_risk": 0,
+   "backlash_risk": 2,
+   "opponent_counter": "국민의힘은 '선거 신뢰 문제 제기를 음모론으로 낙인찍는다'고 반발하고, 관심을 특검팀의 검증 절차 문제로 돌립니다[E237][E238].",
+   "counter_to_counter": "절차 논쟁에는 응하지 않습니다(L36). 질문을 '결과 수용 여부' 하나로 고정합니다. 대권주자가 답을 회피하면 '강성 유튜브 눈치 보기' 프레임으로 전환합니다. 단, 민주당 의원의 현장 몸싸움 재발을 막는 규율을 먼저 겁니다(L33).",
+   "rationale": "투표지 검증 현장에서 국민의힘 의원들이 항의를 주도했습니다[E237][E239]. 이는 강성층과 오세훈·한동훈 같은 확장형 주자 사이의 균열선입니다. D3의 전형입니다. 민주당 쪽은 같은 질문에 갈라질 이유가 없어 D3 실패조건에서 자유롭습니다. 오세훈-한동훈-이준석 연대설[E130][E135]이 도는 지금, 이 질문은 그 연대의 접착면을 시험합니다(W27).",
+   "refs": [
+    "E97",
+    "E130",
+    "E135",
+    "E236",
+    "E237",
+    "E238",
+    "E239"
+   ],
+   "principles": [
+    "D3",
+    "L31",
+    "W27"
+   ],
+   "label": "AI 추정",
+   "weak": false
+  },
+  {
+   "name": "코인 과세 즉시 결론 + 디지털자산기본법 '12/9 시한' 양자택일",
+   "kind": "정책 승부수",
+   "steps": [
+    "10/31까지: 당정이 '과세 유예, 단 디지털자산기본법이 정기국회 회기(12/9) 내 통과되면 기본법 체계로 과세 일원화'라는 결론을 확정 발표합니다. 결정장애 프레임을 정면으로 끊는 장면입니다[E62][E155].",
+    "11/4~5 종합정책질의: 박수영 의원이 제기한 해외 유출 증가 수치[E158]를 오히려 인용해 '그래서 기본법이 시급하다, 국민의힘은 12월 9일까지 처리하겠는가'라고 묻습니다.",
+    "11월 조세소위(주가누르기방지법 논의 일정[E170])에 디지털자산기본법을 묶어 상정합니다.",
+    "2030 투자자 커뮤니티와 거래소 이용자 대상 메시지: '세금보다 먼저 보호막'. 시혜가 아닌 시장 기반으로 프레이밍합니다(F5)."
+   ],
+   "target_audience": "2030 남성 가상자산 투자층, 무당층 청년",
+   "expected_pp_low": 0.5,
+   "expected_pp_high": 2,
+   "weeks": 3,
+   "legal_risk": 0,
+   "backlash_risk": 2,
+   "opponent_counter": "국민의힘은 '4번째 유예는 무능 고백'이라 공격하거나[E157], 기본법 처리를 미루며 공을 민주당에 다시 넘깁니다.",
+   "counter_to_counter": "시한과 자동 귀속을 공개 기록으로 남깁니다(W32·S4). 12/9까지 기본법이 안 되면 '국민의힘이 투자자 보호를 막았다'는 기록이 남고, 통과되면 민주당 성과가 됩니다. 국민의힘 수정 요구는 조항 하나를 내주는 C3로 흡수합니다.",
+   "rationale": "당정 결론 부재 자체가 감점 요인입니다[E154][E155]. 결론의 내용보다 '결정하는 장면'이 P5 회복에 더 중요합니다. L31로 받아도 거부해도 유리한 구조를 만듭니다. 경험칙: 청년층은 과세 시행보다 '불확실성'에 더 분노합니다. 재정 포퓰리즘 역공(P2 실패조건)은 기본법과의 연동으로 방어합니다.",
+   "refs": [
+    "E62",
+    "E154",
+    "E155",
+    "E157",
+    "E158",
+    "E170"
+   ],
+   "principles": [
+    "L31",
+    "P5",
+    "D2"
+   ],
+   "label": "AI 추정",
+   "weak": false
+  },
+  {
+   "name": "오세훈 공략을 '판결'에서 '한강버스 혈세'로 이동",
+   "kind": "공세",
+   "steps": [
+    "즉시: 당 지도부의 오세훈 2심 판결 관련 발언을 전면 중단합니다. 공세 축을 서울시정 공개 기록으로 옮깁니다(T7: 상대가 무죄로 무장한 곳이 아닌 곳을 칩니다).",
+    "11/11~12 예결위 비경제부처 부별심사[E100]: 행안부가 사실상 불승인한 한강버스 운항결손 지원 135억[E137], 중개수수료 3억2천만원[E77], 적자 축소 계획[E128]을 한 장짜리 '한강버스 영수증'으로 시각화해 질의합니다.",
+    "서울 지역 의원 공동으로 한강버스 선착장 현장 점검 장면을 만듭니다(L37). '시민 세금이 강물에 뜬다'는 생활 프레임을 씁니다(F4: 사업명과 책임자 이름을 함께 붙임).",
+    "오세훈 측이 '중앙정부의 서울 홀대'로 반박하면 지원 요청 공문과 근거 기록을 공개합니다."
+   ],
+   "target_audience": "서울 거주 중도층, 오세훈 호감 무당층",
+   "expected_pp_low": 0.3,
+   "expected_pp_high": 1.5,
+   "weeks": 4,
+   "legal_risk": 0,
+   "backlash_risk": 2,
+   "opponent_counter": "오세훈 측과 국민의힘은 '대권주자 견제용 정치 보복', '중앙정부의 지방자치 탄압'으로 프레임을 걸고 지원 불승인을 쟁점화합니다[E137].",
+   "counter_to_counter": "공격 주체를 정부가 아닌 국회 예결 심사로 한정해 보복 프레임을 약화합니다(P5 역할 분담). 동시에 '적자 축소 계획을 제출하면 지원을 재검토한다'는 퇴로를 공개적으로 열어둡니다(T9). 오세훈이 계획을 내면 문제를 인정한 셈이고, 거부하면 무책임이 됩니다.",
+   "rationale": "오세훈은 무죄 판결로 '별의 순간'을 맞았습니다[E131]. 판결을 공격하면 사법 대결 피로를 키우고 그를 순교자로 만듭니다(L42 실패조건). 그래서 사법이 아닌 시정 실적이라는 공개 기록으로 평판의 틈을 칩니다(L5). 한강버스는 민주당·국민의힘 언급이 51 대 51로 이미 쟁점화된 영역입니다[E126].",
+   "refs": [
+    "E77",
+    "E100",
+    "E126",
+    "E128",
+    "E131",
+    "E137"
+   ],
+   "principles": [
+    "T7",
+    "L5",
+    "L42"
+   ],
+   "label": "AI 추정",
+   "weak": false
+  },
+  {
+   "name": "주택공급·공공기관 이전 '연속 발표 세(勢)' — 부산 포함으로 지역 갈등 무력화",
+   "kind": "의제 전환",
+   "steps": [
+    "11/15~30 예정된 국토부 주택공급 대책[E101]을 3단으로 쪼갭니다(P11). ①청년·신혼 공급 물량 ②수도권 착공 일정 ③공공임대 질 개선. 주 단위로 나눠 뉴스 사이클을 길게 가져갑니다.",
+    "1차 발표는 11/16 예산조정소위 가동일[E103] 직전 주말에 당·정·대통령실이 같은 날 터뜨립니다(W14). 대통령은 수혜 장면만 맡고 세부는 장관이 맡습니다(P5).",
+    "2차 공공기관 이전 계획[E101]에 부산 이전 기관을 의미 있게 포함해 발표합니다. 국민의힘 부산시당의 '호남 반도체 전력 특혜·부산 뒷순위' 공세[E117][E196]를 선제 무력화합니다.",
+    "부산 국민의힘 의원들에게 '부산 이전 기관 확정안에 찬성하는가'를 공개질의해 지역 이익과 당론 사이에 세웁니다(W20)."
+   ],
+   "target_audience": "수도권 무주택 30~40대, PK 중도층",
+   "expected_pp_low": 1,
+   "expected_pp_high": 3,
+   "weeks": 5,
+   "legal_risk": 0,
+   "backlash_risk": 2,
+   "opponent_counter": "국민의힘은 '총선용 선심, 실현성 없는 숫자'로 공격하고, 수도권과 지방 사이 이전 대상 갈등을 부추깁니다[E197].",
+   "counter_to_counter": "공급 수치는 범위로만 약속하고(L32 실패조건 대비) 착공·부지 등 이미 확정된 사실 위주로 발표합니다(L9). 엄태영 의원의 혁신도시 외 이전 확대안[E197]처럼 국민의힘이 낸 법안 취지를 일부 수용해 '협치' 장면을 만듭니다.",
+   "rationale": "9월 하락의 원인이 부동산이었습니다[E48]. 언론도 이미 '부동산·청년 등 민생'을 반등 경로로 짚고 있습니다[E60]. 지역균형발전법에는 국민의힘도 과거 찬성했습니다[E203][E204]. 그래서 이전 계획 자체에 반대하기 어려운 구조입니다. PK는 9월 부정평가가 가장 높았던 지역입니다[E53]. 경험칙: 성과 없는 이벤트 연발은 '보여주기'가 됩니다(P8 실패조건). 따라서 확정 사실만 발표합니다.",
+   "refs": [
+    "E48",
+    "E53",
+    "E60",
+    "E101",
+    "E103",
+    "E117",
+    "E196",
+    "E197",
+    "E203",
+    "E204"
+   ],
+   "principles": [
+    "P11",
+    "W14",
+    "W20"
+   ],
+   "label": "AI 추정",
+   "weak": false
+  },
+  {
+   "name": "전기차 세액공제 공동처리 + 초광역특구 노동특례 조정 패키지",
+   "kind": "연대",
+   "steps": [
+    "11월 조세소위: 국민의힘이 '11월 처리'를 요구한 전기차 국내생산 세액공제[E102]를 민주당이 먼저 처리 일정으로 확정합니다. 윤후덕-윤한홍 공동발의[E217]를 '여야 협치 1호' 장면으로 연출하되, 대표 브리핑은 민주당이 맡습니다(W21: 상대에 승리 포인트를 남기되 주도권은 우리가 갖습니다).",
+    "같은 시점: 초광역특구법의 노동특례(주52시간 예외 등)를 사회적 대화 결과에 연동하는 수정안을 냅니다. 조국혁신당·진보당의 철회 요구[E199][E201]를 부분 수용하는 것입니다(C3).",
+    "조국혁신당·진보당과 '노동특례 조정 + 국조 공조' 공개 정책협약을 맺어 좌측 이탈을 관리합니다(C4: 공개 패키지).",
+    "종료 조건: 11/30 부수법안 기한[E105] 전에 세액공제 통과를 확보합니다."
+   ],
+   "target_audience": "제조업 지역(울산·경남·충청) 노동자·중도층, 조국혁신당 이탈 개혁층",
+   "expected_pp_low": 0.3,
+   "expected_pp_high": 1.5,
+   "weeks": 5,
+   "legal_risk": 0,
+   "backlash_risk": 2,
+   "opponent_counter": "국민의힘은 세액공제를 '우리 법안'으로 홍보하고, 노동특례 후퇴를 '노조에 굴복, 반기업'으로 공격합니다[E198].",
+   "counter_to_counter": "세액공제는 안도걸 의원이 대표발의한 민주당 원안[E216]이 먼저라는 기록을 제시해 소유권을 확보합니다. 노동특례는 '폐기'가 아닌 '합의 후 적용'이라는 순서 언어로 설명합니다(F1). 그러면 반기업 프레임이 걸리지 않습니다.",
+   "rationale": "국민의힘이 원하던 정책을 먼저 처리해 의제를 빼앗습니다(D2). 조국혁신당 지지 상승[E15]은 좌측 이탈 신호입니다. 따라서 그들이 반대하는 노동특례[E199]에서 실리를 주면서 사법 탄핵 강행 요구는 피하는 교환을 설계합니다(L13).",
+   "refs": [
+    "E15",
+    "E102",
+    "E105",
+    "E198",
+    "E199",
+    "E201",
+    "E216",
+    "E217"
+   ],
+   "principles": [
+    "D2",
+    "C4",
+    "W21"
+   ],
+   "label": "AI 추정",
+   "weak": false
+  },
+  {
+   "name": "단일 지휘·금기어 목록·2대 프레임 고정",
+   "kind": "조직·당내",
+   "steps": [
+    "10/29 최고위: 대변인단만 공식 논평하는 창구 단일화를 결정합니다(L33). 최고위원 개별 방송 출연은 사전 조율합니다.",
+    "금기어·금기 행동을 명시합니다. ①판결을 탄핵 사유로 거론[E129] ②미국 비협조 시 독자 전작권 행사 같은 즉흥적 안보 발언[E184] ③북한 도발에 대한 '고의성' 논쟁(9월 지뢰 논란[E36] 재발 방지) ④대표의 수치 약속[E62].",
+    "11~12월 2대 프레임을 고정합니다(F7). '일하는 쪽 vs 발목 잡는 쪽'(예산·민생법안, W15)과 '세금은 생활에, 특혜는 없이'(한강버스·공천헌금)입니다. 모든 논평 첫 문장을 둘 중 하나로 시작합니다.",
+    "12월 SCM[E107]·북한 해킹 대응[E148] 국면에서는 지도부 첫 메시지를 '침착·사실 확인·절차'로 표준화합니다(W33)."
+   ],
+   "target_audience": "당 소속 의원·당직자, 간접적으로 중도층",
+   "expected_pp_low": 0.3,
+   "expected_pp_high": 1.5,
+   "weeks": 6,
+   "legal_risk": 0,
+   "backlash_risk": 1,
+   "opponent_counter": "국민의힘은 지도부의 엇박자 발언을 수집해 '콩가루 여당' 프레임을 쓰고, 김병주 의원식 안보 발언을 SCM 직전에 집중 부각합니다.",
+   "counter_to_counter": "엇박자가 생기면 24시간 내 지도부가 직접 정리하는 원칙을 둡니다(W7). 안보 쟁점은 국방위 간사 단일 창구로만 대응합니다.",
+   "rationale": "'결정장애' 보도[E62]와 국정감사 기간 갈등 보도가 민주당 205건, 국민의힘 202건으로 비슷합니다[E93]. 집권당의 소음은 그대로 감점됩니다. 경험칙: 지지율 바닥 국면에서 가장 싼 회복 수단은 '실점 줄이기'입니다.",
+   "refs": [
+    "E36",
+    "E62",
+    "E93",
+    "E107",
+    "E129",
+    "E148",
+    "E184"
+   ],
+   "principles": [
+    "F7",
+    "W5",
+    "L33"
+   ],
+   "label": "AI 추정",
+   "weak": false
+  }
+ ],
+ "scenarios": [
+  {
+   "name": "수습 성공형 반등",
+   "probability": 0.3,
+   "path": [
+    "11/1 공소취소 조항 삭제와 탄핵 보류로 '방탄' 프레임 약화",
+    "강선우 건 제도화로 보도량 감소",
+    "코인 결론과 주택공급 1차 발표로 생활 의제 주도",
+    "부정선거 공개질의로 국민의힘 대권주자-강성층 균열 노출"
+   ],
+   "end_state": "11월 말 리얼미터 민주당 38~40%대로 국민의힘과 오차범위 내 재접전, 갤럽 민주당 우위 유지 및 확대",
+   "refs": [
+    "E8",
+    "E9",
+    "E95",
+    "E101"
+   ],
+   "label": "AI 추정",
+   "weak": false
+  },
+  {
+   "name": "박스권 정체",
+   "probability": 0.4,
+   "path": [
+    "일부 카드만 실행되고 사법 공방과 민생 메시지가 혼재",
+    "김현지 고발 건이 잔존 악재로 남음",
+    "국민의힘의 오세훈 중심 결집이 완만하게 지속"
+   ],
+   "end_state": "리얼미터 국민의힘 우위 3~6%p 지속, 대통령 긍정 33~37% 횡보, 갤럽은 민주당 우위이나 격차 축소",
+   "refs": [
+    "E2",
+    "E11",
+    "E12",
+    "E84",
+    "E131"
+   ],
+   "label": "AI 추정",
+   "weak": false
+  },
+  {
+   "name": "사법 대결 강행 역풍",
+   "probability": 0.2,
+   "path": [
+    "공소취소 조항을 유지한 채 법사위 강행 처리",
+    "조희대 탄핵 발의로 국민의힘 '국민적 저항' 장외전 정당화",
+    "중도층 추가 이탈, 개혁층은 조국혁신당으로 분산"
+   ],
+   "end_state": "리얼미터 민주당 33% 안팎, 국민의힘 44% 안팎으로 격차 고착. 갤럽에서도 격차 한 자릿수 초반으로 좁혀짐",
+   "refs": [
+    "E65",
+    "E67",
+    "E95",
+    "E98",
+    "E180"
+   ],
+   "label": "AI 추정",
+   "weak": false
+  },
+  {
+   "name": "외부 충격형",
+   "probability": 0.1,
+   "path": [
+    "금융권 연쇄 해킹[E212]이나 북한 도발이 대형 위기로 비화",
+    "정부 대응 실책 또는 김현지 수사 확대가 겹침"
+   ],
+   "end_state": "대통령 긍정 30%대 초반(리얼미터)으로 급락, 당정 동반 하락",
+   "refs": [
+    "E148",
+    "E212",
+    "E84"
+   ],
+   "label": "AI 추정",
+   "weak": false
+  }
+ ],
+ "watch": [
+  "리얼미터 주간 민주당-국민의힘 격차(같은 기관 추세, 현재 국민의힘 +6.6%p)",
+  "갤럽 국민의힘 지지율 28%선 돌파 여부와 조국혁신당 지지 동향",
+  "11/2~6 법사위 특검법 공소취소 조항 처리 방향과 언론 '방탄' 키워드 빈도",
+  "조희대 탄핵 찬반 여론 및 중도층 반대 비율",
+  "강선우 항소심·김현지 공수처 고발 수사 진행 보도량",
+  "코인 과세 당정 결론 발표 시점",
+  "투표지 공개검증 결과와 국민의힘 대권주자 반응",
+  "오세훈·한동훈·이준석 연대 관련 공개 행보",
+  "11월 주택공급 대책·2차 공공기관 이전 발표 직후 1주 여론 반응",
+  "NBS 다음 조사에서 민주당 33% 하락의 지속 여부",
+  "예결위 종합정책질의(11/4~5) 장면의 언론 프레임"
+ ],
+ "predictions": [
+  {
+   "pollster": "리얼미터",
+   "target_kind": "정당지지",
+   "target": "더불어민주당",
+   "by_date": "2026-11-30",
+   "low": 34,
+   "high": 39.5
+  },
+  {
+   "pollster": "리얼미터",
+   "target_kind": "정당지지",
+   "target": "국민의힘",
+   "by_date": "2026-11-30",
+   "low": 38.5,
+   "high": 43.5
+  },
+  {
+   "pollster": "리얼미터",
+   "target_kind": "대통령국정 긍정",
+   "target": "이재명 대통령",
+   "by_date": "2026-11-30",
+   "low": 33,
+   "high": 38.5
+  },
+  {
+   "pollster": "한국갤럽",
+   "target_kind": "대통령국정 긍정",
+   "target": "이재명 대통령",
+   "by_date": "2026-11-30",
+   "low": 36,
+   "high": 42
+  },
+  {
+   "pollster": "한국갤럽",
+   "target_kind": "정당지지",
+   "target": "더불어민주당",
+   "by_date": "2026-11-30",
+   "low": 34,
+   "high": 40
+  },
+  {
+   "pollster": "한국갤럽",
+   "target_kind": "정당지지",
+   "target": "국민의힘",
+   "by_date": "2026-11-30",
+   "low": 25,
+   "high": 31
+  },
+  {
+   "pollster": "NBS(전국지표조사)",
+   "target_kind": "정당지지",
+   "target": "더불어민주당",
+   "by_date": "2026-11-30",
+   "low": 31,
+   "high": 38
+  }
+ ],
+ "evidence": [
+  {
+   "ref": "E1",
+   "label": "기록",
+   "text": "2026-10-28 기준 재적 299명, 정당별 의석 {'더불어민주당': 161, '국민의힘': 109, '조국혁신당': 12, '무소속': 8, '진보당': 4, '개혁신당': 3, '기본소득당': 1, '사회민주당': 1}",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E2",
+   "label": "보도",
+   "text": "[여론조사 추이] 대통령국정 긍정 — 리얼미터: 2026-09-09 33.7%, 2026-09-10 33.5%, 2026-09-11 33.8%, 2026-09-16 30%, 2026-09-21 34.8%, 2026-09-28 37.9%, 2026-10-02 37.4%, 2026-10-08 35.2%, 2026-10-13 35.2%, 2026-10-16 37.3%, 2026-10-23 35.3%, 2026-10-28 34.8%",
+   "link": "https://www.jnilbo.com/news/articleView.html?idxno=90000077288",
+   "data": {
+    "kind": "대통령국정",
+    "target": "긍정",
+    "pollster": "리얼미터",
+    "series": [
+     {
+      "pollster": "리얼미터",
+      "date": "2026-09-09",
+      "value": 33.7,
+      "n_reports": 1,
+      "urls": [
+       "https://www.kpinews.kr/newsView/1065572336259621"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-09-10",
+      "value": 33.5,
+      "n_reports": 1,
+      "urls": [
+       "https://www.kpinews.kr/newsView/1065572336259621"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-09-11",
+      "value": 33.8,
+      "n_reports": 35,
+      "urls": [
+       "https://www.nocutnews.co.kr/news/6578741?utm_source=naver&utm_medium=article&utm_campaign=20260916073016",
+       "https://www.newsfreezone.co.kr/news/articleView.html?idxno=709363",
+       "https://www.kbsm.net/news/view.php?idx=534025"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-09-16",
+      "value": 30.0,
+      "n_reports": 1,
+      "urls": [
+       "https://www.news1.kr/politics/general-politics/6292663"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-09-21",
+      "value": 34.8,
+      "n_reports": 6,
+      "urls": [
+       "http://www.yonhapnewstv.co.kr/news/MYH20260921103043PCN",
+       "https://www.ziksir.com/news/articleView.html?idxno=147052",
+       "https://www.yna.co.kr/view/AKR20260921019851001?input=1195m"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-09-28",
+      "value": 37.9,
+      "n_reports": 6,
+      "urls": [
+       "https://www.etnews.com/20260928000073",
+       "https://news.tf.co.kr/read/ptoday/2369953.htm",
+       "http://www.inews24.com/view/2009258"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-10-02",
+      "value": 37.4,
+      "n_reports": 35,
+      "urls": [
+       "https://www.cnbnews.com/news/articleView.html?idxno=1018189"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-10-08",
+      "value": 35.2,
+      "n_reports": 51,
+      "urls": [
+       "http://www.newstomato.com/ReadNews.aspx?no=1317069&inflow=N",
+       "https://www.topstarnews.net/news/articleView.html?idxno=16245549",
+       "http://www.metroseoul.co.kr/article/20261012500502"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-10-13",
+      "value": 35.2,
+      "n_reports": 1,
+      "urls": [
+       "https://www.ytn.co.kr/_ln/0101_202610130737190300"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-10-16",
+      "value": 37.3,
+      "n_reports": 69,
+      "urls": [
+       "https://www.newdaily.co.kr/site/data/html/2026/10/20/2026102000326.html",
+       "https://view.asiae.co.kr/article/2026101917385377221",
+       "https://www.christiantoday.co.kr/news/377978"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-10-23",
+      "value": 35.3,
+      "n_reports": 78,
+      "urls": [
+       "https://www.kwnews.co.kr/article/20261028500068",
+       "https://biz.sbs.co.kr/article_hub/20000342221?division=NAVER",
+       "https://www.newscj.com/news/articleView.html?idxno=3443149"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-10-28",
+      "value": 34.8,
+      "n_reports": 1,
+      "urls": [
+       "https://www.jnilbo.com/news/articleView.html?idxno=90000077288"
+      ],
+      "label": "보도"
+     }
+    ]
+   }
+  },
+  {
+   "ref": "E3",
+   "label": "보도",
+   "text": "[여론조사 추이] 대통령국정 긍정 — 한국갤럽: 2026-08-27 42%, 2026-09-03 40%, 2026-09-10 38%, 2026-09-17 37%, 2026-09-19 38%, 2026-09-21 37%, 2026-09-26 42%, 2026-09-29 31.5%, 2026-10-08 37%, 2026-10-15 39%, 2026-10-19 37%, 2026-10-22 40%",
+   "link": "https://www.edaily.co.kr/News/Read?newsId=05717046645617512&mediaCodeNo=257&utm_source=naver&utm_medium=referral&utm_campaign=news_syndication&utm_content=original_article",
+   "data": {
+    "kind": "대통령국정",
+    "target": "긍정",
+    "pollster": "한국갤럽",
+    "series": [
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-08-27",
+      "value": 42.0,
+      "n_reports": 14,
+      "urls": [
+       "https://www.joongang.co.kr/article/25457915",
+       "http://www.inews24.com/view/1999758",
+       "https://www.mt.co.kr/politics/2026/08/28/2026082810495678789"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-09-03",
+      "value": 40.0,
+      "n_reports": 12,
+      "urls": [
+       "https://www.gnnews.co.kr/news/articleView.html?idxno=644830",
+       "https://www.busan.com/view/busan/view.php?code=2026090411202976426",
+       "https://www.mediawatch.kr/news/article.html?no=260907"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-09-10",
+      "value": 38.0,
+      "n_reports": 8,
+      "urls": [
+       "https://www.kyeonggi.com/article/20260911580065",
+       "http://www.iminju.net/news/articleView.html?idxno=169395"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-09-17",
+      "value": 37.0,
+      "n_reports": 10,
+      "urls": [
+       "https://www.etoday.co.kr/news/view/2629180",
+       "https://www.kyeonggi.com/article/20260918580085",
+       "https://view.asiae.co.kr/article/2026091811314826288"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-09-19",
+      "value": 38.0,
+      "n_reports": 1,
+      "urls": [
+       "https://www.gokorea.kr/news/articleView.html?idxno=878970"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-09-21",
+      "value": 37.0,
+      "n_reports": 3,
+      "urls": [
+       "https://slownews.kr/166669"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-09-26",
+      "value": 42.0,
+      "n_reports": 1,
+      "urls": [
+       "https://www.joongang.co.kr/article/25464841"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-09-29",
+      "value": 31.5,
+      "n_reports": 1,
+      "urls": [
+       "https://slownews.kr/167052"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-10-08",
+      "value": 37.0,
+      "n_reports": 37,
+      "urls": [
+       "https://www.thepublic.kr/news/articleView.html?idxno=321715",
+       "https://www.news1.kr/politics/president/6315275",
+       "https://www.sisajournal.com/news/articleView.html?idxno=389676"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-10-15",
+      "value": 39.0,
+      "n_reports": 46,
+      "urls": [
+       "https://www.segye.com/newsView/20261018511007?OutUrl=naver",
+       "http://www.newsian.co.kr/news/articleView.html?idxno=97207",
+       "https://www.ilyosisa.co.kr/news/article.html?no=258342"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-10-19",
+      "value": 37.0,
+      "n_reports": 2,
+      "urls": [
+       "https://www.joongang.co.kr/article/25470781"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-10-22",
+      "value": 40.0,
+      "n_reports": 91,
+      "urls": [
+       "https://www.edaily.co.kr/News/Read?newsId=05717046645617512&mediaCodeNo=257&utm_source=naver&utm_medium=referral&utm_campaign=news_syndication&utm_content=original_article",
+       "https://www.mediatoday.co.kr/news/articleView.html?idxno=337963",
+       "https://www.donga.com/news/Politics/article/all/20261023/134899692/2"
+      ],
+      "label": "보도"
+     }
+    ]
+   }
+  },
+  {
+   "ref": "E4",
+   "label": "보도",
+   "text": "[여론조사 추이] 대통령국정 긍정 — NBS(전국지표조사): 2026-08-13 49%, 2026-08-28 50%, 2026-10-01 50%, 2026-10-15 44%",
+   "link": "https://www.hankyung.com/article/202610154628H",
+   "data": {
+    "kind": "대통령국정",
+    "target": "긍정",
+    "pollster": "NBS(전국지표조사)",
+    "series": [
+     {
+      "pollster": "NBS(전국지표조사)",
+      "date": "2026-08-13",
+      "value": 49.0,
+      "n_reports": 1,
+      "urls": [
+       "https://www.dt.co.kr/article/12078130?ref=naver"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "NBS(전국지표조사)",
+      "date": "2026-08-28",
+      "value": 50.0,
+      "n_reports": 1,
+      "urls": [
+       "https://www.nocutnews.co.kr/news/6569476?utm_source=naver&utm_medium=article&utm_campaign=20260828073025"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "NBS(전국지표조사)",
+      "date": "2026-10-01",
+      "value": 50.0,
+      "n_reports": 2,
+      "urls": [
+       "https://www.imaeil.com/page/view/2026100117442060754"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "NBS(전국지표조사)",
+      "date": "2026-10-15",
+      "value": 44.0,
+      "n_reports": 34,
+      "urls": [
+       "https://www.hankyung.com/article/202610154628H",
+       "https://www.kyeonggi.com/article/20261015580388",
+       "https://www.m-economynews.com/news/article.html?no=71702"
+      ],
+      "label": "보도"
+     }
+    ]
+   }
+  },
+  {
+   "ref": "E5",
+   "label": "보도",
+   "text": "[여론조사 추이] 대통령국정 부정 — 한국갤럽: 2026-08-21 45%, 2026-08-27 50%, 2026-09-03 51%, 2026-09-11 51%, 2026-09-17 56%, 2026-09-19 51%, 2026-09-23 56%, 2026-09-26 47%, 2026-10-09 51%, 2026-10-15 50%, 2026-10-16 52%, 2026-10-22 50%",
+   "link": "https://www.donga.com/news/Politics/article/all/20261023/134899692/2",
+   "data": {
+    "kind": "대통령국정",
+    "target": "부정",
+    "pollster": "한국갤럽",
+    "series": [
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-08-21",
+      "value": 45.0,
+      "n_reports": 4,
+      "urls": [
+       "https://www.cbci.co.kr/news/articleView.html?idxno=600494",
+       "https://www.donga.com/news/Politics/article/all/20260821/134517801/2",
+       "http://www.inews24.com/view/1997001"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-08-27",
+      "value": 50.0,
+      "n_reports": 5,
+      "urls": [
+       "https://www.mt.co.kr/politics/2026/08/28/2026082810495678789",
+       "https://www.ziksir.com/news/articleView.html?idxno=144608",
+       "https://www.mediawatch.kr/news/article.html?no=260813"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-09-03",
+      "value": 51.0,
+      "n_reports": 3,
+      "urls": [
+       "https://www.gnnews.co.kr/news/articleView.html?idxno=644830",
+       "https://www.kyeonggi.com/article/20260904580077"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-09-11",
+      "value": 51.0,
+      "n_reports": 3,
+      "urls": [
+       "https://www.ppss.kr/news/articleView.html?idxno=310129",
+       "https://www.businesspost.co.kr/BP?command=article_view&num=446998",
+       "https://view.asiae.co.kr/article/2026091110233183214"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-09-17",
+      "value": 56.0,
+      "n_reports": 3,
+      "urls": [
+       "https://www.etoday.co.kr/news/view/2629180",
+       "https://www.kyeonggi.com/article/20260918580085"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-09-19",
+      "value": 51.0,
+      "n_reports": 1,
+      "urls": [
+       "https://www.gokorea.kr/news/articleView.html?idxno=878970"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-09-23",
+      "value": 56.0,
+      "n_reports": 1,
+      "urls": [
+       "https://news.tvchosun.com/site/data/html_dir/2026/09/23/2026092390154.html"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-09-26",
+      "value": 47.0,
+      "n_reports": 1,
+      "urls": [
+       "https://www.joongang.co.kr/article/25464841"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-10-09",
+      "value": 51.0,
+      "n_reports": 11,
+      "urls": [
+       "https://www.businesspost.co.kr/BP?command=article_view&num=448982",
+       "https://www.munhwa.com/article/11622379?ref=naver",
+       "https://www.kyeonggi.com/article/20261009580040"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-10-15",
+      "value": 50.0,
+      "n_reports": 1,
+      "urls": [
+       "https://www.news1.kr/politics/president/6322196"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-10-16",
+      "value": 52.0,
+      "n_reports": 11,
+      "urls": [
+       "https://biz.sbs.co.kr/article_hub/20000340526?division=NAVER",
+       "https://www.kyeonggi.com/article/20261016580078",
+       "https://www.smartbizn.com/news/articleView.html?idxno=156644"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-10-22",
+      "value": 50.0,
+      "n_reports": 22,
+      "urls": [
+       "https://www.donga.com/news/Politics/article/all/20261023/134899692/2",
+       "https://www.thereport.co.kr/news/articleView.html?idxno=92585",
+       "http://www.kookje.co.kr/news2011/asp/newsbody.asp?code=0100&key=20261023.99099006753"
+      ],
+      "label": "보도"
+     }
+    ]
+   }
+  },
+  {
+   "ref": "E6",
+   "label": "보도",
+   "text": "[여론조사 추이] 대통령국정 부정 — 리얼미터: 2026-01-23 62.3%, 2026-08-14 56.7%, 2026-09-04 59.5%, 2026-09-14 63.3%, 2026-10-02 59.8%, 2026-10-12 61.4%, 2026-10-16 60.4%, 2026-10-21 60.4%, 2026-10-23 62.3%",
+   "link": "https://www.thereport.co.kr/news/articleView.html?idxno=92652",
+   "data": {
+    "kind": "대통령국정",
+    "target": "부정",
+    "pollster": "리얼미터",
+    "series": [
+     {
+      "pollster": "리얼미터",
+      "date": "2026-01-23",
+      "value": 62.3,
+      "n_reports": 2,
+      "urls": [
+       "https://www.insight.co.kr/news/579106",
+       "https://www.wikitree.co.kr/articles/1169064"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-08-14",
+      "value": 56.7,
+      "n_reports": 1,
+      "urls": [
+       "https://www.newdaily.co.kr/site/data/html/2026/08/17/2026081700036.html"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-09-04",
+      "value": 59.5,
+      "n_reports": 1,
+      "urls": [
+       "https://news.jtbc.co.kr/article/NB12317020?influxDiv=NAVER"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-09-14",
+      "value": 63.3,
+      "n_reports": 3,
+      "urls": [
+       "https://www.ytn.co.kr/_ln/0101_202609141638499369",
+       "https://www.goodmorningcc.com/news/articleView.html?idxno=452314",
+       "https://www.munhwa.com/article/11616830?ref=naver"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-10-02",
+      "value": 59.8,
+      "n_reports": 2,
+      "urls": [
+       "https://www.cnbnews.com/news/articleView.html?idxno=1018189"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-10-12",
+      "value": 61.4,
+      "n_reports": 3,
+      "urls": [
+       "https://www.cbci.co.kr/news/articleView.html?idxno=614388",
+       "https://www.pennmike.com/news/articleView.html?idxno=129315"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-10-16",
+      "value": 60.4,
+      "n_reports": 13,
+      "urls": [
+       "https://www.gukjenews.com/news/articleView.html?idxno=3725139",
+       "https://www.m-i.kr/news/articleView.html?idxno=2007239",
+       "https://news.jtbc.co.kr/article/NB12323622?influxDiv=NAVER"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-10-21",
+      "value": 60.4,
+      "n_reports": 1,
+      "urls": [
+       "http://www.breaknews.com/1244628"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-10-23",
+      "value": 62.3,
+      "n_reports": 7,
+      "urls": [
+       "https://www.thereport.co.kr/news/articleView.html?idxno=92652",
+       "http://www.newscape.co.kr/news/articleView.html?idxno=125328",
+       "https://www.kizmom.com/news/articleView.html?idxno=113527"
+      ],
+      "label": "보도"
+     }
+    ]
+   }
+  },
+  {
+   "ref": "E7",
+   "label": "보도",
+   "text": "[여론조사 추이] 대통령국정 부정 — 한국사회여론연구소: 2026-10-14 58.8%, 2026-10-28 58.9%",
+   "link": "https://www.jasm.co.kr/news/view/323253/?sc=Naver",
+   "data": {
+    "kind": "대통령국정",
+    "target": "부정",
+    "pollster": "한국사회여론연구소",
+    "series": [
+     {
+      "pollster": "한국사회여론연구소",
+      "date": "2026-10-14",
+      "value": 58.8,
+      "n_reports": 1,
+      "urls": [
+       "https://www.hankyung.com/article/202610141510H"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국사회여론연구소",
+      "date": "2026-10-28",
+      "value": 58.9,
+      "n_reports": 7,
+      "urls": [
+       "https://www.jasm.co.kr/news/view/323253/?sc=Naver",
+       "https://www.polinews.co.kr/news/articleView.html?idxno=747080",
+       "https://www.m-i.kr/news/articleView.html?idxno=2011334"
+      ],
+      "label": "보도"
+     }
+    ]
+   }
+  },
+  {
+   "ref": "E8",
+   "label": "보도",
+   "text": "[여론조사 추이] 정당 더불어민주당 — 리얼미터: 2026-09-16 36.1%, 2026-09-18 40.2%, 2026-09-23 38.7%, 2026-09-28 38.7%, 2026-10-02 42.5%, 2026-10-08 35.5%, 2026-10-10 41.9%, 2026-10-12 35.5%, 2026-10-13 35%, 2026-10-16 36.2%, 2026-10-22 39.6%, 2026-10-23 36%",
+   "link": "https://www.kwnews.co.kr/article/20261028500068",
+   "data": {
+    "kind": "정당",
+    "target": "더불어민주당",
+    "pollster": "리얼미터",
+    "series": [
+     {
+      "pollster": "리얼미터",
+      "date": "2026-09-16",
+      "value": 36.1,
+      "n_reports": 1,
+      "urls": [
+       "https://www.sidae.com/article/2026091614383198998"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-09-18",
+      "value": 40.2,
+      "n_reports": 11,
+      "urls": [
+       "https://news.tvchosun.com/site/data/html_dir/2026/09/23/2026092390154.html",
+       "https://www.pressian.com/pages/articles/2026092110040766473?utm_source=naver&utm_medium=search",
+       "https://www.polinews.co.kr/news/articleView.html?idxno=743656"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-09-23",
+      "value": 38.7,
+      "n_reports": 6,
+      "urls": [
+       "https://www.ajunews.com/view/20261002160053365",
+       "https://www.nocutnews.co.kr/news/6584124?utm_source=naver&utm_medium=article&utm_campaign=20260929083746",
+       "https://www.sisajournal.com/news/articleView.html?idxno=388356"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-09-28",
+      "value": 38.7,
+      "n_reports": 5,
+      "urls": [
+       "https://www.topstarnews.net/news/articleView.html?idxno=16222088",
+       "https://www.sisaweek.com/news/articleView.html?idxno=238086",
+       "https://news.tf.co.kr/read/ptoday/2369953.htm"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-10-02",
+      "value": 42.5,
+      "n_reports": 21,
+      "urls": [
+       "https://www.topstarnews.net/news/articleView.html?idxno=16238352"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-10-08",
+      "value": 35.5,
+      "n_reports": 8,
+      "urls": [
+       "https://www.dnews.co.kr/uhtml/view.jsp?idxno=202610151630394300799",
+       "https://www.kukinews.com/article/view/kuk202610140143",
+       "http://www.metroseoul.co.kr/article/20261012500502"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-10-10",
+      "value": 41.9,
+      "n_reports": 2,
+      "urls": [
+       "https://www.ekn.kr/web/view.php?key=20261009025494136"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-10-12",
+      "value": 35.5,
+      "n_reports": 32,
+      "urls": [
+       "https://www.ichannela.com/news/main/news_detailPage.do?publishId=000000554686",
+       "https://www.newspim.com/news/view/20261012001103",
+       "http://www.weeklytoday.com/news/articleView.html?idxno=797556"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-10-13",
+      "value": 35.0,
+      "n_reports": 1,
+      "urls": [
+       "https://www.ytn.co.kr/_ln/0101_202610130737190300"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-10-16",
+      "value": 36.2,
+      "n_reports": 35,
+      "urls": [
+       "https://www.idaegu.co.kr/news/articleView.html?idxno=563300",
+       "https://www.joongang.co.kr/article/25471131",
+       "https://www.newsworks.co.kr/news/articleView.html?idxno=856896"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-10-22",
+      "value": 39.6,
+      "n_reports": 1,
+      "urls": [
+       "https://www.newspim.com/news/view/20261022001304"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-10-23",
+      "value": 36.0,
+      "n_reports": 41,
+      "urls": [
+       "https://www.kwnews.co.kr/article/20261028500068",
+       "https://www.dailian.co.kr/news/view/1706396/?sc=Naver",
+       "https://www.sidae.com/article/2026102711013058004"
+      ],
+      "label": "보도"
+     }
+    ]
+   }
+  },
+  {
+   "ref": "E9",
+   "label": "보도",
+   "text": "[여론조사 추이] 정당 더불어민주당 — 한국갤럽: 2026-07-27 39%, 2026-08-13 41%, 2026-08-20 41%, 2026-08-27 39%, 2026-09-03 38%, 2026-09-06 29%, 2026-09-09 38%, 2026-09-14 38%, 2026-09-17 40%, 2026-10-08 35%, 2026-10-15 36%, 2026-10-22 37%",
+   "link": "https://www.dailian.co.kr/news/view/1705839/?sc=Naver",
+   "data": {
+    "kind": "정당",
+    "target": "더불어민주당",
+    "pollster": "한국갤럽",
+    "series": [
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-07-27",
+      "value": 39.0,
+      "n_reports": 1,
+      "urls": [
+       "https://www.joongang.co.kr/article/25457801"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-08-13",
+      "value": 41.0,
+      "n_reports": 14,
+      "urls": [
+       "https://www.topstarnews.net/news/articleView.html?idxno=16163611",
+       "https://www.gokorea.kr/news/articleView.html?idxno=875033",
+       "https://www.jibs.co.kr/news/articles/articlesDetail/64513?feed=na"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-08-20",
+      "value": 41.0,
+      "n_reports": 10,
+      "urls": [
+       "https://www.edaily.co.kr/News/Read?newsId=01676086645550272&mediaCodeNo=257&utm_source=naver&utm_medium=referral&utm_campaign=news_syndication&utm_content=original_article",
+       "https://www.insight.co.kr/news/569483",
+       "https://www.jibs.co.kr/news/articles/articlesDetail/64730?feed=na"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-08-27",
+      "value": 39.0,
+      "n_reports": 21,
+      "urls": [
+       "https://www.joongang.co.kr/article/25457915",
+       "http://www.kookje.co.kr/news2011/asp/newsbody.asp?code=0100&key=20260831.22005008749",
+       "https://www.mt.co.kr/politics/2026/08/28/2026082810495678789"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-09-03",
+      "value": 38.0,
+      "n_reports": 13,
+      "urls": [
+       "https://www.polinews.co.kr/news/articleView.html?idxno=742154",
+       "https://www.khan.co.kr/article/202609041100001",
+       "https://www.kyeonggi.com/article/20260904580077"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-09-06",
+      "value": 29.0,
+      "n_reports": 2,
+      "urls": [
+       "http://weekly.chosun.com/news/articleView.html?idxno=54956"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-09-09",
+      "value": 38.0,
+      "n_reports": 14,
+      "urls": [
+       "https://www.hani.co.kr/arti/politics/politics_general/1277330.html"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-09-14",
+      "value": 38.0,
+      "n_reports": 1,
+      "urls": [
+       "https://n.news.naver.com/mnews/article/214/0001523776?sid=100"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-09-17",
+      "value": 40.0,
+      "n_reports": 12,
+      "urls": [
+       "https://www.news1.kr/politics/assembly/6300323",
+       "https://www.mediaus.co.kr/news/articleView.html?idxno=318198",
+       "https://www.kyeonggi.com/article/20260918580085"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-10-08",
+      "value": 35.0,
+      "n_reports": 31,
+      "urls": [
+       "https://www.naeil.com/news/read/604783?ref=naver",
+       "https://www.mediatoday.co.kr/news/articleView.html?idxno=337638",
+       "https://www.news1.kr/politics/president/6315275"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-10-15",
+      "value": 36.0,
+      "n_reports": 37,
+      "urls": [
+       "https://www.yna.co.kr/view/AKR20261017043651001?input=1195m",
+       "https://www.dt.co.kr/article/12089587?ref=naver",
+       "https://www.yna.co.kr/view/AKR20261017043600001?input=1195m"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-10-22",
+      "value": 37.0,
+      "n_reports": 35,
+      "urls": [
+       "https://www.dailian.co.kr/news/view/1705839/?sc=Naver",
+       "https://www.polinews.co.kr/news/articleView.html?idxno=746802",
+       "https://www.ilyosisa.co.kr/news/article.html?no=258488"
+      ],
+      "label": "보도"
+     }
+    ]
+   }
+  },
+  {
+   "ref": "E10",
+   "label": "보도",
+   "text": "[여론조사 추이] 정당 더불어민주당 — NBS(전국지표조사): 2026-08-13 40%, 2026-08-27 41%, 2026-10-15 33%",
+   "link": "https://www.pennmike.com/news/articleView.html?idxno=130004",
+   "data": {
+    "kind": "정당",
+    "target": "더불어민주당",
+    "pollster": "NBS(전국지표조사)",
+    "series": [
+     {
+      "pollster": "NBS(전국지표조사)",
+      "date": "2026-08-13",
+      "value": 40.0,
+      "n_reports": 1,
+      "urls": [
+       "https://www.dt.co.kr/article/12078130?ref=naver"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "NBS(전국지표조사)",
+      "date": "2026-08-27",
+      "value": 41.0,
+      "n_reports": 1,
+      "urls": [
+       "https://www.pennmike.com/news/articleView.html?idxno=130004"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "NBS(전국지표조사)",
+      "date": "2026-10-15",
+      "value": 33.0,
+      "n_reports": 28,
+      "urls": [
+       "https://www.pennmike.com/news/articleView.html?idxno=130004",
+       "https://www.hankyung.com/article/202610154628H",
+       "https://www.m-economynews.com/news/article.html?no=71702"
+      ],
+      "label": "보도"
+     }
+    ]
+   }
+  },
+  {
+   "ref": "E11",
+   "label": "보도",
+   "text": "[여론조사 추이] 정당 국민의힘 — 리얼미터: 2026-08-28 37.7%, 2026-09-04 37.6%, 2026-09-11 42.1%, 2026-09-16 42.1%, 2026-09-18 38.5%, 2026-09-23 39.4%, 2026-09-28 39.4%, 2026-10-02 38.4%, 2026-10-08 41.3%, 2026-10-13 41%, 2026-10-16 40.9%, 2026-10-23 42.6%",
+   "link": "https://www.kwnews.co.kr/article/20261028500068",
+   "data": {
+    "kind": "정당",
+    "target": "국민의힘",
+    "pollster": "리얼미터",
+    "series": [
+     {
+      "pollster": "리얼미터",
+      "date": "2026-08-28",
+      "value": 37.7,
+      "n_reports": 6,
+      "urls": [
+       "https://www.cnbnews.com/news/articleView.html?idxno=1013692",
+       "https://www.polinews.co.kr/news/articleView.html?idxno=741706",
+       "https://www.jeonmae.co.kr/news/articleView.html?idxno=1288444"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-09-04",
+      "value": 37.6,
+      "n_reports": 2,
+      "urls": [
+       "https://www.cnbnews.com/news/articleView.html?idxno=1014813",
+       "https://www.polinews.co.kr/news/articleView.html?idxno=742358"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-09-11",
+      "value": 42.1,
+      "n_reports": 29,
+      "urls": [
+       "http://www.iminju.net/news/articleView.html?idxno=170766",
+       "https://shindonga.donga.com/3/all/13/6391822/1",
+       "https://www.hankookilbo.com/news/article/A2026091715330003050?did=NA"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-09-16",
+      "value": 42.1,
+      "n_reports": 1,
+      "urls": [
+       "https://www.sidae.com/article/2026091614383198998"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-09-18",
+      "value": 38.5,
+      "n_reports": 7,
+      "urls": [
+       "http://www.iminju.net/news/articleView.html?idxno=170766",
+       "https://www.polinews.co.kr/news/articleView.html?idxno=743656",
+       "https://www.chosun.com/politics/opinion-poll/2026/09/21/N6XRBTXQ75CGBJ7SHEBFEMNPTA/?utm_source=naver&utm_medium=referral&utm_campaign=naver-news"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-09-23",
+      "value": 39.4,
+      "n_reports": 4,
+      "urls": [
+       "https://www.nocutnews.co.kr/news/6584124?utm_source=naver&utm_medium=article&utm_campaign=20260929083746",
+       "https://www.sisajournal.com/news/articleView.html?idxno=388356"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-09-28",
+      "value": 39.4,
+      "n_reports": 5,
+      "urls": [
+       "https://www.topstarnews.net/news/articleView.html?idxno=16222088",
+       "https://www.sisaweek.com/news/articleView.html?idxno=238086",
+       "https://news.tf.co.kr/read/ptoday/2369953.htm"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-10-02",
+      "value": 38.4,
+      "n_reports": 19,
+      "urls": [
+       "https://www.topstarnews.net/news/articleView.html?idxno=16238352"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-10-08",
+      "value": 41.3,
+      "n_reports": 35,
+      "urls": [
+       "https://www.kukinews.com/article/view/kuk202610140143",
+       "http://www.metroseoul.co.kr/article/20261012500502",
+       "https://www.polinews.co.kr/news/articleView.html?idxno=745454"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-10-13",
+      "value": 41.0,
+      "n_reports": 1,
+      "urls": [
+       "https://www.ytn.co.kr/_ln/0101_202610130737190300"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-10-16",
+      "value": 40.9,
+      "n_reports": 36,
+      "urls": [
+       "https://www.idaegu.co.kr/news/articleView.html?idxno=563300",
+       "https://www.joongang.co.kr/article/25471131",
+       "https://www.newsworks.co.kr/news/articleView.html?idxno=856896"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-10-23",
+      "value": 42.6,
+      "n_reports": 44,
+      "urls": [
+       "https://www.kwnews.co.kr/article/20261028500068",
+       "https://www.dailian.co.kr/news/view/1706396/?sc=Naver",
+       "https://www.sidae.com/article/2026102711013058004"
+      ],
+      "label": "보도"
+     }
+    ]
+   }
+  },
+  {
+   "ref": "E12",
+   "label": "보도",
+   "text": "[여론조사 추이] 정당 국민의힘 — 한국갤럽: 2026-08-20 25%, 2026-08-27 25%, 2026-09-03 30%, 2026-09-09 29%, 2026-09-14 29%, 2026-09-17 27%, 2026-10-02 24%, 2026-10-08 26%, 2026-10-10 24%, 2026-10-11 26%, 2026-10-15 27%, 2026-10-22 28%",
+   "link": "https://www.polinews.co.kr/news/articleView.html?idxno=746802",
+   "data": {
+    "kind": "정당",
+    "target": "국민의힘",
+    "pollster": "한국갤럽",
+    "series": [
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-08-20",
+      "value": 25.0,
+      "n_reports": 8,
+      "urls": [
+       "https://www.edaily.co.kr/News/Read?newsId=01676086645550272&mediaCodeNo=257&utm_source=naver&utm_medium=referral&utm_campaign=news_syndication&utm_content=original_article",
+       "https://www.insight.co.kr/news/569483",
+       "https://www.jibs.co.kr/news/articles/articlesDetail/64730?feed=na"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-08-27",
+      "value": 25.0,
+      "n_reports": 17,
+      "urls": [
+       "http://www.kookje.co.kr/news2011/asp/newsbody.asp?code=0100&key=20260831.22005008749",
+       "https://www.mt.co.kr/politics/2026/08/28/2026082810495678789",
+       "https://www.polinews.co.kr/news/articleView.html?idxno=741512"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-09-03",
+      "value": 30.0,
+      "n_reports": 13,
+      "urls": [
+       "https://www.polinews.co.kr/news/articleView.html?idxno=742154",
+       "https://www.khan.co.kr/article/202609041100001",
+       "https://www.mediawatch.kr/news/article.html?no=260907"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-09-09",
+      "value": 29.0,
+      "n_reports": 14,
+      "urls": [
+       "https://www.hani.co.kr/arti/politics/politics_general/1277330.html"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-09-14",
+      "value": 29.0,
+      "n_reports": 1,
+      "urls": [
+       "https://n.news.naver.com/mnews/article/214/0001523776?sid=100"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-09-17",
+      "value": 27.0,
+      "n_reports": 10,
+      "urls": [
+       "https://www.news1.kr/politics/assembly/6300323",
+       "https://www.mediaus.co.kr/news/articleView.html?idxno=318198",
+       "https://www.kyeonggi.com/article/20260918580085"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-10-02",
+      "value": 24.0,
+      "n_reports": 2,
+      "urls": [
+       "https://www.edaily.co.kr/News/Read?newsId=04444406645608984&mediaCodeNo=257&utm_source=naver&utm_medium=referral&utm_campaign=news_syndication&utm_content=original_article",
+       "https://www.edaily.co.kr/News/Read?newsId=04444406645608984&mediaCodeNo=257&utm_source=naver&utm_medium=referral&utm_campaign=news_syndication&utm_content=original_article"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-10-08",
+      "value": 26.0,
+      "n_reports": 10,
+      "urls": [
+       "https://www.mediatoday.co.kr/news/articleView.html?idxno=337638",
+       "https://www.polinews.co.kr/news/articleView.html?idxno=745319",
+       "https://www.topstarnews.net/news/articleView.html?idxno=16242368"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-10-10",
+      "value": 24.0,
+      "n_reports": 2,
+      "urls": [
+       "https://www.sisajournal.com/news/articleView.html?idxno=389681"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-10-11",
+      "value": 26.0,
+      "n_reports": 1,
+      "urls": [
+       "https://www.topstarnews.net/news/articleView.html?idxno=16243708"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-10-15",
+      "value": 27.0,
+      "n_reports": 32,
+      "urls": [
+       "https://www.dt.co.kr/article/12089587?ref=naver",
+       "http://www.newsian.co.kr/news/articleView.html?idxno=97207",
+       "https://www.newsis.com/view/NISX20261016_0003828788"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-10-22",
+      "value": 28.0,
+      "n_reports": 28,
+      "urls": [
+       "https://www.polinews.co.kr/news/articleView.html?idxno=746802",
+       "https://www.ilyosisa.co.kr/news/article.html?no=258488",
+       "https://www.mediapen.com/news/view/1132009"
+      ],
+      "label": "보도"
+     }
+    ]
+   }
+  },
+  {
+   "ref": "E13",
+   "label": "보도",
+   "text": "[여론조사 추이] 정당 국민의힘 — NBS(전국지표조사): 2026-08-13 23%, 2026-08-27 20%, 2026-10-15 28%",
+   "link": "https://www.pennmike.com/news/articleView.html?idxno=130004",
+   "data": {
+    "kind": "정당",
+    "target": "국민의힘",
+    "pollster": "NBS(전국지표조사)",
+    "series": [
+     {
+      "pollster": "NBS(전국지표조사)",
+      "date": "2026-08-13",
+      "value": 23.0,
+      "n_reports": 1,
+      "urls": [
+       "https://www.dt.co.kr/article/12078130?ref=naver"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "NBS(전국지표조사)",
+      "date": "2026-08-27",
+      "value": 20.0,
+      "n_reports": 1,
+      "urls": [
+       "https://www.pennmike.com/news/articleView.html?idxno=130004"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "NBS(전국지표조사)",
+      "date": "2026-10-15",
+      "value": 28.0,
+      "n_reports": 23,
+      "urls": [
+       "https://www.pennmike.com/news/articleView.html?idxno=130004",
+       "https://www.m-economynews.com/news/article.html?no=71702",
+       "https://biz.heraldcorp.com/article/10903839?ref=naver"
+      ],
+      "label": "보도"
+     }
+    ]
+   }
+  },
+  {
+   "ref": "E14",
+   "label": "보도",
+   "text": "[여론조사 추이] 정당 조국혁신당 — 한국갤럽: 2026-08-13 2%, 2026-08-20 2%, 2026-08-27 4%, 2026-09-03 3%, 2026-09-09 2%, 2026-09-17 3%, 2026-10-08 3%, 2026-10-15 3%, 2026-10-23 3%",
+   "link": "https://vop.co.kr/A00001697284.html",
+   "data": {
+    "kind": "정당",
+    "target": "조국혁신당",
+    "pollster": "한국갤럽",
+    "series": [
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-08-13",
+      "value": 2.0,
+      "n_reports": 5,
+      "urls": [
+       "https://www.topstarnews.net/news/articleView.html?idxno=16163611",
+       "https://www.polinews.co.kr/news/articleView.html?idxno=740167",
+       "https://biz.chosun.com/policy/politics/2026/08/14/STFNS746R5EHDPCVLVFI5M5C7U/?utm_source=naver&utm_medium=original&utm_campaign=biz"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-08-20",
+      "value": 2.0,
+      "n_reports": 5,
+      "urls": [
+       "https://www.mediaus.co.kr/news/articleView.html?idxno=317894",
+       "http://mbn.mk.co.kr/pages/news/newsView.php?category=mbn00006&news_seq_no=5213870",
+       "https://www.viewsnnews.com/article?q=238044"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-08-27",
+      "value": 4.0,
+      "n_reports": 7,
+      "urls": [
+       "https://www.ziksir.com/news/articleView.html?idxno=144608",
+       "https://www.dt.co.kr/article/12080744?ref=naver"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-09-03",
+      "value": 3.0,
+      "n_reports": 5,
+      "urls": [
+       "https://www.polinews.co.kr/news/articleView.html?idxno=742154",
+       "https://www.kyeonggi.com/article/20260904580077",
+       "https://www.topstarnews.net/news/articleView.html?idxno=16182952"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-09-09",
+      "value": 2.0,
+      "n_reports": 3,
+      "urls": [
+       "https://www.hani.co.kr/arti/politics/politics_general/1277330.html"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-09-17",
+      "value": 3.0,
+      "n_reports": 3,
+      "urls": [
+       "https://www.mediaus.co.kr/news/articleView.html?idxno=318198",
+       "https://www.polinews.co.kr/news/articleView.html?idxno=743489"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-10-08",
+      "value": 3.0,
+      "n_reports": 27,
+      "urls": [
+       "https://www.polinews.co.kr/news/articleView.html?idxno=745319",
+       "https://www.mk.co.kr/article/12172225"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-10-15",
+      "value": 3.0,
+      "n_reports": 33,
+      "urls": [
+       "https://www.viewsnnews.com/article?q=239070",
+       "https://www.donga.com/news/Politics/article/all/20261016/134853218/2",
+       "https://www.polinews.co.kr/news/articleView.html?idxno=745895"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-10-23",
+      "value": 3.0,
+      "n_reports": 1,
+      "urls": [
+       "https://vop.co.kr/A00001697284.html"
+      ],
+      "label": "보도"
+     }
+    ]
+   }
+  },
+  {
+   "ref": "E15",
+   "label": "보도",
+   "text": "[여론조사 추이] 정당 조국혁신당 — 리얼미터: 2026-08-21 3.9%, 2026-09-21 5.2%, 2026-09-28 4%, 2026-10-05 5.2%, 2026-10-08 6.3%, 2026-10-16 6.9%",
+   "link": "https://www.ekn.kr/web/view.php?key=20261020024548622",
+   "data": {
+    "kind": "정당",
+    "target": "조국혁신당",
+    "pollster": "리얼미터",
+    "series": [
+     {
+      "pollster": "리얼미터",
+      "date": "2026-08-21",
+      "value": 3.9,
+      "n_reports": 1,
+      "urls": [
+       "https://www.m-economynews.com/news/article.html?no=70039"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-09-21",
+      "value": 5.2,
+      "n_reports": 1,
+      "urls": [
+       "http://www.inews24.com/view/2007613"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-09-28",
+      "value": 4.0,
+      "n_reports": 1,
+      "urls": [
+       "http://www.inews24.com/view/2009258"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-10-05",
+      "value": 5.2,
+      "n_reports": 17,
+      "urls": [
+       "https://www.m-economynews.com/news/article.html?no=71342",
+       "http://www.00news.co.kr/news/articleView.html?idxno=106978",
+       "http://www.metroseoul.co.kr/article/20261005500105"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-10-08",
+      "value": 6.3,
+      "n_reports": 34,
+      "urls": [
+       "https://www.jasm.co.kr/news/view/321054/?sc=Naver"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-10-16",
+      "value": 6.9,
+      "n_reports": 2,
+      "urls": [
+       "https://www.ekn.kr/web/view.php?key=20261020024548622"
+      ],
+      "label": "보도"
+     }
+    ]
+   }
+  },
+  {
+   "ref": "E16",
+   "label": "보도",
+   "text": "[여론조사 추이] 정당 개혁신당 — 한국갤럽: 2026-08-13 3%, 2026-08-20 2%, 2026-08-27 3%, 2026-09-03 1%, 2026-09-09 3%, 2026-09-17 3%, 2026-10-08 2%, 2026-10-15 2%, 2026-10-23 2%",
+   "link": "https://vop.co.kr/A00001697284.html",
+   "data": {
+    "kind": "정당",
+    "target": "개혁신당",
+    "pollster": "한국갤럽",
+    "series": [
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-08-13",
+      "value": 3.0,
+      "n_reports": 5,
+      "urls": [
+       "https://www.topstarnews.net/news/articleView.html?idxno=16163611",
+       "https://www.polinews.co.kr/news/articleView.html?idxno=740167",
+       "https://biz.chosun.com/policy/politics/2026/08/14/STFNS746R5EHDPCVLVFI5M5C7U/?utm_source=naver&utm_medium=original&utm_campaign=biz"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-08-20",
+      "value": 2.0,
+      "n_reports": 5,
+      "urls": [
+       "http://mbn.mk.co.kr/pages/news/newsView.php?category=mbn00006&news_seq_no=5213870",
+       "https://www.polinews.co.kr/news/articleView.html?idxno=740820",
+       "https://www.viewsnnews.com/article?q=238044"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-08-27",
+      "value": 3.0,
+      "n_reports": 7,
+      "urls": [
+       "https://www.ziksir.com/news/articleView.html?idxno=144608",
+       "https://www.dt.co.kr/article/12080744?ref=naver"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-09-03",
+      "value": 1.0,
+      "n_reports": 4,
+      "urls": [
+       "https://www.polinews.co.kr/news/articleView.html?idxno=742154",
+       "https://www.topstarnews.net/news/articleView.html?idxno=16182952"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-09-09",
+      "value": 3.0,
+      "n_reports": 3,
+      "urls": [
+       "https://www.hani.co.kr/arti/politics/politics_general/1277330.html"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-09-17",
+      "value": 3.0,
+      "n_reports": 3,
+      "urls": [
+       "https://www.mediaus.co.kr/news/articleView.html?idxno=318198",
+       "https://www.polinews.co.kr/news/articleView.html?idxno=743489"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-10-08",
+      "value": 2.0,
+      "n_reports": 28,
+      "urls": [
+       "https://www.polinews.co.kr/news/articleView.html?idxno=745319",
+       "https://www.mk.co.kr/article/12172225"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-10-15",
+      "value": 2.0,
+      "n_reports": 32,
+      "urls": [
+       "https://www.viewsnnews.com/article?q=239070",
+       "https://www.donga.com/news/Politics/article/all/20261016/134853218/2",
+       "https://www.polinews.co.kr/news/articleView.html?idxno=745895"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국갤럽",
+      "date": "2026-10-23",
+      "value": 2.0,
+      "n_reports": 1,
+      "urls": [
+       "https://vop.co.kr/A00001697284.html"
+      ],
+      "label": "보도"
+     }
+    ]
+   }
+  },
+  {
+   "ref": "E17",
+   "label": "보도",
+   "text": "[여론조사 추이] 정당 개혁신당 — 리얼미터: 2026-08-21 2%, 2026-09-21 1.9%, 2026-09-26 1.9%, 2026-09-28 2.9%, 2026-10-02 1.5%, 2026-10-08 2.8%, 2026-10-16 1.8%",
+   "link": "https://www.ekn.kr/web/view.php?key=20261020024548622",
+   "data": {
+    "kind": "정당",
+    "target": "개혁신당",
+    "pollster": "리얼미터",
+    "series": [
+     {
+      "pollster": "리얼미터",
+      "date": "2026-08-21",
+      "value": 2.0,
+      "n_reports": 1,
+      "urls": [
+       "https://www.m-economynews.com/news/article.html?no=70039"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-09-21",
+      "value": 1.9,
+      "n_reports": 1,
+      "urls": [
+       "http://www.inews24.com/view/2007613"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-09-26",
+      "value": 1.9,
+      "n_reports": 1,
+      "urls": [
+       "https://www.hankyung.com/article/202609234038i"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-09-28",
+      "value": 2.9,
+      "n_reports": 1,
+      "urls": [
+       "http://www.inews24.com/view/2009258"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-10-02",
+      "value": 1.5,
+      "n_reports": 29,
+      "urls": [
+       "https://biz.heraldcorp.com/article/10893119?ref=naver"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-10-08",
+      "value": 2.8,
+      "n_reports": 43,
+      "urls": [
+       "https://biz.sbs.co.kr/article_hub/20000339457?division=NAVER",
+       "https://www.kado.net/news/articleView.html?idxno=2077443",
+       "https://www.kizmom.com/news/articleView.html?idxno=113222"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "리얼미터",
+      "date": "2026-10-16",
+      "value": 1.8,
+      "n_reports": 3,
+      "urls": [
+       "https://www.ekn.kr/web/view.php?key=20261020024548622"
+      ],
+      "label": "보도"
+     }
+    ]
+   }
+  },
+  {
+   "ref": "E18",
+   "label": "보도",
+   "text": "[여론조사 추이] 정당 개혁신당 — 한국사회여론연구소: 2026-10-14 2.3%, 2026-10-28 1.8%",
+   "link": "https://www.sisaweek.com/news/articleView.html?idxno=238660",
+   "data": {
+    "kind": "정당",
+    "target": "개혁신당",
+    "pollster": "한국사회여론연구소",
+    "series": [
+     {
+      "pollster": "한국사회여론연구소",
+      "date": "2026-10-14",
+      "value": 2.3,
+      "n_reports": 6,
+      "urls": [
+       "https://www.hidomin.com/news/articleView.html?idxno=724802",
+       "https://www.viewsnnews.com/article?q=239025",
+       "https://www.mk.co.kr/article/12175427"
+      ],
+      "label": "보도"
+     },
+     {
+      "pollster": "한국사회여론연구소",
+      "date": "2026-10-28",
+      "value": 1.8,
+      "n_reports": 1,
+      "urls": [
+       "https://www.sisaweek.com/news/articleView.html?idxno=238660"
+      ],
+      "label": "보도"
+     }
+    ]
+   }
+  },
+  {
+   "ref": "E19",
+   "label": "보도",
+   "text": "[변곡점] 정당:더불어민주당 (리얼미터) 2026-02-23→2026-08-14 +11.9%p",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E20",
+   "label": "보도",
+   "text": "  └ 같은 기간 여론조사 기사 제목: 2026-08-17 이재명 대통령 지지율 43% '취임 후 최저'…5주째 하락세 (www.sidae.com)",
+   "link": "https://www.sidae.com/article/2026081711073892163",
+   "data": null
+  },
+  {
+   "ref": "E21",
+   "label": "보도",
+   "text": "  └ 같은 기간 여론조사 기사 제목: 2026-08-17 [리얼미터] 李 대통령 지지율 43.0% 취임 후 최저치 한주 만에 경신…여... (www.polinews.co.kr)",
+   "link": "https://www.polinews.co.kr/news/articleView.html?idxno=740428",
+   "data": null
+  },
+  {
+   "ref": "E22",
+   "label": "보도",
+   "text": "  └ 같은 기간 여론조사 기사 제목: 2026-08-17 李 대통령 지지율 5주째 최저...반등 못하는 국힘 (www.kbmaeil.com)",
+   "link": "https://www.kbmaeil.com/article/20260817500586",
+   "data": null
+  },
+  {
+   "ref": "E23",
+   "label": "보도",
+   "text": "  └ 같은 기간 보도: 2026-07-24 이병진 [발의·표결 예고] 이병진 의원, 소송대리인 불출석 시 본인에게 소 취하 가능성 고지를 의무화하는 민사소송법 개정안 대표 발의",
+   "link": "https://www.chosun.com/national/court_law/2026/07/24/LHMHHWUBGNGQNK72VXBMWCUQPU/?utm_source=naver&utm_medium=referral&utm_campaign=naver-news",
+   "data": null
+  },
+  {
+   "ref": "E24",
+   "label": "보도",
+   "text": "  └ 같은 기간 보도: 2026-07-12 이병진 [입장 표명] 이병진 의원, 중국 회색지대 전략에 대해 분절되지 않은 통합 대응 필요성 주장",
+   "link": "https://www.munhwa.com/article/11601997?ref=naver",
+   "data": null
+  },
+  {
+   "ref": "E25",
+   "label": "보도",
+   "text": "[변곡점] 대통령국정:긍정 (한국갤럽) 2026-09-26→2026-09-29 -10.5%p",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E26",
+   "label": "보도",
+   "text": "  └ 같은 기간 여론조사 기사 제목: 2026-10-02 [미디어 이슈] 이재명 지지율 일부 반등에도 약세 여전… 10개 여론조사... (www.mediawatch.kr)",
+   "link": "https://www.mediawatch.kr/news/article.html?no=261264",
+   "data": null
+  },
+  {
+   "ref": "E27",
+   "label": "보도",
+   "text": "  └ 같은 기간 여론조사 기사 제목: 2026-10-01 멸칭, 정치인을 공격하는 최고의 방법?... '한○껑' '김민○' '○천지'로... (www.hankookilbo.com)",
+   "link": "https://www.hankookilbo.com/news/article/A2026092909560004397?did=NA",
+   "data": null
+  },
+  {
+   "ref": "E28",
+   "label": "보도",
+   "text": "  └ 같은 기간 여론조사 기사 제목: 2026-10-01 [한규섭의 퍼스펙티브] 이재명 대통령 지지율은 반등할 수 있을까 (www.joongang.co.kr)",
+   "link": "https://www.joongang.co.kr/article/25466181",
+   "data": null
+  },
+  {
+   "ref": "E29",
+   "label": "보도",
+   "text": "[변곡점] 정당:국민의힘 (리얼미터) 2026-02-23→2026-08-14 -9.5%p",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E30",
+   "label": "보도",
+   "text": "  └ 같은 기간 여론조사 기사 제목: 2026-08-17 이재명 대통령 지지율 43% '취임 후 최저'…5주째 하락세 (www.sidae.com)",
+   "link": "https://www.sidae.com/article/2026081711073892163",
+   "data": null
+  },
+  {
+   "ref": "E31",
+   "label": "보도",
+   "text": "  └ 같은 기간 여론조사 기사 제목: 2026-08-17 [리얼미터] 李 대통령 지지율 43.0% 취임 후 최저치 한주 만에 경신…여... (www.polinews.co.kr)",
+   "link": "https://www.polinews.co.kr/news/articleView.html?idxno=740428",
+   "data": null
+  },
+  {
+   "ref": "E32",
+   "label": "보도",
+   "text": "  └ 같은 기간 여론조사 기사 제목: 2026-08-17 李 대통령 지지율 5주째 최저...반등 못하는 국힘 (www.kbmaeil.com)",
+   "link": "https://www.kbmaeil.com/article/20260817500586",
+   "data": null
+  },
+  {
+   "ref": "E33",
+   "label": "보도",
+   "text": "  └ 같은 기간 보도: 2026-07-24 이병진 [발의·표결 예고] 이병진 의원, 소송대리인 불출석 시 본인에게 소 취하 가능성 고지를 의무화하는 민사소송법 개정안 대표 발의",
+   "link": "https://www.chosun.com/national/court_law/2026/07/24/LHMHHWUBGNGQNK72VXBMWCUQPU/?utm_source=naver&utm_medium=referral&utm_campaign=naver-news",
+   "data": null
+  },
+  {
+   "ref": "E34",
+   "label": "보도",
+   "text": "  └ 같은 기간 보도: 2026-07-12 이병진 [입장 표명] 이병진 의원, 중국 회색지대 전략에 대해 분절되지 않은 통합 대응 필요성 주장",
+   "link": "https://www.munhwa.com/article/11601997?ref=naver",
+   "data": null
+  },
+  {
+   "ref": "E35",
+   "label": "보도",
+   "text": "[변곡점] 대통령국정:부정 (한국갤럽) 2026-09-23→2026-09-26 -9%p",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E36",
+   "label": "보도",
+   "text": "  └ 같은 기간 여론조사 기사 제목: 2026-09-29 김민석 지도부, 지지율 하락 속 北지뢰 '고의성 따져야' 논란까지 '난감... (www.asiatoday.co.kr)",
+   "link": "https://www.asiatoday.co.kr/kn/view.php?key=20260929010010327",
+   "data": null
+  },
+  {
+   "ref": "E37",
+   "label": "보도",
+   "text": "  └ 같은 기간 여론조사 기사 제목: 2026-09-29 '지지율 37%' 트럼프, 역대 최저 기록…중간선거 어쩌나 (www.sidae.com)",
+   "link": "https://www.sidae.com/article/2026092910462940903",
+   "data": null
+  },
+  {
+   "ref": "E38",
+   "label": "보도",
+   "text": "  └ 같은 기간 여론조사 기사 제목: 2026-09-28 李 지지도 37.9% 2주 연속 반등…정당 지지율은 국힘 오차범위 내 '역전... (www.idaegu.co.kr)",
+   "link": "https://www.idaegu.co.kr/news/articleView.html?idxno=560830",
+   "data": null
+  },
+  {
+   "ref": "E39",
+   "label": "보도",
+   "text": "  └ 같은 기간 보도: 2026-09-22 신영대 [갈등] 신영대 전 의원이 유흥주점 향응 의혹 게시글로 인해 게시자와 법정 다툼을 벌이는 상황임",
+   "link": "https://www.yna.co.kr/view/AKR20260922095200055?input=1195m",
+   "data": null
+  },
+  {
+   "ref": "E40",
+   "label": "보도",
+   "text": "  └ 같은 기간 보도: 2026-09-22 이해민 [입장 표명] 이해민 의원, 이재명 대통령의 AI미래기획수석 발탁 관련 기사에 등장",
+   "link": "https://www.sidae.com/article/2026092215504895015",
+   "data": null
+  },
+  {
+   "ref": "E41",
+   "label": "보도",
+   "text": "[변곡점] 정당:더불어민주당 (한국갤럽) 2026-09-03→2026-09-06 -9%p",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E42",
+   "label": "보도",
+   "text": "  └ 같은 기간 여론조사 기사 제목: 2026-09-08 묘수 두려다 ‘악수’ 된 개각…李 지지율 8주째 하락, 국힘만 웃었다 (www.joongang.co.kr)",
+   "link": "https://www.joongang.co.kr/article/25459934",
+   "data": null
+  },
+  {
+   "ref": "E43",
+   "label": "보도",
+   "text": "  └ 같은 기간 여론조사 기사 제목: 2026-09-08 정당 지지율, 양당 동반 하락···'민주' 41.8% vs '국힘' 37.6%, (www.cnbnews.com)",
+   "link": "https://www.cnbnews.com/news/articleView.html?idxno=1014813",
+   "data": null
+  },
+  {
+   "ref": "E44",
+   "label": "보도",
+   "text": "  └ 같은 기간 여론조사 기사 제목: 2026-09-07 이 대통령 지지율 37.4%…8주 연속 하락 '취임 후 최저' (www.cjb.co.kr)",
+   "link": "https://www.cjb.co.kr/home/sub.php?menukey=61&mod=view&P_NO=260907505&PRO_CODE=99",
+   "data": null
+  },
+  {
+   "ref": "E45",
+   "label": "보도",
+   "text": "  └ 같은 기간 보도: 2026-09-01 양문석 [입장 표명] 양문석 의원이 SNS에 사동 지역에 거의 뼈를 묻겠다는 취지의 글을 올렸다는 내용이 언급됨",
+   "link": "https://www.ichannela.com/news/main/news_detailPage.do?publishId=000000548184",
+   "data": null
+  },
+  {
+   "ref": "E46",
+   "label": "보도",
+   "text": "[변곡점] 정당:더불어민주당 (한국갤럽) 2026-09-06→2026-09-09 +9%p",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E47",
+   "label": "보도",
+   "text": "  └ 같은 기간 여론조사 기사 제목: 2026-09-11 이재명 대통령 지지율 38%, 취임 후 최저...부정 평가는 51% (www.ppss.kr)",
+   "link": "https://www.ppss.kr/news/articleView.html?idxno=310129",
+   "data": null
+  },
+  {
+   "ref": "E48",
+   "label": "보도",
+   "text": "  └ 같은 기간 여론조사 기사 제목: 2026-09-11 李대통령 국정지지율 38% '취임 후 최저'…부동산·인사 악재로 하락 [갤... (www.kyeonggi.com)",
+   "link": "https://www.kyeonggi.com/article/20260911580065",
+   "data": null
+  },
+  {
+   "ref": "E49",
+   "label": "보도",
+   "text": "  └ 같은 기간 여론조사 기사 제목: 2026-09-11 이 대통령 지지율 최저치 경신…부정 요인 '인사' 급등 (www.mediaus.co.kr)",
+   "link": "https://www.mediaus.co.kr/news/articleView.html?idxno=318120",
+   "data": null
+  },
+  {
+   "ref": "E50",
+   "label": "보도",
+   "text": "  └ 같은 기간 보도: 2026-09-09 이해민 [갈등] 이해민 관련 갈등 사실은 기사 요약문에 명시되지 않음",
+   "link": "https://biz.chosun.com/policy/politics/assembly/2026/09/09/FWNVTNNR4ZGM3CHDXJJM4AQTGA/?utm_source=naver&utm_medium=original&utm_campaign=biz",
+   "data": null
+  },
+  {
+   "ref": "E51",
+   "label": "보도",
+   "text": "  └ 같은 기간 보도: 2026-09-08 이해민 [입장 표명] 이해민 의원, 지지율 하락 원인으로 개각 인선 논란을 거론한 리얼미터 분석 관련 발언 등장",
+   "link": "https://www.mediatoday.co.kr/news/articleView.html?idxno=336962",
+   "data": null
+  },
+  {
+   "ref": "E52",
+   "label": "보도",
+   "text": "[변곡점] 대통령국정:긍정 (리얼미터) 2026-08-28→2026-09-01 -8.9%p",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E53",
+   "label": "보도",
+   "text": "  └ 같은 기간 여론조사 기사 제목: 2026-09-04 이 대통령 지지율 40% 최저…PK 부정평가 가장 높아 (www.busan.com)",
+   "link": "https://www.busan.com/view/busan/view.php?code=2026090411202976426",
+   "data": null
+  },
+  {
+   "ref": "E54",
+   "label": "보도",
+   "text": "  └ 같은 기간 여론조사 기사 제목: 2026-09-04 [한국갤럽] 민주 38% 국힘 30%, 민주 '1%p 하락, 올해 최저치 경신' 국힘... (www.polinews.co.kr)",
+   "link": "https://www.polinews.co.kr/news/articleView.html?idxno=742154",
+   "data": null
+  },
+  {
+   "ref": "E55",
+   "label": "보도",
+   "text": "  └ 같은 기간 여론조사 기사 제목: 2026-09-04 이 대통령 지지율 40%.. 2주 연속 '취임 후 최저치' 경신 (www.jibs.co.kr)",
+   "link": "https://www.jibs.co.kr/news/articles/articlesDetail/65157?feed=na",
+   "data": null
+  },
+  {
+   "ref": "E56",
+   "label": "보도",
+   "text": "  └ 같은 기간 보도: 2026-09-01 양문석 [입장 표명] 양문석 의원이 SNS에 사동 지역에 거의 뼈를 묻겠다는 취지의 글을 올렸다는 내용이 언급됨",
+   "link": "https://www.ichannela.com/news/main/news_detailPage.do?publishId=000000548184",
+   "data": null
+  },
+  {
+   "ref": "E57",
+   "label": "보도",
+   "text": "[변곡점] 대통령국정:긍정 (리얼미터) 2026-01-23→2026-08-07 +8%p",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E58",
+   "label": "보도",
+   "text": "  └ 같은 기간 보도: 2026-07-24 이병진 [발의·표결 예고] 이병진 의원, 소송대리인 불출석 시 본인에게 소 취하 가능성 고지를 의무화하는 민사소송법 개정안 대표 발의",
+   "link": "https://www.chosun.com/national/court_law/2026/07/24/LHMHHWUBGNGQNK72VXBMWCUQPU/?utm_source=naver&utm_medium=referral&utm_campaign=naver-news",
+   "data": null
+  },
+  {
+   "ref": "E59",
+   "label": "보도",
+   "text": "  └ 같은 기간 보도: 2026-07-12 이병진 [입장 표명] 이병진 의원, 중국 회색지대 전략에 대해 분절되지 않은 통합 대응 필요성 주장",
+   "link": "https://www.munhwa.com/article/11601997?ref=naver",
+   "data": null
+  },
+  {
+   "ref": "E60",
+   "label": "보도",
+   "text": "[최근 여론조사 기사 제목] 2026-10-28 [이슈] 李지지율 하락 멈춤 소폭 상승, 부동산·청년 등 민생 앞세워 반... (www.polinews.co.kr)",
+   "link": "https://www.polinews.co.kr/news/articleView.html?idxno=747145",
+   "data": null
+  },
+  {
+   "ref": "E61",
+   "label": "보도",
+   "text": "[최근 여론조사 기사 제목] 2026-10-28 ‘조작기소 특검’ 다시 꺼낸 민주당…지지율 반등 카드 될까 (www.kukinews.com)",
+   "link": "https://www.kukinews.com/article/view/kuk202610280208",
+   "data": null
+  },
+  {
+   "ref": "E62",
+   "label": "보도",
+   "text": "[최근 여론조사 기사 제목] 2026-10-28 ‘지지율 10% 상승’ 장담했던 김민석 대표의 결정장애 [이슈 현미경] (www.edaily.co.kr)",
+   "link": "https://www.edaily.co.kr/News/Read?newsId=05854806645617512&mediaCodeNo=257&utm_source=naver&utm_medium=referral&utm_campaign=news_syndication&utm_content=original_article",
+   "data": null
+  },
+  {
+   "ref": "E63",
+   "label": "보도",
+   "text": "[최근 여론조사 기사 제목] 2026-10-28 조희대 탄핵 반대 많고, 민주당 지지율 ‘최저’…여론의 의미는 [불편... (www.joongang.co.kr)",
+   "link": "https://www.joongang.co.kr/article/25473721",
+   "data": null
+  },
+  {
+   "ref": "E64",
+   "label": "보도",
+   "text": "[최근 여론조사 기사 제목] 2026-10-28 민주당 지지율 이재명 취임 후 최저…국힘은 첫 40% 돌파 (www.jnilbo.com)",
+   "link": "https://www.jnilbo.com/news/articleView.html?idxno=90000077647",
+   "data": null
+  },
+  {
+   "ref": "E65",
+   "label": "보도",
+   "text": "[최근 여론조사 기사 제목] 2026-10-28 조희대 탄핵 반대 50.3%…민주당 지지율은 李 취임 후 최저 (weekly.chosun.com)",
+   "link": "http://weekly.chosun.com/news/articleView.html?idxno=56635",
+   "data": null
+  },
+  {
+   "ref": "E66",
+   "label": "보도",
+   "text": "[최근 여론조사 기사 제목] 2026-10-28 대통령 지지율은 반등했는데 민주당은 추락…국민의힘 40.5%·민주당 31.5... (www.ilyoseoul.co.kr)",
+   "link": "https://www.ilyoseoul.co.kr/news/articleView.html?idxno=524291",
+   "data": null
+  },
+  {
+   "ref": "E67",
+   "label": "보도",
+   "text": "[최근 여론조사 기사 제목] 2026-10-28 국힘·조국 최고치, 민주 최저치…조희대 탄핵반대 중도층도 ‘과반’,... (www.dt.co.kr)",
+   "link": "https://www.dt.co.kr/article/12091828?ref=naver",
+   "data": null
+  },
+  {
+   "ref": "E68",
+   "label": "보도",
+   "text": "[최근 쟁점] 2026-10-28 강선우 [갈등] 강선우 의원, 공천헌금 1억원 수수 의혹을 받으며 관련 수사 대상에 오름",
+   "link": "https://www.segye.com/newsView/20261027516166?OutUrl=naver",
+   "data": null
+  },
+  {
+   "ref": "E69",
+   "label": "보도",
+   "text": "[최근 쟁점] 2026-10-28 곽규택 [갈등] 국민의힘 부산시당, 이재명 정부의 호남권 반도체 산단 전력 지원 방침을 비판",
+   "link": "https://www.news1.kr/local/busan-gyeongnam/6334787",
+   "data": null
+  },
+  {
+   "ref": "E70",
+   "label": "보도",
+   "text": "[최근 쟁점] 2026-10-27 강선우 [갈등] 경찰, 강선우 의원 관련 공천헌금 1억 원 수수 묵인 업무방해 혐의가 담긴 구속영장 신청 사실 보도",
+   "link": "https://www.news1.kr/society/incident-accident/6333358",
+   "data": null
+  },
+  {
+   "ref": "E71",
+   "label": "보도",
+   "text": "[최근 쟁점] 2026-10-27 김교흥 [갈등] 김교흥 의원, 광동제약 침향환 부당광고 의혹 관련 식약처의 미온적 대응을 국감에서 질타",
+   "link": "https://www.pharmnews.com/news/articleView.html?idxno=307352",
+   "data": null
+  },
+  {
+   "ref": "E72",
+   "label": "보도",
+   "text": "[최근 쟁점] 2026-10-26 강승규 [갈등] 강승규 의원, 올해 국정감사에서 수협의 김산업 진출 문제를 세 차례 제기",
+   "link": "https://www.aflnews.co.kr/news/articleView.html?idxno=330335",
+   "data": null
+  },
+  {
+   "ref": "E73",
+   "label": "보도",
+   "text": "[최근 쟁점] 2026-10-26 김기표 [갈등] 김기표 의원, 국민의힘 김민전 의원의 '김현지 관리?' 표시 문구를 둘러싸고 대립 구도에 놓임",
+   "link": "http://www.sisafocus.co.kr/news/articleView.html?idxno=366777",
+   "data": null
+  },
+  {
+   "ref": "E74",
+   "label": "보도",
+   "text": "[최근 쟁점] 2026-10-25 강선우 [갈등] 강선우 의원, 1억 원 공천헌금 혐의로 1심에서 법정 구속된 상태로 알려짐",
+   "link": "https://www.ytn.co.kr/_ln/0103_202610251818188154",
+   "data": null
+  },
+  {
+   "ref": "E75",
+   "label": "보도",
+   "text": "[최근 쟁점] 2026-10-25 김종양 [갈등] 김종양 의원, 국토교통부 종합감사에서 해외 건설 공사비 미지급 구제 문제 질의",
+   "link": "https://www.busan.com/view/busan/view.php?code=2026102516532314870",
+   "data": null
+  },
+  {
+   "ref": "E76",
+   "label": "보도",
+   "text": "[최근 쟁점] 2026-10-24 곽상언 [갈등] 곽상언 의원, 김성환 기후에너지환경부 장관을 국회 상임위에서 강하게 질의하며 몰아세움",
+   "link": "https://www.joongang.co.kr/article/25472443",
+   "data": null
+  },
+  {
+   "ref": "E77",
+   "label": "보도",
+   "text": "[최근 쟁점] 2026-10-24 김남근 [갈등] 김남근 의원, 한강버스 중개 수수료 3억2000만원 지출 문제를 따져 물어 오세훈 서울시장과 대립",
+   "link": "http://www.newsian.co.kr/news/articleView.html?idxno=97668",
+   "data": null
+  },
+  {
+   "ref": "E78",
+   "label": "보도",
+   "text": "[최근 쟁점] 2026-10-23 강경숙 [갈등] 최교진 장관, 강경숙 의원의 수사 협조 요구에 대해 이견을 밝힘",
+   "link": "https://www.yna.co.kr/view/AKR20261023082751530?input=1195m",
+   "data": null
+  },
+  {
+   "ref": "E79",
+   "label": "보도",
+   "text": "[최근 쟁점] 2026-10-23 강대식 [갈등] 강대식 의원, 국토위 종합감사에서 정부의 주거 정책을 두고 여야 간 부동산 공방에 참여",
+   "link": "https://www.yna.co.kr/view/AKR20261023083451001?input=1195m",
+   "data": null
+  },
+  {
+   "ref": "E80",
+   "label": "보도",
+   "text": "[최근 쟁점] 2026-10-22 강선우 [갈등] 공소청, 강선우 의원 징역 2년 6개월 1심 선고에 불복해 항소",
+   "link": "https://www.ekn.kr/web/view.php?key=20261022029309927",
+   "data": null
+  },
+  {
+   "ref": "E81",
+   "label": "보도",
+   "text": "[최근 쟁점] 2026-10-22 강승규 [갈등] 강승규 의원, 국감에서 정부의 농지 전수조사에 대해 '엉터리 보고서'라며 질타함",
+   "link": "https://www.tjb.co.kr/news05/bodo/view/id/105191",
+   "data": null
+  },
+  {
+   "ref": "E82",
+   "label": "보도",
+   "text": "[최근 쟁점] 2026-10-21 강선우 [갈등] 강선우 의원, 시의원 공천 대가 현금 수수 사건으로 1심 실형 선고 및 법정구속 기사 보도",
+   "link": "https://www.dt.co.kr/article/12090386?ref=naver",
+   "data": null
+  },
+  {
+   "ref": "E83",
+   "label": "보도",
+   "text": "[최근 쟁점] 2026-10-21 김도읍 [갈등] 김도읍 의원, 전재수 측과 생곡소각장 사업 중단 경위를 두고 국감에서 공방 벌임",
+   "link": "https://www.munhwa.com/article/11625223?ref=naver",
+   "data": null
+  },
+  {
+   "ref": "E84",
+   "label": "보도",
+   "text": "[최근 쟁점] 2026-10-20 강선우 [갈등] 강선우 의원 사퇴 종용 의혹으로 김현지 제1부속실장이 공수처에 고발됨",
+   "link": "https://www.ajunews.com/view/20261020102144788",
+   "data": null
+  },
+  {
+   "ref": "E85",
+   "label": "보도",
+   "text": "[최근 쟁점] 2026-10-20 전종덕 [갈등] 전종덕 의원, 의료기관평가인증원 인증조사 이해충돌 관리 허점 지적",
+   "link": "https://www.ppss.kr/news/articleView.html?idxno=316466",
+   "data": null
+  },
+  {
+   "ref": "E86",
+   "label": "보도",
+   "text": "[최근 쟁점] 2026-10-19 권성동 [갈등] 한학자 총재, 권성동 의원에게 정치자금 1억원 전달 혐의로 재판 중",
+   "link": "https://biz.heraldcorp.com/article/10907784?ref=naver",
+   "data": null
+  },
+  {
+   "ref": "E87",
+   "label": "보도",
+   "text": "[최근 쟁점] 2026-10-19 정을호 [갈등] 정을호 의원, 경북교육청 국정감사에서 학교폭력 가해자 처분 점수 하향 문제 제기",
+   "link": "https://www.news1.kr/local/daegu-gyeongbuk/6324860",
+   "data": null
+  },
+  {
+   "ref": "E88",
+   "label": "보도",
+   "text": "[최근 쟁점] 2026-10-18 김형동 [입장 표명] 김형동 의원, 국정감사에서 석포제련소의 환경법규 위반 문제 지적",
+   "link": "https://www.munhwa.com/article/11624321?ref=naver",
+   "data": null
+  },
+  {
+   "ref": "E89",
+   "label": "보도",
+   "text": "[최근 쟁점] 2026-10-17 이용선 [입장 표명] 이용선 더불어민주당 의원, 주간 통계의 신뢰성 문제를 지적하며 개편 계획 질의",
+   "link": "https://www.nocutnews.co.kr/news/6592750?utm_source=naver&utm_medium=article&utm_campaign=20261017050019",
+   "data": null
+  },
+  {
+   "ref": "E90",
+   "label": "보도",
+   "text": "[최근 쟁점] 2026-10-16 강선우 [갈등] 강선우 의원, 공천헌금 1억원 수수 혐의로 1심 징역 2년 6개월 선고받음",
+   "link": "https://www.nocutnews.co.kr/news/6592692?utm_source=naver&utm_medium=article&utm_campaign=20261016035812",
+   "data": null
+  },
+  {
+   "ref": "E91",
+   "label": "보도",
+   "text": "[최근 쟁점] 2026-10-15 강선우 [갈등] 강선우 의원, 1심 실형 선고에 불복해 하루 만에 항소장 제출",
+   "link": "https://www.daejonilbo.com/news/articleView.html?idxno=2307332",
+   "data": null
+  },
+  {
+   "ref": "E92",
+   "label": "보도",
+   "text": "[최근 쟁점] 2026-10-14 고동진 [갈등] 고동진 의원, 차 대사의 외교 전문성에 대해 비판 제기",
+   "link": "https://www.mk.co.kr/article/12175362",
+   "data": null
+  },
+  {
+   "ref": "E93",
+   "label": "보도",
+   "text": "[최근 30일 '갈등' 보도 건수, 언급 의원 소속 정당별] {'더불어민주당': 205, '국민의힘': 202, '기타': 121, '무소속': 40, '개혁신당': 10, '조국혁신당': 7, '진보당': 5, '기본소득당': 2}",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E94",
+   "label": "보도",
+   "text": "[일정·예정] 2026-10-30 예결특위 2027년도 예산안 공청회(예산 심사 시작)",
+   "link": "https://www.hankyung.com/article/202610231226Y",
+   "data": null
+  },
+  {
+   "ref": "E95",
+   "label": "보도",
+   "text": "[일정·예정] 2026-11-02~2026-11-06 민주당 '조작기소 특검법' 법사위 상정 예정(내주, 공소취소 조항이 쟁점)",
+   "link": "https://www.dailian.co.kr/news/view/1707498/?sc=Naver",
+   "data": null
+  },
+  {
+   "ref": "E96",
+   "label": "규칙",
+   "text": "[일정·확정] 2026-11-03 미국 중간선거 (근거: 미국 연방법(11월 첫 월요일 다음 화요일))",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E97",
+   "label": "보도",
+   "text": "[일정·예정] 2026-11-04~2026-11-05 예결특위 종합정책질의(총리·장관 출석)",
+   "link": "https://www.hankyung.com/article/202610231226Y",
+   "data": null
+  },
+  {
+   "ref": "E98",
+   "label": "보도",
+   "text": "[일정·예정] 2026-11-05 민주당, 조희대 대법원장 국정조사 계획서 본회의 처리 목표(국민의힘 '국민적 저항' 반발)",
+   "link": "https://www.jasm.co.kr/news/view/323162/?sc=Naver",
+   "data": null
+  },
+  {
+   "ref": "E99",
+   "label": "보도",
+   "text": "[일정·예정] 2026-11-05 윤석열 내란 우두머리 항소심 피고인 측 최종의견(변론 종결 전망)",
+   "link": "https://www.news1.kr/society/court-prosecution/6321696",
+   "data": null
+  },
+  {
+   "ref": "E100",
+   "label": "보도",
+   "text": "[일정·예정] 2026-11-09~2026-11-12 예결특위 부별 심사(9~10일 경제부처, 11~12일 비경제부처)",
+   "link": "https://www.hankyung.com/article/202610231226Y",
+   "data": null
+  },
+  {
+   "ref": "E101",
+   "label": "보도",
+   "text": "[일정·예정] 2026-11-15~2026-11-30 국토부 주택 공급 대책 발표 예고(11월 중), 2차 공공기관 이전 계획 발표 예정(11월 중)",
+   "link": "http://www.inews24.com/view/2018506",
+   "data": null
+  },
+  {
+   "ref": "E102",
+   "label": "보도",
+   "text": "[일정·예정] 2026-11-15~2026-11-30 전기차 국내생산 세액공제법 여야 공동발의, 국민의힘 '11월 처리' 요구",
+   "link": "https://www.etnews.com/20261026000275",
+   "data": null
+  },
+  {
+   "ref": "E103",
+   "label": "보도",
+   "text": "[일정·예정] 2026-11-16 예결특위 예산안조정소위 가동(감·증액 심사)",
+   "link": "https://www.hankyung.com/article/202610231226Y",
+   "data": null
+  },
+  {
+   "ref": "E104",
+   "label": "보도",
+   "text": "[일정·확정] 2026-11-20 '尹 관저이전' 김오진 전 국토차관 1심 선고",
+   "link": "https://www.yna.co.kr/view/AKR20261026118551004?input=1195m",
+   "data": null
+  },
+  {
+   "ref": "E105",
+   "label": "규칙",
+   "text": "[일정·확정] 2026-11-30 예산안·세입예산안 부수법률안 위원회 심사 기한(넘기면 12월 1일 본회의 자동 부의) (근거: 국회법 제85조의3 (R17))",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E106",
+   "label": "보도",
+   "text": "[일정·관측] 2026-12-01~2026-12-10 조희대 국정조사 시작 예상(민주당 대변인 '12월 초')",
+   "link": "https://www.newsis.com/view/NISX20261028_0003844444",
+   "data": null
+  },
+  {
+   "ref": "E107",
+   "label": "보도",
+   "text": "[일정·관측] 2026-12-01~2026-12-31 한미안보협의회의(SCM) — 민주당 일부 '전작권 전환 시기 확정' 촉구",
+   "link": "https://www.hankyung.com/article/202610278818H",
+   "data": null
+  },
+  {
+   "ref": "E108",
+   "label": "보도",
+   "text": "[일정·관측] 2026-12-01~2026-12-31 윤석열 내란 우두머리 항소심 선고 가능성(변론 종결 후 1~2개월, 특검법상 2심 3개월 내)",
+   "link": "https://www.news1.kr/society/court-prosecution/6321696",
+   "data": null
+  },
+  {
+   "ref": "E109",
+   "label": "규칙",
+   "text": "[일정·확정] 2026-12-02 2027년도 예산안 국회 의결 헌법상 기한 (근거: 헌법 제54조 제2항(회계연도 개시 30일 전))",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E110",
+   "label": "보도",
+   "text": "[일정·예정] 2026-12-03 제2기 친일재산조사위원회 출범",
+   "link": "http://www.thevaluenews.co.kr/news/view.php?idx=202704",
+   "data": null
+  },
+  {
+   "ref": "E111",
+   "label": "기록",
+   "text": "[일정·확정] 2026-12-03 12·3 비상계엄 2주년 (근거: 2024-12-03 비상계엄 선포)",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E112",
+   "label": "규칙",
+   "text": "[일정·확정] 2026-12-09 정기국회 회기 종료(9월 1일부터 100일) (근거: 국회법 제4조, 제5조의2 제2항 제2호)",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E113",
+   "label": "보도",
+   "text": "[쟁점 입장 기록] AI·반도체 산업 — 최근 60일 관련 보도 사실 134건(언급 의원 소속별: 민주 60, 국힘 38, 정부·기관 30, 혁신 4, 미확인 2). [소속]은 언급된 의원의 정당이며 발언자와 다를 수 있음",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E114",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-28 박정 의원, AI 기반 산재 고위험 사업장 점검 실태를 문제 삼는 입장 표명",
+   "link": "https://www.energydaily.co.kr/news/articleView.html?idxno=204444",
+   "data": null
+  },
+  {
+   "ref": "E115",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-28 조승래 의원, 'AI 시대의 선명상'을 주제로 열린 2026 국제선명상대회 콘퍼런스에서 발제자로 나선다는 내용이 기사에 나옴",
+   "link": "https://www.yna.co.kr/view/AKR20261028130400005?input=1195m",
+   "data": null
+  },
+  {
+   "ref": "E116",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-27 문진석 의원, 반도체 호황 이후를 대비해 재정 여력이 있을 때 미래 투자 필요 입장",
+   "link": "https://www.polinews.co.kr/news/articleView.html?idxno=746957",
+   "data": null
+  },
+  {
+   "ref": "E117",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-28 곽규택 의원 명의로 호남 반도체 산단 전력 배분 관련 논평 발표, 부산 전력 빼앗기 우려 제기",
+   "link": "https://www.news1.kr/local/busan-gyeongnam/6334787",
+   "data": null
+  },
+  {
+   "ref": "E118",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-28 국민의힘 부산시당, 이재명 정부의 호남권 반도체 산단 전력 지원 방침을 비판",
+   "link": "https://www.news1.kr/local/busan-gyeongnam/6334787",
+   "data": null
+  },
+  {
+   "ref": "E119",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-28 권영진 의원, 반도체 추가 세수를 소방안전 재원으로 활용하자는 주장 제기",
+   "link": "https://mbcgn.kr/01_new/new01_view.asp?idx=411850",
+   "data": null
+  },
+  {
+   "ref": "E120",
+   "label": "보도",
+   "text": "  └ [혁신] 2026-10-28 차규근 의원, 반도체 산업단지 용수 확보 방안으로 공장 내 물 재이용 확대 제안",
+   "link": "https://www.jnilbo.com/news/articleView.html?idxno=90000077469",
+   "data": null
+  },
+  {
+   "ref": "E121",
+   "label": "보도",
+   "text": "  └ [혁신] 2026-10-27 서왕진 의원, 반도체 화이트칼라 이그젬션 관련 노동특례가 주 52시간 예외와 기간제·파견법 완화를 담고 있어 시대착오적이라고 비판",
+   "link": "https://www.mediapen.com/news/view/1132861",
+   "data": null
+  },
+  {
+   "ref": "E122",
+   "label": "보도",
+   "text": "  └ [정부·기관] 2026-10-28 국민경제자문회의, 반도체·AI 프로젝트 성패를 전력망 병목 해소에 달렸다는 입장 제시",
+   "link": "https://www.joongangenews.com/news/articleView.html?idxno=559225",
+   "data": null
+  },
+  {
+   "ref": "E123",
+   "label": "보도",
+   "text": "  └ [정부·기관] 2026-10-28 재정경제부, 인천공항공사 AI 기반 운항안전 관리 성과를 혁신 챌린지 대상으로 선정",
+   "link": "https://www.ajunews.com/view/20261028164259130",
+   "data": null
+  },
+  {
+   "ref": "E124",
+   "label": "기록",
+   "text": "  └ [표결] 2026-10-01 인공지능 발전과 신뢰 기반 조성 등에 관한 기본법 일부개정법률안(김현의원 등 14인) 가결여부 찬210·반6 (혁신 찬10/반0/기0; 국힘 찬54/반2/기11; 민주 찬139/반0/기0; 진보 찬0/반4/기0; 개혁 찬1/반0/기0)",
+   "link": "https://likms.assembly.go.kr/bill/billDetail.do?billId=PRC_G2F6N0L3M2L7K1S2Q3R4P3O8W8V9W8",
+   "data": null
+  },
+  {
+   "ref": "E125",
+   "label": "기록",
+   "text": "  └ [표결] 2026-05-07 인공지능 데이터센터 산업 진흥에 관한 특별법안(대안)(과학기술정보방송통신위원장) 가결여부 찬176·반7 (혁신 찬7/반0/기5; 국힘 찬53/반0/기4; 민주 찬112/반2/기8; 진보 찬0/반4/기0; 개혁 찬2/반0/기0)",
+   "link": "https://likms.assembly.go.kr/bill/billDetail.do?billId=PRC_Z2Z6D0E4X0F8L1F3V5Y2B3P6B4H0W9",
+   "data": null
+  },
+  {
+   "ref": "E126",
+   "label": "보도",
+   "text": "[쟁점 입장 기록] 오세훈 서울시정(한강버스 등) — 최근 60일 관련 보도 사실 111건(언급 의원 소속별: 민주 51, 국힘 51, 개혁 5, 혁신 2, 무소속 1, 정부·기관 1). [소속]은 언급된 의원의 정당이며 발언자와 다를 수 있음",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E127",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-28 김영배 의원, 오세훈 시장 관련 2심 판결에 대해 의문을 제기하는 발언을 함",
+   "link": "https://www.ytn.co.kr/_ln/0101_202610280819230160",
+   "data": null
+  },
+  {
+   "ref": "E128",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-28 박주민 의원, 윤 장관에게 한강버스 적자 축소 계획 관련 질의 제기",
+   "link": "https://news.tf.co.kr/read/life/2381563.htm",
+   "data": null
+  },
+  {
+   "ref": "E129",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-28 한민수 최고위원, 오세훈 서울시장 무죄 판결을 탄핵 사유로 거론한 것으로 기사에 언급됨",
+   "link": "https://www.siminilbo.co.kr/news/newsview.php?ncode=1160276720961215",
+   "data": null
+  },
+  {
+   "ref": "E130",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-28 김용태 의원, 방송 인터뷰에서 오세훈·한동훈 간 협력 가능성과 유사한 취지의 발언을 했다고 언급됨",
+   "link": "https://news.kbs.co.kr/news/pc/view/view.do?ncd=8697490&ref=A",
+   "data": null
+  },
+  {
+   "ref": "E131",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-28 김재섭 의원, 오세훈 서울시장과 관련해 '별의 순간이 왔다'는 취지의 발언 언급",
+   "link": "https://news.kbs.co.kr/news/pc/view/view.do?ncd=8697515&ref=A",
+   "data": null
+  },
+  {
+   "ref": "E132",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-28 박수민 의원, 27일 오세훈 서울시장과 만찬 예정이었으나 구룡마을 화재로 취소됨",
+   "link": "https://www.newsis.com/view/NISX20261027_0003843590",
+   "data": null
+  },
+  {
+   "ref": "E133",
+   "label": "보도",
+   "text": "  └ [혁신] 2026-10-27 김준형 원내대표, 오세훈 무죄 판결과 조희대 대법원장 영향에 대해 비판적 입장 표명",
+   "link": "https://news.sbs.co.kr/news/endPage.do?news_id=N1008816165&plink=ORI&cooper=NAVER",
+   "data": null
+  },
+  {
+   "ref": "E134",
+   "label": "보도",
+   "text": "  └ [혁신] 2026-10-27 차규근 의원, 오세훈 2심 확정 시 정치자금법 위반 처벌 어려워진다는 입장 밝혀",
+   "link": "https://www.sisain.co.kr/news/articleView.html?idxno=58726",
+   "data": null
+  },
+  {
+   "ref": "E135",
+   "label": "보도",
+   "text": "  └ [개혁] 2026-10-28 이준석 의원의 오세훈 시장 접근에 대해 개혁신당 소속이라는 점을 들어 문제 제기가 있다고 전함",
+   "link": "https://www.ytn.co.kr/_ln/0134_202610281523058484",
+   "data": null
+  },
+  {
+   "ref": "E136",
+   "label": "보도",
+   "text": "  └ [개혁] 2026-10-28 천하람, 이준석의 오세훈 서울시장 관련 행보에 대한 평가 발언 인터뷰 진행",
+   "link": "https://www.ichannela.com/news/main/news_detailPage.do?publishId=000000557170",
+   "data": null
+  },
+  {
+   "ref": "E137",
+   "label": "보도",
+   "text": "  └ [정부·기관] 2026-10-28 윤호중 행정안전부 장관, 한강버스 운항결손 지원 135억 원 관련 사실상 불승인 입장 표명",
+   "link": "http://www.newstomato.com/ReadNews.aspx?no=1318370&inflow=N",
+   "data": null
+  },
+  {
+   "ref": "E138",
+   "label": "보도",
+   "text": "[쟁점 입장 기록] 북한·통일 정책 — 최근 60일 관련 보도 사실 105건(언급 의원 소속별: 정부·기관 48, 국힘 41, 민주 13, 혁신 2, 개혁 1). [소속]은 언급된 의원의 정당이며 발언자와 다를 수 있음",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E139",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-28 맹성규 의원, 대북 대화 전략 관련 질의에서 북미 정상회담이 현 상황 전환 계기가 될 수 있다는 점을 짚음",
+   "link": "https://www.ppss.kr/news/articleView.html?idxno=317661",
+   "data": null
+  },
+  {
+   "ref": "E140",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-28 박충권 수석대변인, 박균택 의원의 대장동·성남FC·대북송금 사건 변호 이력을 거론하며 비판",
+   "link": "http://www.breaknews.com/1246247",
+   "data": null
+  },
+  {
+   "ref": "E141",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-28 박정 의원, 한미동맹 인식과 대북정책 재검토 필요성 강조",
+   "link": "https://www.fnnews.com/news/202610281410233351",
+   "data": null
+  },
+  {
+   "ref": "E142",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-28 권영세 의원, 북한 지뢰 공격 관련 질의 제기 (정동영 장관 답변 대상)",
+   "link": "http://www.sisunnews.co.kr/news/articleView.html?idxno=248605",
+   "data": null
+  },
+  {
+   "ref": "E143",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-28 권영세 의원, 북한 인사 담화 의도에 대해 정동영 장관에게 질의",
+   "link": "https://www.munhwa.com/article/11626749?ref=naver",
+   "data": null
+  },
+  {
+   "ref": "E144",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-28 권영세 의원, 김정은 중국 방문에 대한 통일부 평가를 질의",
+   "link": "https://www.pressian.com/pages/articles/2026102804500407359?utm_source=naver&utm_medium=search",
+   "data": null
+  },
+  {
+   "ref": "E145",
+   "label": "보도",
+   "text": "  └ [혁신] 2026-10-27 김준형 의원, 통일부 제출 보조금 부정수급 적발 내역 자료 공개",
+   "link": "https://www.pressian.com/pages/articles/2026102617305049684?utm_source=naver&utm_medium=search",
+   "data": null
+  },
+  {
+   "ref": "E146",
+   "label": "보도",
+   "text": "  └ [혁신] 2026-10-23 백선희 의원, 강화도 맞은편 북한 폭음 반복에 군 당국의 면밀한 상황 파악과 적극 대응 필요 입장 표명",
+   "link": "https://news.jtbc.co.kr/article/NB12324622?influxDiv=NAVER",
+   "data": null
+  },
+  {
+   "ref": "E147",
+   "label": "보도",
+   "text": "  └ [개혁] 2026-10-28 천하람 의원, 애기봉 전망대에서 북한 접경지역 사진 확인",
+   "link": "https://www.yna.co.kr/view/PYH20261028113700065?input=1196m",
+   "data": null
+  },
+  {
+   "ref": "E148",
+   "label": "보도",
+   "text": "  └ [정부·기관] 2026-10-28 국가안보실, 북한 IP 관련 해킹 피해 현황과 확산 방지책 논의를 위한 긴급 대응회의 개최 예정",
+   "link": "https://www.newsian.co.kr/news/articleView.html?idxno=100124",
+   "data": null
+  },
+  {
+   "ref": "E149",
+   "label": "보도",
+   "text": "  └ [정부·기관] 2026-10-28 국가안보실, 북한 IP 대역발 금융권 대량 접근 사안과 관련해 대응 입장 밝힘",
+   "link": "https://www.wikitree.co.kr/articles/1169915",
+   "data": null
+  },
+  {
+   "ref": "E150",
+   "label": "기록",
+   "text": "  └ [표결] 2026-02-12 북한이탈주민의 보호 및 정착지원에 관한 법률 일부개정법률안(대안)(외교통일위원장) 가결여부 찬152·반0 (혁신 찬10/반0/기1; 국힘 찬0/반0/기0; 민주 찬132/반0/기3; 진보 찬4/반0/기0; 개혁 찬2/반0/기0)",
+   "link": "https://likms.assembly.go.kr/bill/billDetail.do?billId=PRC_Y2X5R1Y1B2A5Z1X2B0U4U0A0D3I5K4",
+   "data": null
+  },
+  {
+   "ref": "E151",
+   "label": "기록",
+   "text": "  └ [표결] 2025-03-20 북한이탈주민의 보호 및 정착지원에 관한 법률 일부개정법률안(대안)(외교통일위원장) 가결여부 찬270·반0 (혁신 찬11/반0/기0; 국힘 찬95/반0/기0; 민주 찬156/반0/기2; 진보 찬3/반0/기0; 개혁 찬3/반0/기0)",
+   "link": "https://likms.assembly.go.kr/bill/billDetail.do?billId=PRC_R2H5M0T3U0V7Q1D0J0T2N3S4X2X7H3",
+   "data": null
+  },
+  {
+   "ref": "E152",
+   "label": "보도",
+   "text": "[쟁점 입장 기록] 가상자산·디지털자산 — 최근 60일 관련 보도 사실 91건(언급 의원 소속별: 민주 65, 국힘 22, 정부·기관 3, 미확인 1). [소속]은 언급된 의원의 정당이며 발언자와 다를 수 있음",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E153",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-28 김민석 민주당 대표, 가상자산 과세 당정협의회에서 디지털자산기본법 미제정 상황 지적",
+   "link": "https://www.sidae.com/article/2026102810322155082",
+   "data": null
+  },
+  {
+   "ref": "E154",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-28 내년 1월 시행 예정이던 코인 과세, 4번째 유예 가능성이 거론됨",
+   "link": "https://www.sidae.com/article/2026102810322155082",
+   "data": null
+  },
+  {
+   "ref": "E155",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-28 가상자산 과세 시행 시기를 두고 당정이 결론을 내지 못한 상황",
+   "link": "https://www.sidae.com/article/2026102810322155082",
+   "data": null
+  },
+  {
+   "ref": "E156",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-28 박수민 의원, 마약류 사범의 가상자산 이용 비율 증가 자료 공개",
+   "link": "https://hbnpress.com/news/view/1065590844194785",
+   "data": null
+  },
+  {
+   "ref": "E157",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-28 박수영 의원, 코인 과세 유예 관련 당정 협의 결론 지연 문제 언급",
+   "link": "https://www.ziksir.com/news/articleView.html?idxno=151033",
+   "data": null
+  },
+  {
+   "ref": "E158",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-28 박수영 의원, 가상자산 국내 유입 감소와 해외 유출 증가 수치 제시",
+   "link": "https://www.ziksir.com/news/articleView.html?idxno=151033",
+   "data": null
+  },
+  {
+   "ref": "E159",
+   "label": "보도",
+   "text": "  └ [정부·기관] 2026-10-28 재정경제부, 스테이블코인 관련 시행령 개정안 2026년 10월 7일부터 26일까지 입법예고",
+   "link": "https://www.tokenpost.kr/news/policy/426392",
+   "data": null
+  },
+  {
+   "ref": "E160",
+   "label": "보도",
+   "text": "  └ [정부·기관] 2026-10-28 이형일 부총리 겸 재정경제부 장관, 가상자산 과세 제도 관련 전문가·업계 의견을 언급하며 입장 밝힘",
+   "link": "https://www.mk.co.kr/article/12188577",
+   "data": null
+  },
+  {
+   "ref": "E161",
+   "label": "보도",
+   "text": "[쟁점 입장 기록] 예산·재정 — 최근 60일 관련 보도 사실 83건(언급 의원 소속별: 민주 34, 정부·기관 29, 국힘 12, 미확인 5, 무소속 2, 혁신 1). [소속]은 언급된 의원의 정당이며 발언자와 다를 수 있음",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E162",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-28 부승찬 의원, 추미애 경기지사와 함께 '소방 재정' 발언 파장에 이름이 오르내림",
+   "link": "https://www.kwnews.co.kr/article/20261028500068",
+   "data": null
+  },
+  {
+   "ref": "E163",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-28 이상식 의원, 경기도 주관 재정위기 대응 정책토론회 공동 주최 참여",
+   "link": "https://www.ajunews.com/view/20261028100659504",
+   "data": null
+  },
+  {
+   "ref": "E164",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-28 조승래 의원, 가상자산 과세 유예 관련 당정협의에 재정경제위원장 자격으로 참석",
+   "link": "https://www.hani.co.kr/arti/politics/politics_general/1284525.html",
+   "data": null
+  },
+  {
+   "ref": "E165",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-28 김상훈 의원, 국가채무비율 GDP 대비 60% 이내 관리 등 재정준칙 도입 필요성 주장",
+   "link": "https://www.newspim.com/news/view/20261026001091",
+   "data": null
+  },
+  {
+   "ref": "E166",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-28 최보윤 의원, 통합돌봄 재정 마련 방안을 다루는 토론회를 공동 주최한다고 기재됨",
+   "link": "https://www.akomnews.com/bbs/board.php?bo_table=news&wr_id=68829",
+   "data": null
+  },
+  {
+   "ref": "E167",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-26 박수영 의원, 재정경제기획위원회 국정감사에서 가상자산 과세 시스템 미비 문제 지적",
+   "link": "https://www.busan.com/view/busan/view.php?code=2026102618182070427",
+   "data": null
+  },
+  {
+   "ref": "E168",
+   "label": "보도",
+   "text": "  └ [혁신] 2026-10-26 정춘생 의원, 소방재정의 안정적 확보와 지역 간 격차 해소를 위한 제도개선 촉구",
+   "link": "http://fpn119.co.kr/258430",
+   "data": null
+  },
+  {
+   "ref": "E169",
+   "label": "보도",
+   "text": "  └ [정부·기관] 2026-10-28 재정경제부, 스테이블코인 관련 시행령 개정안 2026년 10월 7일부터 26일까지 입법예고",
+   "link": "https://www.tokenpost.kr/news/policy/426392",
+   "data": null
+  },
+  {
+   "ref": "E170",
+   "label": "보도",
+   "text": "  └ [정부·기관] 2026-10-28 이훈기 의원, 재정경제부안 주가누르기방지법을 11월 조세소위에서 논의하고 정기국회 통과 목표 밝힘",
+   "link": "https://www.mt.co.kr/politics/2026/10/28/2026102816283799336",
+   "data": null
+  },
+  {
+   "ref": "E171",
+   "label": "기록",
+   "text": "  └ [표결] 2026-10-01 지방재정법 일부개정법률안(윤건영의원 등 10인) 가결여부 찬215·반0 (혁신 찬10/반0/기0; 국힘 찬52/반0/기6; 민주 찬141/반0/기0; 진보 찬4/반0/기0; 개혁 찬1/반0/기0)",
+   "link": "https://likms.assembly.go.kr/bill/billDetail.do?billId=PRC_K2L6J0H4I2H7H1D1B1C0A0B3Z5H5I8",
+   "data": null
+  },
+  {
+   "ref": "E172",
+   "label": "기록",
+   "text": "  └ [표결] 2026-07-23 국가재정법 일부개정법률안(김영환의원 등 10인) 가결여부 찬210·반0 (혁신 찬12/반0/기0; 국힘 찬66/반0/기0; 민주 찬122/반0/기0; 진보 찬3/반0/기0; 개혁 찬1/반0/기0)",
+   "link": "https://likms.assembly.go.kr/bill/billDetail.do?billId=PRC_Q2M5M0K9M0K1K0I9R5R6P3Q2O5P3O9",
+   "data": null
+  },
+  {
+   "ref": "E173",
+   "label": "보도",
+   "text": "[쟁점 입장 기록] 조희대 대법원장(탄핵·국정조사) — 최근 60일 관련 보도 사실 76건(언급 의원 소속별: 민주 54, 국힘 17, 혁신 5). [소속]은 언급된 의원의 정당이며 발언자와 다를 수 있음",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E174",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-28 박성준 수석대변인, 조희대 대법원장 관련 국정조사는 본인이 자초한 일이라는 입장 표명",
+   "link": "https://www.newsis.com/view/NISX20261028_0003844444",
+   "data": null
+  },
+  {
+   "ref": "E175",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-28 박성준 대변인, 조희대 국정조사가 12월 초에 시작될 것으로 예상한다고 밝혀",
+   "link": "https://www.newsis.com/view/NISX20261028_0003844444",
+   "data": null
+  },
+  {
+   "ref": "E176",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-28 양부남 의원, 吳 2심 무죄 판결을 계기로 대법원장 탄핵 필요성 주장",
+   "link": "https://www.joongangenews.com/news/articleView.html?idxno=559121",
+   "data": null
+  },
+  {
+   "ref": "E177",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-28 김재섭 의원, 민주당과 조국혁신당의 조희대 대법원장 탄핵 추진을 '천하제일 탄핵대회'라고 비판",
+   "link": "https://www.ytn.co.kr/_ln/0101_202610281028023439",
+   "data": null
+  },
+  {
+   "ref": "E178",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-28 나경원 의원, 조희대 대법원장 국정조사 추진에 대해 강한 입장 표명",
+   "link": "https://www.gokorea.kr/news/articleView.html?idxno=883044",
+   "data": null
+  },
+  {
+   "ref": "E179",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-27 곽규택 의원, 민주당이 국감 초부터 대법원장 탄핵 분위기를 조성한다고 비판",
+   "link": "https://www.nocutnews.co.kr/news/6597512?utm_source=naver&utm_medium=article&utm_campaign=20261027101121",
+   "data": null
+  },
+  {
+   "ref": "E180",
+   "label": "보도",
+   "text": "  └ [혁신] 2026-10-27 김준형 의원, 조희대 대법원장 탄핵소추안 즉각 발의를 촉구하는 기자회견에 참여",
+   "link": "https://biz.heraldcorp.com/article/10916136?ref=naver",
+   "data": null
+  },
+  {
+   "ref": "E181",
+   "label": "보도",
+   "text": "  └ [혁신] 2026-10-27 김준형 의원, 조희대 대법원장 탄핵소추안 즉각 발의를 촉구하는 기자회견에 참여함",
+   "link": "https://biz.heraldcorp.com/article/10915942?ref=naver",
+   "data": null
+  },
+  {
+   "ref": "E182",
+   "label": "보도",
+   "text": "[쟁점 입장 기록] 전작권 전환·한미동맹 — 최근 60일 관련 보도 사실 70건(언급 의원 소속별: 국힘 37, 민주 28, 정부·기관 5). [소속]은 언급된 의원의 정당이며 발언자와 다를 수 있음",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E183",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-28 김병주 의원, 국감에서 전작권 전환 관련 질의를 제기함",
+   "link": "https://www.asiatime.co.kr/article/20261028500234",
+   "data": null
+  },
+  {
+   "ref": "E184",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-28 김병주 의원, 미국이 협조하지 않을 경우 정부의 독자적 전작권 행사 가능성 언급",
+   "link": "https://www.chosun.com/international/us/2026/10/28/T6C3CUOJM5BGLLD2MZQ4ZPQ6OA/?utm_source=naver&utm_medium=referral&utm_campaign=naver-news",
+   "data": null
+  },
+  {
+   "ref": "E185",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-28 박정 의원, 한미동맹 인식과 대북정책 재검토 필요성 강조",
+   "link": "https://www.fnnews.com/news/202610281410233351",
+   "data": null
+  },
+  {
+   "ref": "E186",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-28 송석준 의원, 미국과의 전작권 협의 상황을 질의함",
+   "link": "https://www.ppss.kr/news/articleView.html?idxno=317661",
+   "data": null
+  },
+  {
+   "ref": "E187",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-27 권영세 의원, 외통위 질의에서 한미동맹 관련 발언에 대한 입장 밝힘",
+   "link": "https://www.busan.com/view/busan/view.php?code=2026102717015862361",
+   "data": null
+  },
+  {
+   "ref": "E188",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-27 성일종 의원, 전시작전통제권 관련 국방위 질의에서 자주국방 추진 방향에 대한 입장 밝힘",
+   "link": "https://www.munhwa.com/article/11626706?ref=naver",
+   "data": null
+  },
+  {
+   "ref": "E189",
+   "label": "보도",
+   "text": "  └ [정부·기관] 2026-10-28 정빛나 국방부 대변인, 전작권 전환 관련 골대 이동 시 전환 불가 취지 지적",
+   "link": "https://www.seoul.co.kr/news/international/2026/10/28/20261028500367?wlog_tag3=naver",
+   "data": null
+  },
+  {
+   "ref": "E190",
+   "label": "보도",
+   "text": "  └ [정부·기관] 2026-10-28 강신철 국방부 장관, 전작권 전환 관련 한미 간 이견 여부에 대한 입장 관련 회담 진행",
+   "link": "https://www.edaily.co.kr/News/Read?newsId=05320166645617512&mediaCodeNo=257&utm_source=naver&utm_medium=referral&utm_campaign=news_syndication&utm_content=original_article",
+   "data": null
+  },
+  {
+   "ref": "E191",
+   "label": "기록",
+   "text": "  └ [표결] 2025-03-13 한미동맹 지지 결의안(대안)(외교통일위원장) 가결여부 찬201·반17 (혁신 찬0/반9/기2; 국힘 찬89/반0/기0; 민주 찬111/반4/기20; 진보 찬0/반3/기0; 개혁 찬1/반0/기0)",
+   "link": "https://likms.assembly.go.kr/bill/billDetail.do?billId=PRC_K2I5K0D3Q0S7I1J0Q0M1N3N4G7U7Z4",
+   "data": null
+  },
+  {
+   "ref": "E192",
+   "label": "보도",
+   "text": "[쟁점 입장 기록] 공공기관 이전·지역균형 — 최근 60일 관련 보도 사실 70건(언급 의원 소속별: 민주 52, 국힘 12, 혁신 3, 진보 3). [소속]은 언급된 의원의 정당이며 발언자와 다를 수 있음",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E193",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-28 민병덕 의원, 박상혁 의원 대표발의 초광역특구법에 공동발의자로 참여",
+   "link": "https://www.hani.co.kr/arti/society/labor/1284494.html",
+   "data": null
+  },
+  {
+   "ref": "E194",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-28 박상혁 의원, 초광역특구법 대표발의자로 명시됨",
+   "link": "https://www.hani.co.kr/arti/society/labor/1284494.html",
+   "data": null
+  },
+  {
+   "ref": "E195",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-28 안도걸 의원, 초광역특구법 관련 입법 추진 중단 및 사회적 논의 재개 요구 대상으로 거론됨",
+   "link": "https://www.financialpost.co.kr/news/articleView.html?idxno=282972",
+   "data": null
+  },
+  {
+   "ref": "E196",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-28 박성훈 의원, 부산이 균형발전과 정책에서 뒷순위가 아니라며 부산의 미래와 민생 수호 노력 지속 입장 표명",
+   "link": "http://www.inews24.com/view/2019611",
+   "data": null
+  },
+  {
+   "ref": "E197",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-28 엄태영 의원, 혁신도시 외 지역 공공기관 이전 혜택 확대 특별법 개정안 대표 발의",
+   "link": "https://www.ccreview.co.kr/news/articleView.html?idxno=361040",
+   "data": null
+  },
+  {
+   "ref": "E198",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-28 이종배 의원, 초광역특구법 관련 노사정 대화 공전 우려 제기",
+   "link": "https://vop.co.kr/A00001697348.html",
+   "data": null
+  },
+  {
+   "ref": "E199",
+   "label": "보도",
+   "text": "  └ [혁신] 2026-10-27 서왕진 의원, 초광역특구 노동특례가 노동정책 근간을 흔들 수 있다고 비판",
+   "link": "https://www.polinews.co.kr/news/articleView.html?idxno=747030",
+   "data": null
+  },
+  {
+   "ref": "E200",
+   "label": "보도",
+   "text": "  └ [혁신] 2026-10-27 서왕진 의원, 초광역특구 노동특례에 대해 사회적 합의를 허무는 것이라며 비판 입장 표명",
+   "link": "https://www.m-economynews.com/news/article.html?no=72179",
+   "data": null
+  },
+  {
+   "ref": "E201",
+   "label": "보도",
+   "text": "  └ [진보] 2026-10-27 손솔 의원, 초광역특구법 철회를 요구하는 진보당 기자회견에 참석",
+   "link": "https://vop.co.kr/A00001697339.html",
+   "data": null
+  },
+  {
+   "ref": "E202",
+   "label": "보도",
+   "text": "  └ [진보] 2026-10-27 윤종오 의원, 공공기관 이전과 혁신도시 확장의 연계 필요성 제기",
+   "link": "https://www.ksilbo.co.kr/news/articleView.html?idxno=1070614",
+   "data": null
+  },
+  {
+   "ref": "E203",
+   "label": "기록",
+   "text": "  └ [표결] 2026-05-07 지방자치분권 및 지역균형발전에 관한 특별법 일부개정법률안(이해식의원 등 56인) 가결여부 찬185·반0 (혁신 찬11/반0/기0; 국힘 찬40/반0/기7; 민주 찬124/반0/기1; 진보 찬4/반0/기0; 개혁 찬1/반0/기0)",
+   "link": "https://likms.assembly.go.kr/bill/billDetail.do?billId=PRC_R2S5Q0R9P2Q3X2W0X2V8V4U0V9Q7R0",
+   "data": null
+  },
+  {
+   "ref": "E204",
+   "label": "기록",
+   "text": "  └ [표결] 2025-05-01 지방자치분권 및 지역균형발전에 관한 특별법 일부개정법률안(한병도의원 등 12인) 가결여부 찬257·반1 (혁신 찬12/반0/기0; 국힘 찬82/반1/기1; 민주 찬154/반0/기2; 진보 찬3/반0/기0; 개혁 찬3/반0/기0)",
+   "link": "https://likms.assembly.go.kr/bill/billDetail.do?billId=PRC_V2U4C0D5C3A0Z1U3V4U5T2R4Z0H9F9",
+   "data": null
+  },
+  {
+   "ref": "E205",
+   "label": "보도",
+   "text": "[쟁점 입장 기록] 해킹·개인정보 유출 — 최근 60일 관련 보도 사실 46건(언급 의원 소속별: 정부·기관 27, 국힘 11, 민주 8). [소속]은 언급된 의원의 정당이며 발언자와 다를 수 있음",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E206",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-28 이주희 의원, 구글코리아 피해자 개인정보 유출 방지 책임을 국감에서 질의",
+   "link": "https://www.yna.co.kr/view/AKR20261028159100530?input=1195m",
+   "data": null
+  },
+  {
+   "ref": "E207",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-26 박민규 의원, KB국민은행 해킹 피해 규모와 대응 경위 문제 제기",
+   "link": "https://www.donga.com/news/Economy/article/all/20261026/134912518/1",
+   "data": null
+  },
+  {
+   "ref": "E208",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-25 박홍배 의원, 개인정보위 제출 자료를 근거로 개인정보 유출 사건 처리 지연 문제 지적",
+   "link": "https://news.tvchosun.com/site/data/html_dir/2026/10/25/2026102590129.html",
+   "data": null
+  },
+  {
+   "ref": "E209",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-24 서천호 의원, LG유플러스의 해킹 은폐 의혹 수사 중 이용자 보호 최우수 평가 홍보를 문제 삼음",
+   "link": "http://www.newsroad.co.kr/news/articleView.html?idxno=66378",
+   "data": null
+  },
+  {
+   "ref": "E210",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-24 조경태 의원, 홍범식 LG유플러스 대표에게 해킹 은폐 의혹 관련 책임을 질의함",
+   "link": "http://www.newsroad.co.kr/news/articleView.html?idxno=66378",
+   "data": null
+  },
+  {
+   "ref": "E211",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-23 서천호 의원, LG유플러스가 해킹 은폐 수사 중 이용자 보호 평가를 홍보한 점을 문제 삼음",
+   "link": "https://www.ppss.kr/news/articleView.html?idxno=317124",
+   "data": null
+  },
+  {
+   "ref": "E212",
+   "label": "보도",
+   "text": "  └ [정부·기관] 2026-10-28 국가안보실, 금융권 연쇄 해킹 관련 긴급 점검회의 개최하고 대응 상황 점검",
+   "link": "https://imnews.imbc.com/news/2026/politics/article/6861382_36911.html",
+   "data": null
+  },
+  {
+   "ref": "E213",
+   "label": "보도",
+   "text": "  └ [정부·기관] 2026-10-28 국가안보실이 송기호 3차장 주재로 긴급회의를 열어 금융권 잇단 해킹 피해에 대응에 나섰다고 전함",
+   "link": "https://www.ytn.co.kr/_ln/0102_202610281700213290",
+   "data": null
+  },
+  {
+   "ref": "E214",
+   "label": "보도",
+   "text": "[쟁점 입장 기록] 전기차·자동차 산업 지원 — 최근 60일 관련 보도 사실 36건(언급 의원 소속별: 국힘 20, 민주 15, 정부·기관 1). [소속]은 언급된 의원의 정당이며 발언자와 다를 수 있음",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E215",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-28 박해철 의원, 교통약자 전기차 충전 편의 부족 문제 지적",
+   "link": "https://www.ksilbo.co.kr/news/articleView.html?idxno=1070792",
+   "data": null
+  },
+  {
+   "ref": "E216",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-27 안도걸 의원, 전기차·태양광 국내 생산 세액공제 신설 내용의 조세특례제한법 개정안 대표 발의",
+   "link": "http://www.e-platform.net/news/articleView.html?idxno=106431",
+   "data": null
+  },
+  {
+   "ref": "E217",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-26 윤후덕 의원, 윤한홍 의원과 함께 국내 생산 전기차·배터리 세액공제 개정안 공동 대표 발의",
+   "link": "https://www.autodaily.co.kr/news/articleView.html?idxno=601508",
+   "data": null
+  },
+  {
+   "ref": "E218",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-28 김종양 의원, 전기차 제작결함 증가 관련 자료 분석 결과 공개",
+   "link": "https://www.m-i.kr/news/articleView.html?idxno=2011267",
+   "data": null
+  },
+  {
+   "ref": "E219",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-27 김종양 의원, 전기차 결함 신고와 피해구제 증가 문제 지적",
+   "link": "http://www.breaknews.com/1246100",
+   "data": null
+  },
+  {
+   "ref": "E220",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-27 윤한홍 의원, 전기차 등 7대 전략품목 생산세액공제 적용 조세특례제한법 개정안 공동발의",
+   "link": "https://biz.newdaily.co.kr/site/data/html/2026/10/27/2026102700101.html",
+   "data": null
+  },
+  {
+   "ref": "E221",
+   "label": "보도",
+   "text": "  └ [정부·기관] 2026-10-28 국방부, 페롤 중국 전기차 공장 건설 관련 검토 결과가 호의적일 것이라고 주정부에 설명",
+   "link": "https://www.newsis.com/view/NISX20261028_0003845231",
+   "data": null
+  },
+  {
+   "ref": "E222",
+   "label": "보도",
+   "text": "[쟁점 입장 기록] 윤석열 재판·내란 청산 — 최근 60일 관련 보도 사실 34건(언급 의원 소속별: 정부·기관 18, 혁신 10, 민주 5, 국힘 1). [소속]은 언급된 의원의 정당이며 발언자와 다를 수 있음",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E223",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-28 이기헌 의원, 윤석열 정부 국방부의 북한 국경 요새화 대응 방치 책임 주장",
+   "link": "http://www.sisunnews.co.kr/news/articleView.html?idxno=248605",
+   "data": null
+  },
+  {
+   "ref": "E224",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-27 황정아 의원, 박장범 KBS 사장에게 내란 이후 휴대전화 교체 여부 질의",
+   "link": "https://imnews.imbc.com/replay/2026/nwdesk/article/6861160_37004.html",
+   "data": null
+  },
+  {
+   "ref": "E225",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-25 김우영 의원, AI 경비안전사업의 내란 연계 의혹을 제기함",
+   "link": "https://www.gukjenews.com/news/articleView.html?idxno=3731723",
+   "data": null
+  },
+  {
+   "ref": "E226",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-28 조정훈 의원, 기사에서 과거 친윤석열계 또는 국민의힘 구주류와 가까운 인사로 분류된 것으로 언급됨",
+   "link": "https://news.sbs.co.kr/news/endPage.do?news_id=N1008819444&plink=ORI&cooper=NAVER",
+   "data": null
+  },
+  {
+   "ref": "E227",
+   "label": "보도",
+   "text": "  └ [혁신] 2026-10-27 박은정 의원, 윤석열 부부 영치금 무제한 입금 문제 지적하며 질의",
+   "link": "https://news.tvchosun.com/site/data/html_dir/2026/10/27/2026102790077.html",
+   "data": null
+  },
+  {
+   "ref": "E228",
+   "label": "보도",
+   "text": "  └ [혁신] 2026-10-27 신장식 조국혁신당 대표, 내란 세력 관련 사안에 대해 역풍 우려에 선을 긋는 입장 밝힘",
+   "link": "https://news.kbs.co.kr/news/pc/view/view.do?ncd=8696125&ref=A",
+   "data": null
+  },
+  {
+   "ref": "E229",
+   "label": "보도",
+   "text": "  └ [정부·기관] 2026-10-28 박종준 전 경호처장, 윤석열 전 대통령 체포영장 집행 방해 혐의로 2심에서 징역 3년 선고",
+   "link": "https://www.kgnews.co.kr/news/article.html?no=917179",
+   "data": null
+  },
+  {
+   "ref": "E230",
+   "label": "보도",
+   "text": "  └ [정부·기관] 2026-10-28 박종준 전 대통령경호처장, 윤석열 전 대통령 체포영장 집행 방해 혐의 항소심서 징역 3년 선고",
+   "link": "https://biz.chosun.com/topics/law_firm/2026/10/28/NEZLITO7IRALTNDZFPEQXPT25E/?utm_source=naver&utm_medium=original&utm_campaign=biz",
+   "data": null
+  },
+  {
+   "ref": "E231",
+   "label": "기록",
+   "text": "  └ [표결] 2026-07-21 윤석열·김건희에 의한 내란·외환 및 국정농단 행위의 진상규명을 위한 특별검사 임명 등에 관한 법률 일부개정법률안(대안)(법제사법위원장) 가결여부 찬173·반0 (혁신 찬11/반0/기0; 국힘 찬0/반0/기0; 민주 찬152/반0/기0; 진보 찬3/반0/기0; 개혁 찬0/반0/기0)",
+   "link": "https://likms.assembly.go.kr/bill/billDetail.do?billId=PRC_N2D6L0L7D1Q5A1O4O2U1Z5P6T0E9S0",
+   "data": null
+  },
+  {
+   "ref": "E232",
+   "label": "기록",
+   "text": "  └ [표결] 2026-03-22 윤석열 정권 정치검찰 조작기소 의혹 사건 진상규명 국정조사계획서 승인의 건(윤석열 정권 정치검찰 조작기소 의혹 사건 진상규명 국정조사특별위원장) 가결여부 찬176·반0 (혁신 찬11/반0/기0; 국힘 찬0/반0/기0; 민주 찬157/반0/기0; 진보 찬3/반0/기0; 개혁 찬0/반0/기0)",
+   "link": "https://likms.assembly.go.kr/bill/billDetail.do?billId=PRC_J2V6R0L3V2K0Y1N3W4H9J5G6Z9H3P5",
+   "data": null
+  },
+  {
+   "ref": "E233",
+   "label": "보도",
+   "text": "[쟁점 입장 기록] 선거 공정성(투표지·부정선거 주장) — 최근 60일 관련 보도 사실 33건(언급 의원 소속별: 국힘 25, 민주 8). [소속]은 언급된 의원의 정당이며 발언자와 다를 수 있음",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E234",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-28 이해식 의원, 투표지 검증이 예정대로 진행되지 않을 것 같다는 입장을 페이스북에 밝힘",
+   "link": "https://www.dailian.co.kr/news/view/1707334/?sc=Naver",
+   "data": null
+  },
+  {
+   "ref": "E235",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-28 채현일 의원, 투표지 검증 현장에서 국민의힘 참관인들에게 특검팀 절차를 따르라고 맞섬",
+   "link": "https://www.kado.net/news/articleView.html?idxno=2081026",
+   "data": null
+  },
+  {
+   "ref": "E236",
+   "label": "보도",
+   "text": "  └ [민주] 2026-10-28 투표지 공개검증 과정에서 여야 참관인들이 고성을 주고받고 서로 밀치는 상황 발생",
+   "link": "https://www.lawtv.kr/news/articleView.html?idxno=61271",
+   "data": null
+  },
+  {
+   "ref": "E237",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-28 김민전 의원, 특검팀 방문 중 투표지 검증 관련 항의에 참여",
+   "link": "https://www.news1.kr/society/court-prosecution/6334715",
+   "data": null
+  },
+  {
+   "ref": "E238",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-28 김민전 의원, 투표지 검증 과정 촬영 문제를 두고 선관위와 공방 벌임",
+   "link": "https://www.ajunews.com/view/20261028112205962",
+   "data": null
+  },
+  {
+   "ref": "E239",
+   "label": "보도",
+   "text": "  └ [국힘] 2026-10-28 박수민 의원, 올공 투표지 검증 현장에 참관인으로 참여 예정",
+   "link": "https://www.mt.co.kr/politics/2026/10/28/2026102808342494426",
+   "data": null
+  },
+  {
+   "ref": "E240",
+   "label": "규칙",
+   "text": "R8 무제한토론(필리버스터)과 종결: 재적의원 3분의 1 이상 서명으로 요구. 종결동의는 재적의원 3분의 1 이상 서명으로 내고 24시간 뒤 무기명투표로 재적의원 5분의 3 이상 찬성 시 종결. 회기가 끝나면 종결 간주, 다음 회기에 바로 표결.",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E241",
+   "label": "규칙",
+   "text": "R9 대통령 재의요구(거부권)와 재의결: 정부 이송 후 15일 안에 공포하거나 이의서를 붙여 재의를 요구한다. 일부 거부·수정 거부는 불가. 재의결은 재적의원 과반수 출석, 출석의원 3분의 2 이상 찬성. 환부 법률안은 무기명 표결.",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E242",
+   "label": "규칙",
+   "text": "R10 탄핵소추: 일반: 재적의원 3분의 1 이상 발의, 재적의원 과반수 찬성. 대통령: 재적의원 과반수 발의, 재적의원 3분의 2 이상 찬성. 의결되면 심판까지 권한행사 정지.",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E243",
+   "label": "규칙",
+   "text": "R11 국무총리·국무위원 해임건의: 재적의원 3분의 1 이상 발의, 재적의원 과반수 찬성. 본회의 보고 후 24~72시간 안에 무기명 표결, 기간 안에 표결하지 않으면 폐기.",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E244",
+   "label": "규칙",
+   "text": "R16 국정조사 요구: 재적의원 4분의 1 이상 요구로 특별위원회 또는 상임위원회가 국정조사. 조사계획서는 본회의 승인 필요.",
+   "link": null,
+   "data": null
+  },
+  {
+   "ref": "E245",
+   "label": "규칙",
+   "text": "R17 예산안·세입예산안 부수 법률안 자동 부의: 위원회는 예산안등과 지정된 세입예산안 부수 법률안 심사를 매년 11월 30일까지 마쳐야 하고, 못 마치면 다음 날 본회의에 부의된 것으로 본다(의장과 교섭단체 대표가 합의하면 예외). 이 안건의 무제한토론은 12월 1일 밤 12시에 끝난다.",
+   "link": null,
+   "data": null
+  }
+ ],
+ "run_id": "st_ead50d6bcb",
+ "cost_usd": 0.5276
+}

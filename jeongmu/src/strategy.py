@@ -241,7 +241,7 @@ SCHEMA = {
 def estimate_usd(bundle: Bundle) -> tuple[float, float]:
     in_tok = len(SYSTEM + bundle.as_prompt() + playbook.as_prompt()) / 1.6 + 2500  # 한국어 대략 1.6자/토큰 + 스키마
     lo = in_tok * 4 / 1e6 + 6000 * 20 / 1e6
-    hi = in_tok * 4 / 1e6 + 20000 * 20 / 1e6
+    hi = in_tok * 4 / 1e6 + 32000 * 20 / 1e6
     return round(lo, 3), round(hi, 3)
 
 
@@ -261,7 +261,7 @@ def run(goal: str, side: str, on: str | None = None, estimate_only: bool = False
     prompt = (f"진영: {side}\n목표: {goal}\n기준일: {on}\n\n근거 목록:\n{B.as_prompt()}\n\n"
               f"원칙집:\n{playbook.as_prompt()}\n\n"
               "진단 → 전략 카드 6~10개(서로 다른 종류, 실전형) → 전개 시나리오 3~4개(확률 합 1) → 주시할 지표 → 채점 가능한 예측 순으로.")
-    out = call_json(SYSTEM, prompt, SCHEMA, purpose="strategy", run_id=run_id, effort="high", max_tokens=20000)  # 비용 상한(출력 최대 약 $0.40)
+    out = call_json(SYSTEM, prompt, SCHEMA, purpose="strategy", run_id=run_id, effort="medium", max_tokens=32000)  # 출력 최대 약 $0.64. high 는 추론이 길어 2만 토큰에서 잘림(2026-10-28)
     valid = B.refs()
     out["situation"] = check_refs([out["situation"]], valid)[0]
     for k in ("diagnosis", "strategies", "scenarios"):
