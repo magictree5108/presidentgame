@@ -242,13 +242,34 @@ def check_refs(items: list[dict], valid: set[str]) -> list[dict]:
     return items
 
 
-def default_stances(ctx: dict) -> list[dict]:
-    """AI 없이: 대표발의자 정당=찬성, 나머지=유동. 근거 약함."""
+def default_stances(ctx: dict, items: list[dict] | None = None) -> list[dict]:
+    """AI 없이 정하는 정당 입장(0원).
+    1) 같은 법률 개정안의 과거 본회의 표결에서 그 정당 표의 90% 이상이 한쪽이면 그 방향(기록 기반, 해당 근거 번호 첨부)
+    2) 아니면 대표발의자 정당 = 찬성, 나머지 = 유동(근거 약함)"""
+    past = [i for i in (items or []) if isinstance(i.get("data"), dict) and "by_party" in i["data"] and "bill_id" in i["data"]]
     out = []
     for p in ctx["seats"]["by_party"]:
-        st = "찬성" if p == ctx.get("lead_party") else "유동"
-        out.append({"party": p, "stance": st, "reason": "대표발의자 소속 정당" if st == "찬성" else "입장 근거 없음",
-                    "refs": [], "label": "기본값", "weak": True})
+        yes = no = 0
+        refs = []
+        for i in past:
+            t = i["data"]["by_party"].get(p)
+            if t:
+                yes += t["찬성"]
+                no += t["반대"]
+                refs.append(i["ref"])
+        tot = yes + no
+        if tot >= 3 and yes / tot >= 0.9:
+            out.append({"party": p, "stance": "찬성", "refs": refs, "label": "기록", "weak": False,
+                        "reason": f"기록 기반: 같은 법률 과거 표결 {len(refs)}건에서 찬성 {yes}표/반대 {no}표"})
+        elif tot >= 3 and no / tot >= 0.9:
+            out.append({"party": p, "stance": "반대", "refs": refs, "label": "기록", "weak": False,
+                        "reason": f"기록 기반: 같은 법률 과거 표결 {len(refs)}건에서 찬성 {yes}표/반대 {no}표"})
+        else:
+            st = "찬성" if p == ctx.get("lead_party") else "유동"
+            why = "대표발의자 소속 정당" if st == "찬성" else (
+                f"같은 법률 과거 표결이 엇갈림(찬 {yes}/반 {no})" if tot else "입장 근거 없음")
+            out.append({"party": p, "stance": st, "reason": why, "refs": refs if tot else [],
+                        "label": "기본값", "weak": True})
     return out
 
 
@@ -334,7 +355,7 @@ def judge(issue: dict, on: str | None = None, use_ai: bool = True, record_predic
         pass_prob = max(0.0, min(1.0, float(ai["pass_prob"])))
         pp_refs = [r for r in ai["pass_prob_refs"] if r in valid]
     else:
-        stances, judgments, risks = default_stances(ctx), [], []
+        stances, judgments, risks = default_stances(ctx, B.items), [], []
         # 현재 정부 시기 통계가 있으면 그것을, 없으면 22대 전체 통계를 쓴다
         precs = [i for i in B.items if i["label"] == "선례" and isinstance(i["data"], dict)
                  and i["data"].get("pass_rate") is not None]

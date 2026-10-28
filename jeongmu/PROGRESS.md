@@ -50,6 +50,9 @@
 - 뉴스 검색: NAVER API HUB(naverapihub.apigw.ntruss.com/search/v1/news)와 예전 개발자센터 키 모두 지원.
 - 워게임 버그 수정: 무제한토론 중·본회의 부의 전에도 '본회의 표결'이 가능한 수로 잡히던 것을 합법성 검사로 옮김.
 
+- 미리보기(읽기 전용) 페이지: https://claude.ai/artifact/L1MM6TiuFt5sHxdqnAbFXg — `python src/export_snapshot.py`로 다시 만들고 같은 경로로 재게시(AI 0원). 판단은 본회의 대기 8건만 미리 계산, AI 판단·워게임은 PC 실행.
+- AI 없는 판단도 같은 법률 과거 표결(정당별 90% 이상 한쪽)로 정당 입장 추정 → '기록' 표식.
+
 ## 막힌 것 (사용자가 해야 할 일)
 
 1. **네이버 뉴스 검색 키(NAVER API HUB)** — `docs/keys.md` 2번(2026년부터 네이버 클라우드에서 발급). 넣으면 동향 수집(d)·오탐률 검수 진행.

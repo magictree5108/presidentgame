@@ -342,11 +342,11 @@ $("#judgeBtn").onclick = async () => {
     const r = await post("/api/judge", body);
     const ev = r.evidence;
     $("#judge").innerHTML = `
-      ${r.ai_used ? "" : `<div class="warn small">AI 판단 없이 기본 규칙으로 계산했습니다${r.ai_error ? ` (${esc(r.ai_error)})` : ""}. 정당 입장은 '근거 약함'입니다.</div>`}
+      ${r.ai_used ? "" : `<div class="warn small">AI 없이 기록과 규칙으로 계산했습니다${r.ai_error ? ` (${esc(r.ai_error)})` : ""}. 같은 법률의 과거 표결이 없으면 정당 입장은 '근거 약함'입니다.</div>`}
       <div class="kpis"><div class="kpi"><div class="l">통과 확률 ${tag(r.ai_used ? "AI 추정" : "선례")} ${r.pass_prob_weak ? `<span class="tag 약함">근거 약함</span>` : refList(r.pass_prob_refs, ev)}</div><div class="big">${r.pass_prob == null ? "—" : pct(r.pass_prob)}</div></div>
-      <div class="kpi"><div class="l">예상 찬성/반대/유동 ${tag("AI 추정")}</div><div class="big">${r.casting.yes}/${r.casting.no}/${r.casting.swing}</div><div class="small muted">과반 ${r.casting.need_for_majority}, 부족 ${Math.max(0, r.casting.gap)}</div></div></div>
+      <div class="kpi"><div class="l">예상 찬성/반대/유동 ${tag(r.ai_used ? "AI 추정" : "기록")}</div><div class="big">${r.casting.yes}/${r.casting.no}/${r.casting.swing}</div><div class="small muted">과반 ${r.casting.need_for_majority}, 부족 ${Math.max(0, r.casting.gap)}</div></div></div>
       <h2 style="margin-top:10px">정당 입장</h2>
-      ${r.party_stances.map(s => `<div class="small">${esc(s.party)}: <b>${esc(s.stance)}</b> — ${esc(s.reason)} ${s.weak ? `<span class="tag 약함">근거 약함</span>` : tag("AI 추정") + refList(s.refs, ev)}</div>`).join("")}
+      ${r.party_stances.map(s => `<div class="small">${esc(s.party)}: <b>${esc(s.stance)}</b> — ${esc(s.reason)} ${s.weak ? `<span class="tag 약함">근거 약함</span>` : tag(s.label === "기록" ? "기록" : "AI 추정") + refList(s.refs, ev)}</div>`).join("")}
       <h2 style="margin-top:10px">판단</h2>
       ${r.judgments.map(j => `<div class="small">• ${esc(j.text)} ${j.weak ? `<span class="tag 약함">근거 약함</span>` : tag("AI 추정") + refList(j.refs, ev)}</div>`).join("") || `<div class="small muted">AI 판단 없음</div>`}
       <h2 style="margin-top:10px">캐스팅보트 후보 (유동, 이탈률 높은 순)</h2>
