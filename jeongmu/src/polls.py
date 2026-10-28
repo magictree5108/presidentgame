@@ -181,7 +181,17 @@ def series(target_kind: str, target: str, pollster: str | None = None, include_u
         mode = max(set(vals), key=vals.count)  # 같은 조사의 여러 보도 중 가장 많이 나온 값(지역·계층 수치 배제 효과)
         out.append({"pollster": pl, "date": d, "value": mode, "n_reports": len(vs),
                     "urls": [u for v, u in vs if v == mode][:3], "label": "보도"})
-    return sorted(out, key=lambda x: x["date"] or "")
+    out.sort(key=lambda x: (x["pollster"], x["date"] or ""))
+    # 같은 조사가 여러 날 보도되면(조사일 미기재 → 보도일 사용) 4일 안의 같은 기관·같은 값은 하나로 합친다
+    merged = []
+    for x in out:
+        prev = merged[-1] if merged else None
+        if (prev and prev["pollster"] == x["pollster"] and prev["value"] == x["value"] and prev["date"] and x["date"]
+                and (date.fromisoformat(x["date"]) - date.fromisoformat(prev["date"])).days <= 4):
+            prev["n_reports"] += x["n_reports"]
+            continue
+        merged.append(dict(x))
+    return sorted(merged, key=lambda x: x["date"] or "")
 
 
 if __name__ == "__main__":
