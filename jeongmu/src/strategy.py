@@ -152,6 +152,24 @@ def build_bundle(goal: str, side: str, on: str) -> tuple[Bundle, dict]:
             B.add("보도", f"[최근 30일 '갈등' 보도 건수, 언급 의원 소속 정당별] {dict(conf.most_common())}")
     except Exception:
         pass
+    # 정치 일정 달력(data/calendar.json): 최근 7일 ~ 앞으로 70일
+    cal = DATA / "calendar.json"
+    if cal.exists():
+        lo = (date.fromisoformat(on) - timedelta(days=7)).isoformat()
+        hi = (date.fromisoformat(on) + timedelta(days=70)).isoformat()
+        for e in sorted(json.loads(cal.read_text(encoding="utf-8"))["events"], key=lambda e: e["date"]):
+            if lo <= e.get("end", e["date"]) and e["date"] <= hi:
+                when = e["date"] + (f"~{e['end']}" if e.get("end") else "")
+                link = e["source"] if e["source"].startswith("http") else None
+                B.add(e["label"], f"[일정·{e['status']}] {when} {e['title']}" + ("" if link else f" (근거: {e['source']})"),
+                      link.split(" ; ")[0] if link else None)
+    # 쟁점별 공개 입장 기록(src/stances.py, 0원)
+    try:
+        import stances
+        for label, text, link in stances.bundle_lines(stances.build(on)):
+            B.add(label, text, link)
+    except Exception as e:
+        B.add("기록", f"[쟁점 입장 기록 생성 실패: {e}]")
     rules = json.loads((DATA / "rules_institutional.json").read_text(encoding="utf-8"))["rules"]
     for r in rules:
         if r["id"] in ("R8", "R9", "R10", "R11", "R16", "R17"):
@@ -171,6 +189,8 @@ SYSTEM = """너는 한국 정치의 최고 수준 정무 전략가다. 사용자
   댓글부대·가짜계정 같은 조직적 여론조작. 상대가 그런 수를 쓸 가능성은 위협으로 분석해도 된다.
 - 기대 효과는 지지율 %p 범위와 걸리는 주(週)로 쓰되, 근거가 약하면 범위를 넓게 잡는다.
 - 예측(predictions)은 나중에 실제 여론조사로 채점할 수 있게 구체적으로 쓴다(조사기관, 대상, 기한, 범위).
+- [일정] 근거로 '언제 칠지'를 정한다: 전략 카드 steps 에 날짜나 일정 기준 시점을 쓴다(예: '11/4 종합정책질의 전날').
+- [쟁점 입장 기록] 근거로 상대의 과거 공개 입장과 표결을 확인하고, 그 기록과 모순되게 만드는 질문·제안을 설계한다.
 - 원칙집(책 8권 요약, [D3]·[W20] 같은 원칙 번호)을 전략 설계의 도구로 쓴다. 전략 카드마다 principles 에 근거 원칙 1~3개를 단다.
   원칙의 '실패조건'에 해당하는 상황이면 backlash_risk 를 올리고 rationale 에 그 이유를 쓴다.
   '방어' 원칙은 상대가 쓸 수를 예상해 opponent_counter·방어·수습 카드에 쓴다.
