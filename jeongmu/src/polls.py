@@ -37,7 +37,8 @@ CREATE TABLE IF NOT EXISTS poll_values (
 """
 POLL_HINT = re.compile(r"\d+(\.\d+)?\s*%|지지율|여론조사")
 
-EXTRACT_SYSTEM = """너는 여론조사 수치 기록원이다. 기사 제목과 요약문에 '명시된' 여론조사 수치만 뽑는다.
+EXTRACT_SYSTEM = """너는 여론조사 수치 기록원이다. 기사 제목과 요약문에 '명시된' 한국 여론조사 수치만 뽑는다.
+외국 조사(미국 대통령 지지율, 로이터·입소스·갤럽USA 등 해외 기관 조사)는 뽑지 않는다.
 - target_kind: 대통령국정(대통령 직무 긍정률), 정당, 인물(대권주자 등), 기타
 - target: 대통령국정이면 '긍정' 또는 '부정', 정당이면 정당명, 인물이면 이름
 - pollster: 조사기관(한국갤럽, 리얼미터, NBS(엠브레인·케이스탯·코리아리서치·한국리서치) 등). 없으면 '미상'
@@ -138,19 +139,46 @@ def collect(dry_run: bool, budget_usd: float | None = None) -> dict:
     return stats
 
 
-def series(target_kind: str, target: str, pollster: str | None = None) -> list[dict]:
+FOREIGN = ("입소스", "로이터", "AP", "NORC", "CNN", "ABC", "워싱턴포스트", "퓨", "YouGov", "유고브", "에머슨",
+           "퀴니피악", "NBC", "CBS", "폭스", "이코노미스트", "모닝컨설트", "하버드", "닛케이", "아사히", "요미우리", "NHK")
+POLLSTER_ALIAS = {"KSOI": "한국사회여론연구소", "한국사회여론연구소(KSOI)": "한국사회여론연구소", "갤럽": "한국갤럽",
+                  "한국갤럽조사연구소": "한국갤럽", "NBS": "NBS(전국지표조사)", "전국지표조사": "NBS(전국지표조사)",
+                  "전국지표조사(NBS)": "NBS(전국지표조사)", "엠브레인퍼블릭·케이스탯리서치·코리아리서치·한국리서치": "NBS(전국지표조사)"}
+# 추이 계산에 쓰는 주요 전국 정기조사(지역·계층 하위 수치가 섞여도 '가장 많이 보도된 값'으로 거른다)
+NATIONAL = ("한국갤럽", "리얼미터", "NBS(전국지표조사)", "한국사회여론연구소", "한길리서치")
+TARGET_ALIAS = {"민주당": "더불어민주당", "민주": "더불어민주당", "국힘": "국민의힘", "조국당": "조국혁신당"}
+
+
+def norm_pollster(p: str) -> str | None:
+    p = (p or "").strip()
+    if any(f in p for f in FOREIGN):
+        return None  # 외국 조사 제외
+    return POLLSTER_ALIAS.get(p, p)
+
+
+def series(target_kind: str, target: str, pollster: str | None = None, include_unknown: bool = False) -> list[dict]:
     """조사 단위로 중복을 합친 추이: (기관, 조사종료일) 별 최빈값."""
     con = pconnect()
     q = """SELECT pollster, COALESCE(field_end, pub_date) AS d, value, url FROM poll_values
            WHERE target_kind=? AND target=?""" + (" AND pollster=?" if pollster else "")
-    rows = con.execute(q, (target_kind, target, pollster) if pollster else (target_kind, target)).fetchall()
+    names = [target] + [k for k, v in TARGET_ALIAS.items() if v == target]
+    q = q.replace("AND target=?", f"AND target IN ({','.join('?' * len(names))})")
+    rows = con.execute(q, (target_kind, *names, pollster) if pollster else (target_kind, *names)).fetchall()
     by = {}
     for r in rows:
-        by.setdefault((r["pollster"], r["d"]), []).append((r["value"], r["url"]))
+        pl = norm_pollster(r["pollster"])
+        if pl is None or (pl == "미상" and not include_unknown):
+            continue
+        if not include_unknown and pl not in NATIONAL:
+            continue
+        if target_kind == "정당" and con.execute("SELECT 1 FROM poll_values WHERE url=? AND target IN ('공화당','민주당(미국)')",
+                                                (r["url"],)).fetchone():
+            continue  # 미국 정당 조사 기사
+        by.setdefault((pl, r["d"]), []).append((r["value"], r["url"]))
     out = []
     for (pl, d), vs in by.items():
         vals = [v for v, _ in vs]
-        mode = max(set(vals), key=vals.count)
+        mode = max(set(vals), key=vals.count)  # 같은 조사의 여러 보도 중 가장 많이 나온 값(지역·계층 수치 배제 효과)
         out.append({"pollster": pl, "date": d, "value": mode, "n_reports": len(vs),
                     "urls": [u for v, u in vs if v == mode][:3], "label": "보도"})
     return sorted(out, key=lambda x: x["date"] or "")
