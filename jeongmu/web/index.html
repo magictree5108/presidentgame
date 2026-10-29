@@ -221,14 +221,13 @@ async function loadStrategy(){
   $("#stDiag").innerHTML = `<table class="small"><tr><th>방향</th><th>비중</th><th>요인</th><th>근거·논리</th></tr>${r.diagnosis.map(d =>
     `<tr><td class="${d.direction === "하락 요인" ? "bad" : "ok"}">${esc(d.direction)}</td><td>${esc(d.weight)}</td><td><b>${esc(d.driver)}</b></td><td>${esc(d.rationale)} ${refs(d)}</td></tr>`).join("")}</table>`;
   $("#stCards").innerHTML = r.strategies.map(c => `<div class="card">
-    <div class="small muted">${esc(c.kind)} · 대상: ${esc(c.target_audience)}</div>
+    <div class="small muted">${c.scale ? `<b>${esc(c.scale)}</b> · ` : ""}${esc(c.kind)} · 대상: ${esc(c.target_audience)}</div>
     <h3>${esc(c.name)}</h3>
     <div><span class="chip2">기대 ${c.expected_pp_low}~${c.expected_pp_high}%p / ${c.weeks}주</span><span class="chip2 risk${c.legal_risk}">법적 리스크 ${c.legal_risk}/5</span><span class="chip2 risk${c.backlash_risk}">역풍 ${c.backlash_risk}/5</span></div>
     <ol class="small">${c.steps.map(x => `<li>${esc(x)}</li>`).join("")}</ol>
     <div class="small"><b>상대 대응</b> ${esc(c.opponent_counter)}</div>
     <div class="small"><b>재반격</b> ${esc(c.counter_to_counter)}</div>
-    ${(c.principles || []).length ? `<div class="small" style="margin-top:4px"><b>근거 원칙</b> ${c.principles.map(id => { const p = (r.playbook || {})[id] || {};
-      return `<span class="chip2" title="${esc((p.book || "") + " · " + (p.loc || "") + (p.fails && p.fails !== "—" ? " · 실패조건: " + p.fails : ""))}">${esc(id)} ${esc(p.title || "")}</span>`; }).join("")}</div>` : ""}
+    ${c.principal_fit ? `<div class="small"><b>의뢰인 수용성</b> ${esc(c.principal_fit)}</div>` : ""}
     <div class="small muted" style="margin-top:4px">${esc(c.rationale)} ${refs(c)}</div></div>`).join("");
   $("#stScen").innerHTML = r.scenarios.map(x => `<div style="margin-bottom:10px"><div class="small"><b>${Math.round(x.probability * 100)}% · ${esc(x.name)}</b> ${refs(x)}</div>
     <div class="bar"><i style="width:${Math.round(x.probability * 100)}%"></i></div>
