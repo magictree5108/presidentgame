@@ -281,3 +281,24 @@ def strategy_latest():
 def playbook_all():
     import playbook
     return playbook.load()
+
+
+@app.get("/api/polls/board")
+def polls_board():
+    """화면 게이지용 여론 추이: 주요 지표 × 상위 조사기관, 최근 12개 조사."""
+    from collections import defaultdict
+    from polls import series
+    out = {}
+    for kind, target in (("대통령국정", "긍정"), ("정당", "더불어민주당"), ("정당", "국민의힘")):
+        by = defaultdict(list)
+        for x in series(kind, target):
+            if x["date"]:
+                by[x["pollster"]].append({"date": x["date"], "value": x["value"]})
+        top = sorted(by.items(), key=lambda kv: -len(kv[1]))[:3]
+        out[f"{kind}:{target}"] = {pl: xs[-12:] for pl, xs in top if len(xs) >= 2}
+    return out
+
+
+@app.get("/api/calendar")
+def calendar_events():
+    return jload(DATA / "calendar.json", {"events": []})

@@ -32,6 +32,8 @@ def build() -> dict:
         "/api/predictions": server.predictions(),
         "/api/backtest": server.backtest_report(),
         "/api/usage": server.usage(),
+        "/api/polls/board": server.polls_board(),
+        "/api/calendar": server.calendar_events(),
     }
     try:
         snap["/api/strategy/latest"] = server.strategy_latest()
