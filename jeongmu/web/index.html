@@ -271,6 +271,15 @@ summary{cursor:pointer}
 </header>
 
 <main id="tab-strat" class="on">
+  <section class="panel" id="stNew"><details id="stNewWrap"><summary><b>＋ 새 정무 전략 짜기</b> <span class="hint">목표와 관점을 넣고 비용을 확인한 뒤 실행</span></summary>
+    <div class="row" style="margin-top:10px">
+      <input id="nsGoal" placeholder="예: 더불어민주당과 이재명 대통령의 지지율 회복" style="flex:1;min-width:0">
+      <select id="nsSide"><option>더불어민주당</option><option>국민의힘</option><option>조국혁신당</option><option>개혁신당</option><option>진보당</option></select>
+      <button class="act" id="nsEst">비용 확인</button>
+      <button class="act" id="nsRun" disabled>이 비용으로 실행</button>
+    </div>
+    <div id="nsMsg" class="small muted" style="margin-top:6px">비용 확인은 무료입니다. 실행은 AI 비용이 들며 3~6분 걸립니다. 의뢰인 제약·피드백(data/strategy/constraints.json)이 자동 적용됩니다.</div>
+  </details></section>
   <section id="stHead" class="mission brk"><div class="muted small" style="grid-column:1/-1">불러오는 중…</div></section>
   <section id="stHud" class="hud"></section>
   <section class="panel"><div class="sec"><span class="ix">01</span><b>상황 판단</b></div><div id="stSit" class="lede"></div></section>
@@ -575,6 +584,7 @@ function renderPred(ps){
 }
 
 async function loadStrategy(){
+  try { const cur = await api("/api/strategy/latest"); if (!$("#nsGoal").value) { $("#nsGoal").value = cur.goal || ""; $("#nsSide").value = cur.side || "더불어민주당"; } } catch (e) {}
   const hud = renderHud();
   const cal = api("/api/calendar").catch(() => ({events: []}));
   let r;
@@ -859,6 +869,38 @@ async function loadScore(){
     `<div class="small muted">${Object.entries(u.by_purpose || {}).map(([k,v]) => `${esc(k)} ${v.calls}회 $${v.cost_usd}`).join(" · ")}</div>`;
 }
 
+
+// 새 정무 전략: 견적(0원) → 사용자가 견적을 보고 실행 → 작업 상태 확인 → 끝나면 화면 갱신
+let NS = {maxKrw: null};
+const nsMsg = (m, cls = "muted") => { $("#nsMsg").className = "small " + cls; $("#nsMsg").textContent = m; };
+$("#nsEst").onclick = async () => {
+  const goal = $("#nsGoal").value.trim(), side = $("#nsSide").value;
+  if (!goal) return nsMsg("목표를 입력하세요", "bad");
+  $("#nsRun").disabled = true; nsMsg("근거를 모으는 중…(무료, 수십 초)");
+  try {
+    const e = await post("/api/strategy/estimate", {goal, side});
+    NS = {maxKrw: e.estimate_krw[1], goal, side};
+    nsMsg(`근거 ${e.n_evidence}개 · 예상 비용 약 ${e.estimate_krw[0].toLocaleString()}~${e.estimate_krw[1].toLocaleString()}원. 실행하려면 '이 비용으로 실행'을 누르세요.`, "warn");
+    $("#nsRun").disabled = false;
+  } catch (err) { nsMsg("견적 실패: " + err.message, "bad"); }
+};
+$("#nsRun").onclick = async () => {
+  if (!NS.maxKrw) return;
+  $("#nsRun").disabled = true; $("#nsEst").disabled = true;
+  try {
+    const j = await post("/api/strategy/run", {goal: NS.goal, side: NS.side, max_krw: NS.maxKrw});
+    nsMsg("분석 중… 3~6분 걸립니다. 이 창을 닫지 마세요.");
+    const t0 = Date.now();
+    const poll = async () => {
+      const s = await api("/api/strategy/job/" + j.job);
+      if (s.status === "running") { nsMsg(`분석 중… ${Math.round((Date.now() - t0) / 1000)}초`); return setTimeout(poll, 5000); }
+      $("#nsEst").disabled = false;
+      if (s.status === "done") { nsMsg(`완료 · 실제 비용 약 ${Math.round((s.cost_usd || 0) * 1400).toLocaleString()}원`, "ok"); NS.maxKrw = null; loadStrategy(); }
+      else nsMsg("실패: " + (s.error || "알 수 없음"), "bad");
+    };
+    poll();
+  } catch (err) { $("#nsEst").disabled = false; nsMsg(err.message, "bad"); }
+};
 (async () => { await loadStatus(); loadStrategy(); await loadCommittees(); await loadSeats(); })().catch(e => { $("#board").innerHTML = `<div class="bad">${esc(e.message)}</div>`; });
 </script>
 </body>

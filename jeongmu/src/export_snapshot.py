@@ -126,6 +126,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
     body = body.replace("alert(", "(m=>{const d=document.getElementById('judge'); if(d) d.insertAdjacentHTML('afterbegin', '<div class=\"warn small\">'+esc(m)+'</div>');})(")
     # 미리보기 페이지는 파일 다운로드가 막혀 있으므로 내보내기 버튼을 안내 문구로 바꾼다
     body = body.replace('<div class="row" id="stExport" style="margin-top:8px"', '<div class="row" id="stExport" hidden style="display:none"')
+    body = body.replace('<section class="panel" id="stNew">', '<section class="panel" id="stNew" hidden style="display:none">')
     asof = snap["/api/status"]["today"]
     data = json.dumps(snap, ensure_ascii=False, default=str).replace("</", "<\\/")
     out = (title + '\n<meta name="claude:viewport-fit-sides" content="cover">\n' + style + "\n"

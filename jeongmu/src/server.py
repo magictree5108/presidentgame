@@ -320,3 +320,67 @@ def strategy_export(fmt: str, run: str | None = None):
              "pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
              "pdf": "application/pdf"}[fmt]
     return FileResponse(p, media_type=media, filename=p.name)
+
+
+# ---- 새 정무 전략 실행(화면에서) ----
+# 비용이 드는 실행이라 두 단계로만 돈다: ①견적(0원) ②사용자가 견적을 보고 '이 비용으로 실행'을 누르면 실행.
+# 실행은 수 분 걸려 백그라운드 스레드로 돌리고, 화면은 작업 상태를 주기적으로 묻는다.
+import threading
+import uuid as _uuid
+
+STRAT_JOBS: dict = {}
+SIDES = ("더불어민주당", "국민의힘", "조국혁신당", "개혁신당", "진보당")
+
+
+class StrategyReq(BaseModel):
+    goal: str
+    side: str
+    max_krw: int | None = None  # 실행 시: 화면에 보여 준 견적 상한(원). 다시 계산한 견적이 이보다 크면 실행하지 않음
+
+
+def _check_strategy_req(r: StrategyReq):
+    if not r.goal.strip() or len(r.goal) > 300:
+        raise HTTPException(400, "목표를 1~300자로 입력하세요")
+    if r.side not in SIDES:
+        raise HTTPException(400, f"관점은 {', '.join(SIDES)} 중 하나")
+
+
+@app.post("/api/strategy/estimate")
+def strategy_estimate(r: StrategyReq):
+    import strategy
+    _check_strategy_req(r)
+    e = strategy.run(r.goal.strip(), r.side, estimate_only=True)
+    return {"n_evidence": e["n_evidence"], "estimate_usd": e["estimate_usd"], "estimate_krw": e["estimate_krw"]}
+
+
+@app.post("/api/strategy/run")
+def strategy_run(r: StrategyReq):
+    import strategy
+    _check_strategy_req(r)
+    if not env("ANTHROPIC_API_KEY"):
+        raise HTTPException(400, "AI 키가 없습니다(.env 의 ANTHROPIC_API_KEY)")
+    if any(j["status"] == "running" for j in STRAT_JOBS.values()):
+        raise HTTPException(409, "이미 실행 중인 분석이 있습니다")
+    est = strategy.run(r.goal.strip(), r.side, estimate_only=True)["estimate_krw"]
+    if r.max_krw is None or est[1] > r.max_krw:
+        raise HTTPException(409, f"견적이 바뀌었습니다(최대 약 {est[1]}원). 비용 확인을 다시 누르세요")
+    jid = _uuid.uuid4().hex[:10]
+    STRAT_JOBS[jid] = {"status": "running", "goal": r.goal, "side": r.side, "estimate_krw": est}
+
+    def work():
+        try:
+            out = strategy.run(r.goal.strip(), r.side)
+            STRAT_JOBS[jid].update(status="done", run_id=out.get("run_id"), cost_usd=out.get("cost_usd"))
+        except Exception as e:  # 실패도 화면에 그대로 알린다(키 없음, 크레딧 부족, 출력 잘림 등)
+            STRAT_JOBS[jid].update(status="error", error=str(e)[:300])
+
+    threading.Thread(target=work, daemon=True).start()
+    return {"job": jid, "estimate_krw": est}
+
+
+@app.get("/api/strategy/job/{jid}")
+def strategy_job(jid: str):
+    j = STRAT_JOBS.get(jid)
+    if not j:
+        raise HTTPException(404, "작업 없음")
+    return j
