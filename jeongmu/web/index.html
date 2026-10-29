@@ -3,18 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>정무상황실</title>
+<title>GAMBIT</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Saira+Stencil+One&display=swap');
 :root{
   --bg:#0b1016; --panel:#121a23; --panel2:#18222d; --line:#253241; --text:#d9e2ec; --dim:#8696a7;
   --accent:#4fb3ff; --warn:#ffb547; --bad:#ff6b6b; --ok:#4cd492;
   --t-rec:#4fb3ff; --t-news:#c792ea; --t-rule:#ffcb6b; --t-prec:#80cbc4; --t-ai:#f78c6c;
+  --dem:#2f7cf6; --ppp:#e5484d; --pres:#e0a526; --down:#ff8a4c; --up:#3ccf91; --gold:#f2c14e;
+  --num:"Chakra Petch","IBM Plex Sans KR",sans-serif;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 -apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.55 "IBM Plex Sans KR",-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  background-image:linear-gradient(#ffffff06 1px,transparent 1px),linear-gradient(90deg,#ffffff06 1px,transparent 1px);background-size:32px 32px}
 header{display:flex;align-items:center;gap:16px;padding:10px 16px;border-bottom:1px solid var(--line);background:#0e151d;position:sticky;top:0;z-index:5;flex-wrap:wrap}
-header h1{font-size:17px;margin:0;letter-spacing:.08em}
-header h1 span{color:var(--accent)}
+header h1{margin:0;display:flex;align-items:center;gap:8px;font:400 22px/1 "Saira Stencil One","Chakra Petch",sans-serif;letter-spacing:.14em}
+header h1 svg{flex:none}
+header h1 small{font:500 10px/1.2 var(--num);letter-spacing:.2em;color:var(--dim);border-left:1px solid var(--line);padding-left:8px}
 nav{display:flex;gap:4px;flex-wrap:wrap}
 nav button{background:none;border:1px solid transparent;color:var(--dim);padding:5px 10px;border-radius:6px;cursor:pointer;font:inherit}
 nav button.on{color:var(--text);border-color:var(--line);background:var(--panel)}
@@ -72,11 +77,187 @@ pre{white-space:pre-wrap;font:12px/1.5 ui-monospace,monospace}
 .tree ul{list-style:none;padding-left:18px;margin:4px 0}
 .tree li{padding:2px 0}
 a{color:var(--accent)}
+
+/* ── GAMBIT 작전판(정무 전략 탭) ───────────────────────── */
+#tab-strat{max-width:1280px;margin:0 auto}
+.num{font-family:var(--num);font-variant-numeric:tabular-nums}
+.sec{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin:0 0 10px}
+.sec b{font:700 13px/1 var(--num);letter-spacing:.16em;color:var(--text)}
+.sec .ix{font:600 11px/1 var(--num);color:var(--gold);letter-spacing:.1em}
+.sec .hint{font-size:11.5px;color:var(--dim)}
+.brk{position:relative}
+.brk::before,.brk::after{content:"";position:absolute;width:10px;height:10px;border:2px solid #4fb3ff66;pointer-events:none}
+.brk::before{top:-1px;left:-1px;border-right:0;border-bottom:0;border-top-left-radius:8px}
+.brk::after{bottom:-1px;right:-1px;border-left:0;border-top:0;border-bottom-right-radius:8px}
+.mission{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:center;background:linear-gradient(110deg,#162334,#121a23 60%);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.mission .seal{width:54px;height:54px;border-radius:50%;border:2px solid var(--gold);display:grid;place-items:center;font:700 11px/1.1 var(--num);color:var(--gold);text-align:center;letter-spacing:.08em}
+.mission .goal{font-size:19px;font-weight:700;line-height:1.35;word-break:keep-all}
+.mission .meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;padding:2px 8px;border-radius:999px;background:#0b1016aa;border:1px solid var(--line);color:var(--dim);white-space:nowrap}
+.pill b{color:var(--text);font-weight:600}
+.lede{font-size:14.5px;line-height:1.75;word-break:keep-all}
+.lede details{margin-top:6px}
+summary{cursor:pointer}
+.more>summary{list-style:none;display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--accent);user-select:none}
+.more>summary::-webkit-details-marker{display:none}
+.more>summary::before{content:"＋";font-family:var(--num)}
+.more[open]>summary::before{content:"－"}
+/* HUD */
+.hud{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media(max-width:1100px){.hud{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.hud{grid-template-columns:1fr}}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;min-width:0;border-top:3px solid var(--c,var(--accent))}
+.tile.vt{position:relative;border-top-color:transparent}
+.tile.vt::before{content:"";position:absolute;left:-1px;right:-1px;top:-3px;height:3px;border-radius:10px 10px 0 0;background:linear-gradient(90deg,var(--dem) 50%,var(--ppp) 50%)}
+.tile h3{margin:0 0 8px;font:600 12px/1.2 "IBM Plex Sans KR",sans-serif;color:var(--dim);letter-spacing:.06em;display:flex;align-items:center;gap:6px}
+.tile h3 i{width:8px;height:8px;border-radius:2px;background:var(--c)}
+.gr{display:grid;grid-template-columns:minmax(0,1fr) auto 96px;gap:8px;align-items:center;padding:5px 0;border-top:1px dashed #25324188}
+.gr:first-of-type{border-top:0}
+.gr .who{font-size:12px;color:var(--dim);line-height:1.2;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gr .who small{display:block;font:500 10.5px/1.3 var(--num);color:#61707f}
+.gr .val{font:700 26px/1 var(--num);text-align:right}
+.gr .val small{font-size:12px;color:var(--dim);margin-left:1px}
+.gr .dl{display:block;font:600 11px/1.2 var(--num);color:var(--dim);text-align:right;margin-top:2px}
+.gr.lead .val{font-size:32px}
+.spark{width:96px;height:34px;display:block;overflow:visible}
+.vs{padding:6px 0;border-top:1px dashed #25324188}
+.vs:first-of-type{border-top:0}
+.vs .hd{display:flex;justify-content:space-between;font-size:11.5px;color:var(--dim);margin-bottom:4px;gap:6px}
+.vs .hd b{color:var(--text);font-weight:600}
+.vsbar{display:flex;gap:2px;height:22px;position:relative}
+.vsbar span{display:flex;align-items:center;font:700 13px/1 var(--num);color:#fff;padding:0 6px;min-width:0}
+.vsbar .d{background:var(--dem);border-radius:4px 0 0 4px}
+.vsbar .k{background:var(--ppp);border-radius:0 4px 4px 0;justify-content:flex-end}
+.vsbar::after{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:2px;background:#0b1016;margin-left:-1px}
+.nodata{font-size:12px;color:var(--dim);padding:10px 0}
+/* 줄다리기 */
+.rope{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;margin-bottom:12px}
+.rope .side{font:700 12px/1.2 var(--num);letter-spacing:.06em;white-space:nowrap}
+.rope .side.dn{color:var(--down)}.rope .side.upc{color:var(--up);text-align:right}
+.rope .side span{display:block;font-size:22px}
+.rope .line{position:relative;height:28px}
+.rope .line::before{content:"";position:absolute;left:0;right:0;top:12px;height:4px;border-radius:2px;background:repeating-linear-gradient(115deg,#a08868 0 6px,#6e5c45 6px 10px)}
+.rope .mid{position:absolute;left:50%;top:0;bottom:0;width:2px;margin-left:-1px;background:#d9e2ec55}
+.rope .knot{position:absolute;top:4px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:var(--gold);border:3px solid #0b1016;box-shadow:0 0 0 2px var(--gold)}
+.tug{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 14px}
+@media(max-width:640px){.tug{grid-template-columns:1fr;gap:14px}}
+.tug .colh{font:700 11px/1 var(--num);letter-spacing:.14em;margin-bottom:6px}
+.tug .dn .colh{color:var(--down);text-align:right}.tug .upc .colh{color:var(--up)}
+.tug .dn{border-right:2px solid #d9e2ec33;padding-right:12px}
+.tug .upc{padding-left:0}
+@media(max-width:640px){.tug .dn{border-right:0;padding-right:0}}
+.pull{margin:0 0 8px}
+.pull>summary{list-style:none;display:block}
+.pull>summary::-webkit-details-marker{display:none}
+.pull .pb{height:26px;display:flex;align-items:center;gap:6px;width:var(--w);border-radius:5px;padding:0 8px;font:700 12px/1 var(--num);color:#0b1016;min-width:64px}
+.pull.dn .pb{margin-left:auto;justify-content:flex-start;background:repeating-linear-gradient(90deg,var(--down) 0 14px,#ff8a4cd0 14px 16px);border-radius:5px 2px 2px 5px}
+.pull.upc .pb{justify-content:flex-end;background:repeating-linear-gradient(270deg,var(--up) 0 14px,#3ccf91d0 14px 16px);border-radius:2px 5px 5px 2px}
+.pull .pn{font-size:13px;font-weight:600;line-height:1.4;margin-top:4px;word-break:keep-all}
+.pull.dn .pn{text-align:right}
+.pull .pn::after{content:" ＋";color:var(--dim);font-weight:400;font-size:11px}
+.pull[open] .pn::after{content:" －"}
+.pull .why{font-size:12.5px;line-height:1.65;color:#b9c6d3;background:var(--panel2);border-radius:6px;padding:8px 10px;margin-top:6px}
+/* 카드 패 */
+.hand{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px;align-items:start}
+@media(max-width:640px){.hand{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;padding:4px 2px 12px;margin:0 -4px}
+  .hand>.gc{flex:0 0 84%;scroll-snap-align:center}}
+.gc{position:relative;background:linear-gradient(180deg,#1b2735,#141d27);border:1px solid #2c3b4c;border-radius:12px;padding:12px 12px 10px;display:flex;flex-direction:column;gap:9px;min-width:0;box-shadow:0 6px 18px #0006}
+.gc.macro{border-color:var(--gold);box-shadow:0 0 0 1px #f2c14e55,0 8px 24px #f2c14e1a,0 6px 18px #0006;background:linear-gradient(180deg,#2a2618,#151c25 55%)}
+.gc .top{display:flex;align-items:center;gap:6px}
+.gc .no{font:700 12px/1 var(--num);color:var(--dim);letter-spacing:.06em}
+.badge{font:700 11px/1 "IBM Plex Sans KR",sans-serif;padding:4px 7px;border-radius:4px;letter-spacing:.04em;white-space:nowrap}
+.badge.macro{background:var(--gold);color:#1a1405}
+.badge.aux{background:#2a3a4c;color:#b7c7d8}
+.gc .kind{margin-left:auto;font-size:11.5px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.gc h3{margin:0;font-size:16px;line-height:1.4;word-break:keep-all}
+.gc.macro h3{font-size:17px}
+.meter .lb{display:flex;justify-content:space-between;font-size:11px;color:var(--dim)}
+.meter .lb b{font:700 15px/1 var(--num);color:var(--text)}
+.mtrack{position:relative;height:12px;border-radius:6px;background:#0b1016;margin:5px 0 2px;border:1px solid #253241}
+.mtrack i{position:absolute;top:1px;bottom:1px;border-radius:4px;background:linear-gradient(90deg,#4fb3ff,#7fd1ff)}
+.gc.macro .mtrack i{background:linear-gradient(90deg,#e0a526,#f7d77a)}
+.mtrack u{position:absolute;top:-2px;bottom:-2px;width:1px;background:#d9e2ec22}
+.mticks{display:flex;justify-content:space-between;font:500 9.5px/1 var(--num);color:#61707f}
+.stats{display:grid;grid-template-columns:1fr 1fr auto;gap:6px}
+.stat{background:#0b101699;border:1px solid #253241;border-radius:6px;padding:5px 7px;min-width:0}
+.stat .l{font-size:10.5px;color:var(--dim);white-space:nowrap}
+.pips{font-size:12px;letter-spacing:1px;white-space:nowrap;line-height:1.3}
+.pips i{font-style:normal;color:#334353}
+.pips.r0 b,.pips.r1 b{color:var(--ok)}.pips.r2 b,.pips.r3 b{color:var(--warn)}.pips.r4 b,.pips.r5 b{color:var(--bad)}
+.stat .wk{font:700 15px/1.2 var(--num)}
+.chain{display:grid;grid-template-columns:minmax(0,1fr) 14px minmax(0,1fr) 14px minmax(0,1fr);align-items:stretch}
+.chain .nd{background:#0b101699;border:1px solid #253241;border-radius:6px;padding:5px 6px;font-size:11.5px;line-height:1.45;cursor:pointer;min-width:0}
+.chain .nd b{display:block;font:700 10px/1.2 var(--num);letter-spacing:.08em;margin-bottom:2px}
+.chain .nd p{margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;color:#b9c6d3}
+.chain .nd.full p{-webkit-line-clamp:unset}
+.chain .nd.me b{color:var(--accent)}.chain .nd.op b{color:var(--ppp)}.chain .nd.re b{color:var(--up)}
+.chain .ar{display:grid;place-items:center;color:var(--dim);font-size:12px}
+.gc details{border-top:1px dashed #2c3b4c;padding-top:7px;margin-top:auto}
+.gc details[open]{font-size:12.5px}
+.gc ol{margin:6px 0;padding-left:18px;line-height:1.6}
+.gc li{margin:3px 0}
+.gc .fit{background:#0b101699;border-left:3px solid var(--gold);padding:6px 8px;border-radius:0 6px 6px 0;margin:6px 0;line-height:1.6}
+.gc .ra{color:#b9c6d3;line-height:1.6}
+/* 타임라인 */
+.tlwrap{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:8px;background:#0d141c}
+.tl{position:relative;min-width:960px}
+.tl .ax{position:relative;height:36px;border-bottom:1px solid var(--line)}
+.tl .ax span{position:absolute;top:6px;font:600 11px/1.2 var(--num);color:var(--dim);transform:translateX(-50%);white-space:nowrap}
+.tl .ax span.m{color:var(--text);top:4px}
+.tl .ax span.m small{display:block;font-size:9px;color:var(--gold);text-align:center}
+.tl .grid u{position:absolute;top:0;bottom:0;width:1px;background:#25324155}
+.tl .grid u.wk{background:#25324199}
+.tl .now{position:absolute;top:0;bottom:0;width:2px;background:var(--gold);z-index:2}
+.tl .now em{position:absolute;bottom:4px;left:4px;font:700 10px/1 var(--num);color:var(--gold);font-style:normal;white-space:nowrap}
+.tl .lane{position:relative}
+.tl .lh{position:sticky;left:0;display:inline-block;font:700 10px/1 var(--num);letter-spacing:.14em;color:var(--dim);background:#0d141c;padding:6px 8px;z-index:3}
+.ev{position:absolute;height:24px;display:flex;align-items:center;gap:5px;padding:0 6px;border-radius:5px;font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;background:#18222d;border:1px solid;z-index:1}
+.ev:hover,.ev.sel{z-index:4;background:#22303f}
+.ev .k{font:700 10px/1 var(--num);opacity:.85}
+.ev.확정{border-color:var(--ok);color:#d7f5e6;box-shadow:inset 3px 0 0 var(--ok)}
+.ev.예정{border-color:var(--warn);color:#fbe7c4;box-shadow:inset 3px 0 0 var(--warn)}
+.ev.관측{border-color:#8696a7;border-style:dashed;color:#b9c6d3}
+.ev.cd{border-color:#3b87d6;color:#fff;background:#1d5a9c;border-radius:12px}
+.ev.cd:hover,.ev.cd.sel{background:#2569b3}
+.ev.cd.macro{border-color:var(--gold);color:#1a1405;background:var(--gold)}
+.ev.cd.macro:hover,.ev.cd.macro.sel{background:#f7d77a}
+.ev .span{position:absolute;left:0;bottom:0;height:3px;background:currentColor;opacity:.35}
+.tllegend{display:flex;flex-wrap:wrap;gap:10px;font-size:11.5px;color:var(--dim);margin-top:8px}
+.tllegend i{display:inline-block;width:14px;height:10px;border-radius:2px;border:1px solid;margin-right:4px;vertical-align:-1px}
+.tlinfo{margin-top:8px;font-size:12.5px;min-height:20px;color:#b9c6d3;line-height:1.6}
+/* 시나리오 */
+.sbar{display:flex;gap:2px;height:40px;margin-bottom:12px}
+.sbar div{display:flex;flex-direction:column;justify-content:center;padding:0 8px;color:#fff;min-width:0;overflow:hidden;white-space:nowrap}
+.sbar div:first-child{border-radius:6px 0 0 6px}.sbar div:last-child{border-radius:0 6px 6px 0}
+.sbar b{font:700 16px/1 var(--num)}
+.sbar small{font-size:11px;opacity:.9;overflow:hidden;text-overflow:ellipsis}
+.scn{display:grid;grid-template-columns:62px minmax(0,1fr);gap:10px;padding:10px 0;border-top:1px dashed var(--line)}
+.scn .p{font:700 22px/1 var(--num);border-left:4px solid var(--c);padding-left:8px}
+.scn .p small{display:block;font:500 11px/1.4 "IBM Plex Sans KR",sans-serif;color:var(--dim);margin-top:4px}
+.scn h4{margin:0 0 6px;font-size:14px}
+.path{display:flex;flex-wrap:wrap;align-items:center;gap:4px 2px}
+.path span{font-size:12px;line-height:1.45;background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:3px 10px;word-break:keep-all}
+.path .ar{background:none;border:0;padding:0 2px;color:var(--dim)}
+.path .end{border-color:var(--c);color:var(--text)}
+/* 주시·예측 */
+.two{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:12px}
+@media(max-width:900px){.two{grid-template-columns:1fr}}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.wchip{font-size:12px;line-height:1.45;padding:4px 10px 4px 8px;border-radius:6px;background:var(--panel2);border:1px solid var(--line);word-break:keep-all}
+.wchip::before{content:"◉ ";color:var(--accent);font-size:10px}
+.pchip{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;align-items:center;padding:7px 10px;border-radius:8px;background:var(--panel2);border:1px solid var(--line);margin-bottom:6px}
+.pchip .t{font-size:12.5px;font-weight:600;min-width:0}
+.pchip .t small{display:block;font-size:11px;color:var(--dim);font-weight:400}
+.pchip .r{font:700 15px/1 var(--num);text-align:right}
+.pchip .r small{display:block;font:500 10.5px/1.3 var(--num);color:var(--dim)}
+.pchip .rg{grid-column:1/-1;position:relative;height:6px;background:#0b1016;border-radius:3px;margin-top:4px}
+.pchip .rg i{position:absolute;top:0;bottom:0;border-radius:3px;background:var(--c,var(--accent))}
+.evl div{padding:4px 0;border-bottom:1px dashed var(--line);line-height:1.55}
 </style>
 </head>
 <body>
 <header>
-  <h1>정무<span>상황실</span></h1>
+  <h1 aria-label="GAMBIT"><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><rect x="4" y="4" width="14" height="14" rx="2" transform="rotate(45 11 11)" fill="none" stroke="#f2c14e" stroke-width="2"/><rect x="8" y="8" width="6" height="6" rx="1" transform="rotate(45 11 11)" fill="#4fb3ff"/></svg>GAMBIT<small>정무 작전판</small></h1>
   <nav id="tabs">
     <button data-tab="strat" class="on">정무 전략</button>
     <button data-tab="room">작전상황실</button>
@@ -89,13 +270,18 @@ a{color:var(--accent)}
 </header>
 
 <main id="tab-strat" class="on">
-  <section class="panel"><h2>과제</h2><div id="stHead"><div class="muted small">불러오는 중…</div></div></section>
-  <section class="panel"><h2>상황 판단</h2><div id="stSit"></div></section>
-  <section class="panel"><h2>진단: 무엇이 지지율을 움직이나</h2><div id="stDiag"></div></section>
-  <section class="panel"><h2>전략 카드 <span class="tag AI추정">AI 추정</span></h2><div id="stCards" class="cards"></div></section>
-  <section class="panel"><h2>전개 시나리오 <span class="tag AI추정">AI 추정</span></h2><div id="stScen"></div></section>
-  <section class="panel"><h2>주시할 지표 · 채점 예측</h2><div id="stWatch"></div></section>
-  <section class="panel"><h2>근거 목록</h2><div id="stEv" class="small"></div></section>
+  <section id="stHead" class="mission brk"><div class="muted small" style="grid-column:1/-1">불러오는 중…</div></section>
+  <section id="stHud" class="hud"></section>
+  <section class="panel"><div class="sec"><span class="ix">01</span><b>상황 판단</b></div><div id="stSit" class="lede"></div></section>
+  <section class="panel"><div class="sec"><span class="ix">02</span><b>줄다리기: 무엇이 지지율을 당기나</b><span class="hint">막대 길이 = 비중 · 눌러서 근거 보기</span></div><div id="stDiag"></div></section>
+  <section class="panel"><div class="sec"><span class="ix">03</span><b>전략 카드</b> <span class="tag AI추정">AI 추정</span><span class="hint">거시 카드가 판을 바꾸는 수 · 카드를 펼쳐 세부 실행</span></div><div id="stCards" class="hand"></div></section>
+  <section class="panel"><div class="sec"><span class="ix">04</span><b>작전 타임라인</b><span class="hint">오늘부터 60일 · 일정을 눌러 자세히</span></div><div id="stTl"></div></section>
+  <section class="panel"><div class="sec"><span class="ix">05</span><b>전개 시나리오</b> <span class="tag AI추정">AI 추정</span></div><div id="stScen"></div></section>
+  <div class="two">
+    <section class="panel"><div class="sec"><span class="ix">06</span><b>주시할 지표</b></div><div id="stWatch" class="chips"></div></section>
+    <section class="panel"><div class="sec"><span class="ix">07</span><b>채점 예측</b><span class="hint">기한이 지나면 실제 조사로 채점</span></div><div id="stPred"></div></section>
+  </div>
+  <section class="panel"><details class="more" id="stEvWrap"><summary>근거 목록</summary><div id="stEv" class="small evl" style="margin-top:8px"></div></details></section>
 </main>
 
 <main id="tab-room">
@@ -209,34 +395,211 @@ document.querySelectorAll("#tabs button").forEach(b => b.onclick = () => {
   ({actors:loadActors, gov:loadGov, rules:loadRules, score:loadScore, strat:loadStrategy, room:()=>{ if(!S.seats) loadSeats(); }})[b.dataset.tab]?.();
 });
 
+// ── GAMBIT 작전판 ──
+const DAY = 86400000;
+const n1 = v => v == null || v === "" || isNaN(v) ? "—" : (+v).toFixed(1);
+const ymd = s => { const m = String(s || "").match(/(\d{4})-(\d{2})-(\d{2})/); return m ? new Date(+m[1], m[2] - 1, +m[3]) : null; };
+const md = s => { const d = s instanceof Date ? s : ymd(s); return d ? `${d.getMonth() + 1}/${d.getDate()}` : esc(s || ""); };
+const BOARD = [["대통령국정:긍정", "대통령 국정 긍정", "--pres"], ["정당:더불어민주당", "더불어민주당", "--dem"], ["정당:국민의힘", "국민의힘", "--ppp"]];
+const SCEN_C = ["#1fa98d", "#5574f0", "#d06d22", "#a066e8"];
+
+function spark(xs, c){
+  const W = 96, H = 34, v = xs.map(x => +x.value), lo = Math.min(...v), hi = Math.max(...v), r = (hi - lo) || 1;
+  const pt = (x, i) => [(xs.length < 2 ? W : i * W / (xs.length - 1)).toFixed(1), (H - 4 - (x - lo) / r * (H - 8)).toFixed(1)];
+  const ps = v.map(pt), [lx, ly] = ps[ps.length - 1];
+  return `<svg class="spark" viewBox="0 0 ${W} ${H}" aria-hidden="true">
+    <polyline points="${ps.map(p => p.join(",")).join(" ")}" fill="none" stroke="var(${c})" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="${lx}" cy="${ly}" r="4" fill="var(${c})" stroke="#121a23" stroke-width="2"/>
+    ${ps.map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="7" fill="transparent"><title>${esc(xs[i].date)} ${n1(xs[i].value)}%</title></circle>`).join("")}</svg>`;
+}
+
+function gaugeRow(pl, xs, c, lead){
+  const last = xs[xs.length - 1], prev = xs[xs.length - 2];
+  const d = prev ? last.value - prev.value : null;
+  const dl = d == null ? "" : Math.abs(d) < 0.05 ? "＝ 변화 없음" : `${d > 0 ? "▲" : "▼"} ${Math.abs(d).toFixed(1)}`;
+  return `<div class="gr${lead ? " lead" : ""}"><div class="who">${esc(pl)}<small>${md(last.date)} · 최근 ${xs.length}회</small></div>
+    <div class="val">${n1(last.value)}<small>%</small><span class="dl">${dl}</span></div>${spark(xs, c)}</div>`;
+}
+
+async function renderHud(){
+  let b = null;
+  try { b = await api("/api/polls/board"); } catch (e) { /* 이전 서버: 게이지 생략 */ }
+  S.board = b || {};
+  if (!b){ $("#stHud").innerHTML = ""; return; }
+  const tiles = BOARD.map(([k, label, c]) => { const rows = Object.entries(b[k] || {});
+    return `<div class="tile" style="--c:var(${c})"><h3><i></i>${label}</h3>${rows.length
+      ? rows.map(([pl, xs], i) => gaugeRow(pl, xs, c, i === 0)).join("") : `<div class="nodata">수집된 조사 없음</div>`}</div>`; });
+  const D = b["정당:더불어민주당"] || {}, K = b["정당:국민의힘"] || {};
+  const both = Object.keys(D).filter(pl => K[pl]);
+  tiles.push(`<div class="tile vt"><h3><i style="background:var(--dem)"></i>민주 vs 국힘<i style="background:var(--ppp)"></i></h3>${both.length ? both.map(pl => {
+    const d = D[pl][D[pl].length - 1], k = K[pl][K[pl].length - 1], g = k.value - d.value;
+    const share = d.value / ((d.value + k.value) || 1) * 100;
+    const gl = Math.abs(g) < 0.05 ? "동률" : `${g > 0 ? "국힘" : "민주"} +${Math.abs(g).toFixed(1)}%p`;
+    return `<div class="vs"><div class="hd"><span><b>${esc(pl)}</b> ${md(k.date > d.date ? k.date : d.date)}</span><b class="num">${gl}</b></div>
+      <div class="vsbar" title="${esc(pl)}: 민주 ${n1(d.value)}% · 국힘 ${n1(k.value)}%"><span class="d" style="width:${share.toFixed(1)}%">${n1(d.value)}</span><span class="k" style="width:${(100 - share).toFixed(1)}%">${n1(k.value)}</span></div></div>`; }).join("")
+    : `<div class="nodata">두 정당을 함께 조사한 기관 없음</div>`}</div>`);
+  $("#stHud").innerHTML = tiles.join("");
+}
+
+function renderDiag(diag, refs){
+  const W = {상: 3, 중: 2, 하: 1}, LEN = {상: 100, 중: 68, 하: 40};
+  const isDown = d => String(d.direction || "").includes("하락");
+  const byW = (a, b) => (W[b.weight] || 0) - (W[a.weight] || 0);
+  const dn = diag.filter(isDown).sort(byW), up = diag.filter(d => !isDown(d)).sort(byW);
+  const sum = xs => xs.reduce((a, d) => a + (W[d.weight] || 1), 0);
+  const sd = sum(dn), su = sum(up), pos = 50 + (su - sd) / ((su + sd) || 1) * 45;
+  const item = (d, cls) => `<details class="pull ${cls}"><summary>
+      <div class="pb" style="--w:${LEN[d.weight] || 40}%">${cls === "dn" ? `◀ ${esc(d.weight || "")}` : `${esc(d.weight || "")} ▶`}</div>
+      <div class="pn">${esc(d.driver)}</div></summary><div class="why">${esc(d.rationale)} ${refs(d)}</div></details>`;
+  return `<div class="rope" role="img" aria-label="하락 압력 ${sd}, 상승 압력 ${su}">
+      <div class="side dn">◀ 하락 압력<span class="num">${sd}</span></div>
+      <div class="line"><div class="mid"></div><div class="knot" style="left:${pos.toFixed(1)}%"></div></div>
+      <div class="side upc">상승 압력 ▶<span class="num">${su}</span></div></div>
+    <div class="tug"><div class="dn"><div class="colh">하락 요인 ${dn.length}</div>${dn.map(d => item(d, "dn")).join("") || `<div class="nodata">없음</div>`}</div>
+      <div class="upc"><div class="colh">상승 요인 ${up.length}</div>${up.map(d => item(d, "upc")).join("") || `<div class="nodata">없음</div>`}</div></div>
+    <div class="small muted" style="margin-top:4px">압력 점수: 비중 상 3 · 중 2 · 하 1을 합산(AI 진단의 비중을 옮긴 것).</div>`;
+}
+
+function pips(v, label){
+  if (v == null || isNaN(v)) return `<div class="stat"><div class="l">${label}</div><div class="pips">—</div></div>`;
+  const n = Math.max(0, Math.min(5, Math.round(v)));
+  return `<div class="stat" title="${label} ${n}/5"><div class="l">${label}</div><div class="pips r${n}"><b>${"●".repeat(n)}</b><i>${"○".repeat(5 - n)}</i></div></div>`;
+}
+
+function gameCard(c, refs){
+  const macro = c.scale === "거시";
+  const num = v => v == null || v === "" || isNaN(v) ? null : +v;
+  const lo = num(c.expected_pp_low), hi = num(c.expected_pp_high);
+  const L = Math.max(0, Math.min(5, lo ?? hi ?? 0)), H = Math.max(L, Math.min(5, hi ?? lo ?? 0));
+  const eff = lo == null && hi == null ? "—" : lo === hi || hi == null ? `+${lo}` : lo == null ? `+${hi}` : `+${lo}~${hi}`;
+  const steps = c.steps || [];
+  const node = (cls, h, t) => t ? `<div class="nd ${cls}" onclick="this.classList.toggle('full')" title="눌러서 전체 보기"><b>${h}</b><p>${esc(t)}</p></div>` : `<div class="nd ${cls}"><b>${h}</b><p class="muted">—</p></div>`;
+  return `<article class="gc${macro ? " macro" : ""}">
+    <div class="top"><span class="no">C${String(c._i).padStart(2, "0")}</span>${c.scale ? `<span class="badge ${macro ? "macro" : "aux"}">${macro ? "★ 거시" : esc(c.scale)}</span>` : ""}<span class="kind">${esc(c.kind || "")}</span></div>
+    <h3>${esc(c.name)}</h3>
+    ${c.target_audience ? `<div class="small muted" style="margin-top:-4px">대상 · ${esc(c.target_audience)}</div>` : ""}
+    <div class="meter"><div class="lb"><span>기대 효과</span><span><b>${eff}</b> %p</span></div>
+      <div class="mtrack" role="img" aria-label="기대 효과 ${eff}%p (0~5%p 눈금)">${[1, 2, 3, 4].map(t => `<u style="left:${t * 20}%"></u>`).join("")}<i style="left:${L * 20}%;width:${Math.max((H - L) * 20, 2)}%"></i></div>
+      <div class="mticks"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5%p</span></div></div>
+    <div class="stats">${pips(c.legal_risk, "법적 리스크")}${pips(c.backlash_risk, "역풍")}<div class="stat"><div class="l">기간</div><div class="wk">${c.weeks ?? "—"}<span class="small muted">주</span></div></div></div>
+    <div class="chain">${node("me", "우리 수", steps[0])}<div class="ar">▶</div>${node("op", "상대 대응", c.opponent_counter)}<div class="ar">▶</div>${node("re", "재반격", c.counter_to_counter)}</div>
+    <details><summary class="small">세부 실행 ${steps.length}단계${c.principal_fit ? " · 의뢰인 수용성" : ""} · 근거</summary>
+      <ol>${steps.map(x => `<li>${esc(x)}</li>`).join("")}</ol>
+      ${c.principal_fit ? `<div class="fit"><b>의뢰인 수용성</b> ${esc(c.principal_fit)}</div>` : ""}
+      <div class="ra">${esc(c.rationale || "")} ${refs(c)}</div></details></article>`;
+}
+
+function stepDates(text, on){
+  // 단계 문장 속 '11/4', '11/4~5', '11/15~30', '11/2~11/6' 같은 날짜를 뽑는다
+  const out = [], re = /(?<![\d/])(\d{1,2})\/(\d{1,2})(?:\s*[~∼–-]\s*(?:(\d{1,2})\/)?(\d{1,2}))?(?![\d/])/g;
+  const base = on || new Date();
+  const mk = (m, d) => { if (m < 1 || m > 12 || d < 1 || d > 31) return null;
+    let x = new Date(base.getFullYear(), m - 1, d); if (x - base < -45 * DAY) x = new Date(base.getFullYear() + 1, m - 1, d); return x; };
+  let m;
+  while ((m = re.exec(text))){
+    const s = mk(+m[1], +m[2]); if (!s) continue;
+    let e = m[4] ? mk(m[3] ? +m[3] : +m[1], +m[4]) : null;
+    if (e && (e < s || e - s > 40 * DAY)) e = null;
+    out.push({s, e});
+  }
+  return out;
+}
+
+function renderTimeline(events, cards, on){
+  const t = new Date(), t0 = new Date(t.getFullYear(), t.getMonth(), t.getDate());
+  const N = 60, PX = 16, LP = 14, LANE = 30, CW = {ev: 176, cd: 136};
+  const X = d => LP + (d - t0) / DAY * PX, t1 = new Date(+t0 + N * DAY);
+  const items = [];
+  (events || []).forEach(e => { const s = ymd(e.date), en = ymd(e.end) || s; if (!s || en < t0 || s > t1) return;
+    items.push({lane: "ev", s: s < t0 ? t0 : s, e: en > t1 ? t1 : en, raw: e, cls: e.status || "예정",
+      label: `<span class="k">${md(s)}${e.end ? "~" + md(e.end) : ""}</span>${esc(e.title)}`, tip: `${e.date}${e.end ? "~" + e.end : ""} ${e.title}`}); });
+  cards.forEach(c => { const seen = new Set();
+    (c.steps || []).forEach(st => stepDates(st, on).forEach(({s, e}) => { const k = +s; if (seen.has(k) || s < t0 || s > t1) return; seen.add(k);
+      items.push({lane: "cd", s, e: e && e > t1 ? t1 : e || s, card: c, step: st, cls: "cd" + (c.scale === "거시" ? " macro" : ""),
+        label: `<span class="k">C${String(c._i).padStart(2, "0")} ${md(s)}</span>${esc(c.name)}`, tip: `${md(s)} ${c.name}: ${st}`}); })); });
+  const place = lane => { const ends = []; return items.filter(x => x.lane === lane).sort((a, b) => a.s - b.s).map(x => {
+    const x0 = X(x.s), sw = ((x.e - x.s) / DAY + 1) * PX, w = Math.max(sw, CW[lane]);
+    let r = ends.findIndex(v => v < x0 - 2); if (r < 0){ r = ends.length; ends.push(0); }
+    ends[r] = x0 + w; Object.assign(x, {x0, w, sw, row: r}); return x; }); };
+  const evs = place("ev"), cds = place("cd");
+  const H = xs => (Math.max(1, ...xs.map(x => x.row + 1)) * LANE) + 30;
+  const H2 = xs => H(xs) + 18; // 아래 '오늘' 표식 자리
+  const width = LP + N * PX + CW.ev;
+  let ax = "", grid = "";
+  for (let i = 0; i <= N; i++){
+    const d = new Date(+t0 + i * DAY), x = LP + i * PX;
+    grid += `<u class="${d.getDay() === 1 ? "wk" : ""}" style="left:${x}px"></u>`;
+    if (d.getDate() === 1) ax += `<span class="m" style="left:${x}px">${d.getMonth() + 1}월<small>1일</small></span>`;
+    else if (i % 7 === 0 && i > 0 && ![-2, -1, 1, 2].some(k => new Date(+d + k * DAY).getDate() === 1)) ax += `<span style="left:${x}px">${md(d)}</span>`;
+  }
+  const chip = (x, i) => `<div class="ev ${esc(x.cls)}" data-i="${i}" style="left:${x.x0}px;top:${26 + x.row * LANE}px;width:${x.w}px" title="${esc(x.tip)}">${x.label}${x.sw > PX ? `<span class="span" style="width:${x.sw}px"></span>` : ""}</div>`;
+  const all = [...evs, ...cds];
+  const html = `<div class="tlwrap"><div class="tl" style="width:${width}px">
+      <div class="grid" style="position:absolute;inset:0">${grid}</div>
+      <div class="now" style="left:${LP - 1}px"><em>오늘 ${md(t0)}</em></div>
+      <div class="ax">${ax}</div>
+      <div class="lane" style="height:${H(evs)}px"><span class="lh">정치 일정</span>${evs.map(x => chip(x, all.indexOf(x))).join("")}</div>
+      <div class="lane" style="height:${H2(cds)}px;border-top:1px solid var(--line)"><span class="lh">카드 실행일</span>${cds.map(x => chip(x, all.indexOf(x))).join("")}
+        ${cds.length ? "" : `<div class="nodata" style="position:absolute;left:${LP + 8}px;top:26px">카드 단계에서 60일 안의 날짜를 찾지 못함</div>`}</div>
+    </div></div>
+    <div class="tllegend"><span><i style="border-color:var(--ok);background:#4cd49233"></i>확정</span><span><i style="border-color:var(--warn);background:#ffb54733"></i>예정</span><span><i style="border-color:#8696a7;border-style:dashed"></i>관측(보도 속 전망)</span><span><i style="border-color:var(--gold);background:var(--gold);border-radius:6px"></i>거시 카드</span><span><i style="border-color:#3b87d6;background:#1d5a9c;border-radius:6px"></i>보조 카드</span></div>
+    <div class="tlinfo" id="tlInfo">일정이나 카드 표식을 누르면 내용이 여기에 표시됩니다.</div>`;
+  $("#stTl").innerHTML = html;
+  $("#stTl").onclick = ev => { const el = ev.target.closest(".ev"); if (!el) return;
+    $("#stTl").querySelectorAll(".ev.sel").forEach(x => x.classList.remove("sel")); el.classList.add("sel");
+    const x = all[+el.dataset.i];
+    if (x.raw){ const e = x.raw, link = /^https?:/.test(e.source || "") ? e.source.split(/\s*;\s*/).map(u => `<a href="${esc(u)}" target="_blank" rel="noopener">출처</a>`).join(" ") : `<span class="muted">${esc(e.source || "")}</span>`;
+      $("#tlInfo").innerHTML = `<b class="num">${esc(e.date)}${e.end ? " ~ " + esc(e.end) : ""}</b> <span class="pill">${esc(e.status || "")}</span> <span class="pill">${esc(e.kind || "")}</span> ${e.label ? tag(e.label) : ""}<br>${esc(e.title)} ${link}`; }
+    else $("#tlInfo").innerHTML = `<b class="num">C${String(x.card._i).padStart(2, "0")} ${md(x.s)}</b> <b>${esc(x.card.name)}</b><br>${esc(x.step)}`;
+  };
+}
+
+function renderScen(sc, refs){
+  const tot = sc.reduce((a, x) => a + (+x.probability || 0), 0) || 1;
+  const seg = sc.map((x, i) => { const p = (+x.probability || 0) / tot;
+    return `<div style="flex:${p} 1 0;background:${SCEN_C[i % SCEN_C.length]}" title="${esc(x.name)} ${Math.round((+x.probability || 0) * 100)}%">${p >= .06 ? `<b>${Math.round((+x.probability || 0) * 100)}%</b>` : ""}${p >= .16 ? `<small>${esc(x.name)}</small>` : ""}</div>`; }).join("");
+  return `<div class="sbar" role="img" aria-label="시나리오 확률">${seg}</div>` + sc.map((x, i) => `<div class="scn" style="--c:${SCEN_C[i % SCEN_C.length]}">
+      <div class="p num">${Math.round((+x.probability || 0) * 100)}%<small>확률</small></div>
+      <div><h4>${esc(x.name)} ${refs(x)}</h4><div class="path">${(x.path || []).map(s => `<span>${esc(s)}</span>`).join(`<span class="ar">→</span>`)}${x.end_state ? `<span class="ar">⇒</span><span class="end"><b>결말</b> ${esc(x.end_state)}</span>` : ""}</div></div></div>`).join("");
+}
+
+function renderPred(ps){
+  const keyOf = p => /대통령/.test(p.target_kind + p.target) ? ["대통령국정:긍정", "--pres"] : /국민의힘/.test(p.target) ? ["정당:국민의힘", "--ppp"] : /민주/.test(p.target) ? ["정당:더불어민주당", "--dem"] : [null, "--accent"];
+  const MAX = 60;
+  return ps.map(p => { const [k, c] = keyOf(p), xs = k && S.board?.[k]?.[p.pollster], now = xs ? xs[xs.length - 1].value : null;
+    return `<div class="pchip" style="--c:var(${c})"><div class="t">${esc(p.pollster)}<small>${esc(p.target_kind)} · ${esc(p.target)}</small></div>
+      <div class="r">${p.low}~${p.high}%<small>~${md(p.by_date)}${now != null ? ` · 현재 ${n1(now)}` : ""}</small></div>
+      <div class="rg" title="0~${MAX}% 눈금"><i style="left:${p.low / MAX * 100}%;width:${Math.max(1, (p.high - p.low) / MAX * 100)}%"></i>${now != null ? `<i style="left:calc(${Math.min(100, now / MAX * 100)}% - 1px);width:2px;background:#fff;top:-3px;bottom:-3px"></i>` : ""}</div></div>`; }).join("")
+    || `<div class="nodata">예측 없음</div>`;
+}
+
 async function loadStrategy(){
+  const hud = renderHud();
+  const cal = api("/api/calendar").catch(() => ({events: []}));
   let r;
-  try { r = await api("/api/strategy/latest"); } catch (e) { $("#stHead").innerHTML = `<div class="empty">${esc(e.message)}</div>`; return; }
+  try { r = await api("/api/strategy/latest"); } catch (e) {
+    $("#stHead").innerHTML = `<div class="empty" style="grid-column:1/-1">${esc(e.message)}</div>`;
+    await hud; renderTimeline((await cal).events, [], null); return; }
   const ev = r.evidence || [];
   const refs = x => x.weak ? `<span class="tag 약함">근거 약함</span>` : refList(x.refs, ev);
-  $("#stHead").innerHTML = `<div class="big" style="font-size:18px">${esc(r.goal)}</div>
-    <div class="small muted">관점: <b>${esc(r.side)}</b> · 기준일 ${esc(r.on)} · 근거 ${ev.length}개 · 비용 $${r.cost_usd} · 실행 ID ${esc(r.run_id)}</div>
-    <div class="small muted">여론조사 수치는 언론 보도에서 자동 추출(조사기관별 방식 차이 큼, 같은 기관 추세로만 비교). 전략·확률·효과는 AI 추정.</div>`;
-  $("#stSit").innerHTML = `<div class="small" style="line-height:1.7">${esc(r.situation.text)} ${refs(r.situation)}</div>`;
-  $("#stDiag").innerHTML = `<table class="small"><tr><th>방향</th><th>비중</th><th>요인</th><th>근거·논리</th></tr>${r.diagnosis.map(d =>
-    `<tr><td class="${d.direction === "하락 요인" ? "bad" : "ok"}">${esc(d.direction)}</td><td>${esc(d.weight)}</td><td><b>${esc(d.driver)}</b></td><td>${esc(d.rationale)} ${refs(d)}</td></tr>`).join("")}</table>`;
-  $("#stCards").innerHTML = r.strategies.map(c => `<div class="card">
-    <div class="small muted">${c.scale ? `<b>${esc(c.scale)}</b> · ` : ""}${esc(c.kind)} · 대상: ${esc(c.target_audience)}</div>
-    <h3>${esc(c.name)}</h3>
-    <div><span class="chip2">기대 ${c.expected_pp_low}~${c.expected_pp_high}%p / ${c.weeks}주</span><span class="chip2 risk${c.legal_risk}">법적 리스크 ${c.legal_risk}/5</span><span class="chip2 risk${c.backlash_risk}">역풍 ${c.backlash_risk}/5</span></div>
-    <ol class="small">${c.steps.map(x => `<li>${esc(x)}</li>`).join("")}</ol>
-    <div class="small"><b>상대 대응</b> ${esc(c.opponent_counter)}</div>
-    <div class="small"><b>재반격</b> ${esc(c.counter_to_counter)}</div>
-    ${c.principal_fit ? `<div class="small"><b>의뢰인 수용성</b> ${esc(c.principal_fit)}</div>` : ""}
-    <div class="small muted" style="margin-top:4px">${esc(c.rationale)} ${refs(c)}</div></div>`).join("");
-  $("#stScen").innerHTML = r.scenarios.map(x => `<div style="margin-bottom:10px"><div class="small"><b>${Math.round(x.probability * 100)}% · ${esc(x.name)}</b> ${refs(x)}</div>
-    <div class="bar"><i style="width:${Math.round(x.probability * 100)}%"></i></div>
-    <div class="small muted">${x.path.map(esc).join(" → ")}</div><div class="small">결말: ${esc(x.end_state)}</div></div>`).join("");
-  $("#stWatch").innerHTML = `<ul class="small">${r.watch.map(w => `<li>${esc(w)}</li>`).join("")}</ul>
-    <table class="small"><tr><th>조사기관</th><th>대상</th><th>기한</th><th>예측 범위</th></tr>${r.predictions.map(p =>
-    `<tr><td>${esc(p.pollster)}</td><td>${esc(p.target_kind)} ${esc(p.target)}</td><td>${esc(p.by_date)}</td><td>${p.low}~${p.high}%</td></tr>`).join("")}</table>
-    <div class="small muted">기한이 지나면 실제 조사로 채점해 '적중 기록'에 남깁니다.</div>`;
-  $("#stEv").innerHTML = ev.map(e => `<div><b>${e.ref}</b> ${tag(e.label)} ${esc(e.text)} ${e.link ? `<a href="${esc(e.link)}" target="_blank" rel="noopener">링크</a>` : ""}</div>`).join("");
+  $("#stHead").innerHTML = `<div class="seal">작전<br>목표</div><div style="min-width:0"><div class="goal">${esc(r.goal)}</div>
+    <div class="meta"><span class="pill">관점 <b>${esc(r.side)}</b></span><span class="pill">기준일 <b class="num">${esc(r.on)}</b></span><span class="pill">근거 <b class="num">${ev.length}</b>개</span>${r.cost_usd != null ? `<span class="pill">비용 <b class="num">$${esc(r.cost_usd)}</b></span>` : ""}${r.run_id ? `<span class="pill num">${esc(r.run_id)}</span>` : ""}</div>
+    <div class="small muted" style="margin-top:6px">여론조사는 언론 보도에서 자동 추출 — 기관마다 방식이 크게 달라 같은 기관 안에서만 비교하세요. 전략·확률·효과는 AI 추정.</div></div>`;
+  const sit = r.situation || {}, sents = String(sit.text || "").split(/(?<=[다요](?:\[E\d+\])*\.)\s+/);
+  $("#stSit").innerHTML = sents.length > 2
+    ? `<div>${esc(sents.slice(0, 2).join(" "))}</div><details class="more"><summary>전문 보기 (${sents.length - 2}문장 더)</summary><div style="margin-top:6px;color:#b9c6d3">${esc(sents.slice(2).join(" "))} ${refs(sit)}</div></details>`
+    : `<div>${esc(sit.text || "")} ${refs(sit)}</div>`;
+  $("#stDiag").innerHTML = renderDiag(r.diagnosis || [], refs);
+  const cards = (r.strategies || []).map((c, i) => ({...c, _i: i + 1}));
+  const hand = [...cards].sort((a, b) => (b.scale === "거시") - (a.scale === "거시") || a._i - b._i);
+  $("#stCards").innerHTML = hand.map(c => gameCard(c, refs)).join("") || `<div class="nodata">카드 없음</div>`;
+  $("#stScen").innerHTML = renderScen(r.scenarios || [], refs);
+  $("#stWatch").innerHTML = (r.watch || []).map(w => `<span class="wchip">${esc(w)}</span>`).join("") || `<div class="nodata">없음</div>`;
+  await hud;
+  $("#stPred").innerHTML = renderPred(r.predictions || []);
+  $("#stEvWrap summary").textContent = `근거 목록 · ${ev.length}개`;
+  $("#stEv").innerHTML = ev.map(e => `<div><b class="num">${esc(e.ref)}</b> ${tag(e.label || "")} ${esc(e.text)} ${e.link ? `<a href="${esc(e.link)}" target="_blank" rel="noopener">링크</a>` : ""}</div>`).join("");
+  renderTimeline((await cal).events, cards, ymd(r.on));
 }
 
 async function loadStatus(){

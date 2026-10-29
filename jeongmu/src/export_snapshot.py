@@ -108,14 +108,16 @@ def main():
     title = re.search(r"<title>.*?</title>", html, re.S).group(0)
     style = re.search(r"<style>.*?</style>", html, re.S).group(0)
     body = re.search(r"<body>(.*)</body>", html, re.S).group(1)
-    style = style.replace("<style>", """<style>
+    # @import 는 스타일 맨 앞에 있어야 하므로 덧붙이는 규칙은 @import 줄 뒤에 넣는다
+    head = re.match(r"<style>\s*(?:@import\s+(?:url\([^)]*\)|[^;])*;\s*)*", style).group(0)
+    style = head + """
 :root{color-scheme:dark}
 body{background:#0b1016}
 main{padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
 header{padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));top:env(safe-area-inset-top, 0px)}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top, 0px);z-index:10;background:#0e151d}
 .snapbar{background:#1d2a12;color:#cfe8a9;font-size:12px;padding:6px max(16px, env(safe-area-inset-left, 0px));border-bottom:1px solid #2f4520}
-""", 1)
+""" + style[len(head):]
     # prompt()·alert() 는 게시 페이지에서 동작하지 않으므로 워게임 버튼을 막는다
     body = body.replace('<button class="act" id="wgBtn">워게임 시작</button>',
                         '<button class="act" id="wgBtn" disabled title="내 PC 실행에서 가능">워게임(PC 전용)</button>')
