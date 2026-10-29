@@ -251,6 +251,8 @@ def constraints_text() -> str:
     for key, title in (("red_lines", "레드라인(어기면 안 됨)"), ("closed_issues", "종료된 이슈(쓰지 말 것)"),
                        ("fatigued_frames", "피로한 프레임(쓰지 말 것)"), ("banned_card_patterns", "금지 카드 유형")):
         parts.append(title + ":\n" + "\n".join(f"- {x}" for x in c.get(key, [])))
+    if c.get("analysis_standard"):
+        parts.append("분석 기준(모든 진단·카드에 적용):\n" + "\n".join(f"- {x}" for x in c["analysis_standard"]))
     if c.get("scale_rule"):
         parts.append("규모 기준: " + c["scale_rule"])
     fb = c.get("feedback_log", [])[-5:]
