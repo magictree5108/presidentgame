@@ -39,7 +39,8 @@ table{width:100%;border-collapse:collapse;font-size:13px}
 td,th{padding:4px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
 th{color:var(--dim);font-weight:500}
 input,select,textarea,button.act{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:6px 8px;font:inherit}
-button.act{cursor:pointer;background:#173049;border-color:#24527a}
+button.act,a.act{cursor:pointer;background:#173049;border-color:#24527a}
+a.act{display:inline-block;border:1px solid #24527a;border-radius:6px;padding:4px 10px;color:var(--text);text-decoration:none;font-size:12px}
 button.act:hover{background:#1d3d5d}
 .row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .muted{color:var(--dim)}.small{font-size:12px}
@@ -216,7 +217,11 @@ async function loadStrategy(){
   const refs = x => x.weak ? `<span class="tag 약함">근거 약함</span>` : refList(x.refs, ev);
   $("#stHead").innerHTML = `<div class="big" style="font-size:18px">${esc(r.goal)}</div>
     <div class="small muted">관점: <b>${esc(r.side)}</b> · 기준일 ${esc(r.on)} · 근거 ${ev.length}개 · 비용 $${r.cost_usd} · 실행 ID ${esc(r.run_id)}</div>
-    <div class="small muted">여론조사 수치는 언론 보도에서 자동 추출(조사기관별 방식 차이 큼, 같은 기관 추세로만 비교). 전략·확률·효과는 AI 추정.</div>`;
+    <div class="small muted">여론조사 수치는 언론 보도에서 자동 추출(조사기관별 방식 차이 큼, 같은 기관 추세로만 비교). 전략·확률·효과는 AI 추정.</div>
+    <div class="row" id="stExport" style="margin-top:8px"><span class="small muted">공유용 내보내기</span>
+      <a class="act" href="/api/strategy/export/pptx?run=${encodeURIComponent(r.run_id)}">PPT</a>
+      <a class="act" href="/api/strategy/export/docx?run=${encodeURIComponent(r.run_id)}">보고서(Word)</a>
+      <a class="act" href="/api/strategy/export/pdf?run=${encodeURIComponent(r.run_id)}">PDF</a></div>`;
   $("#stSit").innerHTML = `<div class="small" style="line-height:1.7">${esc(r.situation.text)} ${refs(r.situation)}</div>`;
   $("#stDiag").innerHTML = `<table class="small"><tr><th>방향</th><th>비중</th><th>요인</th><th>근거·논리</th></tr>${r.diagnosis.map(d =>
     `<tr><td class="${d.direction === "하락 요인" ? "bad" : "ok"}">${esc(d.direction)}</td><td>${esc(d.weight)}</td><td><b>${esc(d.driver)}</b></td><td>${esc(d.rationale)} ${refs(d)}</td></tr>`).join("")}</table>`;

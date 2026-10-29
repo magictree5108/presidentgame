@@ -302,3 +302,21 @@ def polls_board():
 @app.get("/api/calendar")
 def calendar_events():
     return jload(DATA / "calendar.json", {"events": []})
+
+
+@app.get("/api/strategy/export/{fmt}")
+def strategy_export(fmt: str, run: str | None = None):
+    """정무판단 결과를 공유용 파일로: docx(Word) / pptx(PPT) / pdf. AI 비용 없음."""
+    import export_report
+    if fmt not in ("docx", "pptx", "pdf"):
+        raise HTTPException(400, "형식은 docx, pptx, pdf 중 하나")
+    if run and not run.replace("_", "").isalnum():
+        raise HTTPException(400, "잘못된 실행 ID")
+    try:
+        p = export_report.export(fmt, run)
+    except (FileNotFoundError, RuntimeError) as e:
+        raise HTTPException(404 if isinstance(e, FileNotFoundError) else 500, str(e))
+    media = {"docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+             "pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+             "pdf": "application/pdf"}[fmt]
+    return FileResponse(p, media_type=media, filename=p.name)
