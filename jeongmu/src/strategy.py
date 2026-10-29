@@ -116,8 +116,21 @@ def _poll_headlines(start: str, end: str, limit: int = 6) -> list[dict]:
         return []
 
 
-def build_bundle(goal: str, side: str, on: str) -> tuple[Bundle, dict]:
+def add_brief(B: Bundle, path: Path):
+    """사람이 조사해 넣은 사실(지역구·후보 등). 한 줄 = '라벨 | 내용 | 링크'."""
+    for line in Path(path).read_text(encoding="utf-8").splitlines():
+        if not line.strip() or line.startswith("#"):
+            continue
+        parts = [x.strip() for x in line.split("|")]
+        label, text = parts[0], parts[1]
+        link = parts[2] if len(parts) > 2 and parts[2] else None
+        B.add(label if label in ("기록", "보도", "규칙") else "보도", f"[과제 자료] {text}", link)
+
+
+def build_bundle(goal: str, side: str, on: str, brief: Path | None = None) -> tuple[Bundle, dict]:
     B = Bundle()
+    if brief:
+        add_brief(B, brief)
     ctx = {"goal": goal, "side": side, "on": on}
     con = connect()
     s = seats_on(con, on)
@@ -243,10 +256,11 @@ SCHEMA = {
 CONSTRAINTS = OUT_DIR / "constraints.json"
 
 
-def constraints_text() -> str:
-    if not CONSTRAINTS.exists():
+def constraints_text(path: Path | None = None) -> str:
+    path = Path(path) if path else CONSTRAINTS
+    if not path.exists():
         return "(없음)"
-    c = json.loads(CONSTRAINTS.read_text(encoding="utf-8"))
+    c = json.loads(path.read_text(encoding="utf-8"))
     parts = [f"의뢰인: {c.get('principal', '')}"]
     for key, title in (("red_lines", "레드라인(어기면 안 됨)"), ("closed_issues", "종료된 이슈(쓰지 말 것)"),
                        ("fatigued_frames", "피로한 프레임(쓰지 말 것)"), ("banned_card_patterns", "금지 카드 유형")):
@@ -262,17 +276,18 @@ def constraints_text() -> str:
 
 
 # 실측 기반 대략 단가(Opus 5.5): 입력 $4/MTok, 출력 $20/MTok. 전략 1회는 출력·추론이 길다.
-def estimate_usd(bundle: Bundle) -> tuple[float, float]:
-    in_tok = len(SYSTEM + bundle.as_prompt() + playbook.as_prompt() + constraints_text()) / 1.6 + 2500  # 한국어 대략 1.6자/토큰 + 스키마
+def estimate_usd(bundle: Bundle, constraints: Path | None = None) -> tuple[float, float]:
+    in_tok = len(SYSTEM + bundle.as_prompt() + playbook.as_prompt() + constraints_text(constraints)) / 1.6 + 2500  # 한국어 대략 1.6자/토큰 + 스키마
     lo = in_tok * 4 / 1e6 + 6000 * 20 / 1e6
     hi = in_tok * 4 / 1e6 + 32000 * 20 / 1e6
     return round(lo, 3), round(hi, 3)
 
 
-def run(goal: str, side: str, on: str | None = None, estimate_only: bool = False) -> dict:
+def run(goal: str, side: str, on: str | None = None, estimate_only: bool = False,
+        constraints: Path | None = None, brief: Path | None = None) -> dict:
     on = on or date.today().isoformat()
-    B, ctx = build_bundle(goal, side, on)
-    lo, hi = estimate_usd(B)
+    B, ctx = build_bundle(goal, side, on, brief)
+    lo, hi = estimate_usd(B, constraints)
     res = {"goal": goal, "side": side, "on": on, "n_evidence": len(B.items),
            "estimate_usd": [lo, hi], "estimate_krw": [round(lo * 1400), round(hi * 1400)]}
     if estimate_only:
@@ -283,7 +298,7 @@ def run(goal: str, side: str, on: str | None = None, estimate_only: bool = False
     run_id = "st_" + uuid.uuid4().hex[:10]
     before = usage_summary()["cost_usd"]
     prompt = (f"진영: {side}\n목표: {goal}\n기준일: {on}\n\n근거 목록:\n{B.as_prompt()}\n\n"
-              f"의뢰인 제약·피로도·사용자 피드백(반드시 지킬 것):\n{constraints_text()}\n\n"
+              f"의뢰인 제약·피로도·사용자 피드백(반드시 지킬 것):\n{constraints_text(constraints)}\n\n"
               f"원칙집(배경 지식, 인용 금지):\n{playbook.as_prompt()}\n\n"
               "진단 → 전략 카드 6~10개(서로 다른 종류, 실전형) → 전개 시나리오 3~4개(확률 합 1) → 주시할 지표 → 채점 가능한 예측 순으로.")
     out = call_json(SYSTEM, prompt, SCHEMA, purpose="strategy", run_id=run_id, effort="medium", max_tokens=32000)  # 출력 최대 약 $0.64. high 는 추론이 길어 2만 토큰에서 잘림(2026-10-28)
@@ -311,8 +326,10 @@ if __name__ == "__main__":
     ap.add_argument("--side", required=True)
     ap.add_argument("--on")
     ap.add_argument("--estimate", action="store_true", help="근거만 만들고 예상 비용 출력(0원)")
+    ap.add_argument("--constraints", help="의뢰인 제약 파일(기본 data/strategy/constraints.json)")
+    ap.add_argument("--brief", help="과제 자료 파일(라벨 | 내용 | 링크)")
     a = ap.parse_args()
-    r = run(a.goal, a.side, a.on, a.estimate)
+    r = run(a.goal, a.side, a.on, a.estimate, a.constraints, a.brief)
     if a.estimate:
         print(f"근거 {r['n_evidence']}개, 예상 비용 ${r['estimate_usd'][0]}~${r['estimate_usd'][1]} "
               f"(약 {r['estimate_krw'][0]}~{r['estimate_krw'][1]}원)")
