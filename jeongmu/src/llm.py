@@ -7,6 +7,8 @@
 import json
 from datetime import datetime
 
+import budget
+from budget import BudgetExceeded  # noqa: F401  (호출하는 쪽에서 llm.BudgetExceeded 로도 잡을 수 있게)
 from config import LOGS, env
 
 MODEL = "claude-opus-5-5"          # 판단·워게임
@@ -37,6 +39,7 @@ def log_usage(purpose: str, usage: dict, run_id: str | None = None, model: str =
            "model": model, **usage, "cost_usd": cost_usd(usage, model)}
     with (LOGS / "llm_usage.jsonl").open("a", encoding="utf-8") as f:
         f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+    budget.add(rec["cost_usd"])
     return rec
 
 
@@ -64,6 +67,7 @@ def call_json(system: str, user: str, schema: dict, *, purpose: str, run_id: str
     """JSON 스키마로 출력을 강제해 호출하고 dict 를 돌려준다."""
     if not env("ANTHROPIC_API_KEY"):
         raise LLMUnavailable("ANTHROPIC_API_KEY가 .env에 없습니다.")
+    budget.check(purpose)  # 실행·월 한도에 닿았으면 호출하지 않고 BudgetExceeded
     import anthropic
 
     client = anthropic.Anthropic(api_key=env("ANTHROPIC_API_KEY"))

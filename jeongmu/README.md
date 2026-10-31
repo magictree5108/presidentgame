@@ -34,7 +34,8 @@
 | `src/wargame.py` | 워게임 턴 진행 |
 | `src/predictions.py` | 예측 기록·자동 채점·역검증 (`data/predictions.sqlite`, `docs/backtest.md`) |
 | `src/llm.py` | Anthropic 호출, 호출별 토큰·비용 로그 (`data/logs/llm_usage.jsonl`) |
-| `daily.py` | 매일 새벽 예약 실행 묶음 |
+| `src/budget.py` | 비용 합산(이번 달·오늘·이번 실행), 실행·월 한도 도달 시 호출 전 정지와 알림(`data/logs/alerts.log`), 실행 요약 1줄(`data/logs/daily_runs.jsonl`) |
+| `daily.py` | 매일 실행 묶음(국회→지표→경험칙→뉴스→여론조사 기사→쟁점 입장→채점). 기본은 0원 단계와 예상 비용만, AI 추출은 `--approve`(허락 후), 상한은 `--budget-krw` |
 | `web/index.html` | 화면(빌드 없음) |
 | `tests/` | 자동 테스트(`python -m pytest tests`). 테스트 데이터는 모두 가상 |
 

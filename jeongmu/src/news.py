@@ -27,6 +27,7 @@ import requests
 
 sys.path.insert(0, str(Path(__file__).parent))
 
+from budget import BudgetExceeded, run_spent_usd
 from config import DATA, DOCS, NEWS_DB, env
 from db import connect
 
@@ -210,10 +211,16 @@ def collect(max_members: int | None = None, do_extract: bool = True, dry_run: bo
                         ncon.execute("INSERT OR IGNORE INTO facts(url,entity_type,entity_id,category,summary,extracted_at) VALUES(?,?,?,?,?,?)",
                                      (url, etype, eid, f["category"], f["summary"], datetime.now().isoformat(timespec="seconds")))
                         stats["facts"] += 1
+                except BudgetExceeded:
+                    stats["stopped_by_budget"] = True
+                    break
                 except Exception as e:
                     print(f"추출 실패: {e}")
                     do_extract = False  # 키가 없거나 오류면 이번 실행은 추출 생략
         ncon.commit()
+        if stats.get("stopped_by_budget"):
+            break  # 한도 정지: 저장한 것까지만. 다음 실행 때 사실이 없는 기사부터 이어서 추출
+    stats["spent_usd"] = run_spent_usd()
     return stats
 
 
@@ -271,10 +278,19 @@ if __name__ == "__main__":
     ap.add_argument("--max-members", type=int)
     ap.add_argument("--no-extract", action="store_true")
     ap.add_argument("--dry-run", action="store_true", help="AI 없이 처리할 기사 수만 세어 비용 추정")
+    ap.add_argument("--budget-usd", type=float, help="이번 실행 AI 비용 상한(달러). 닿으면 멈춤")
+    ap.add_argument("--stats-out", help="실행 통계를 JSON 파일로 저장(daily.py 요약용)")
     a = ap.parse_args()
     if a.cmd == "collect":
+        if a.budget_usd is not None:
+            import os
+            os.environ["JEONGMU_RUN_BUDGET_USD"] = str(a.budget_usd)
         st = collect(a.max_members, not a.no_extract, a.dry_run)
         print(st)
+        if a.stats_out:
+            Path(a.stats_out).write_text(json.dumps(st, ensure_ascii=False), encoding="utf-8")
+        if st.get("stopped_by_budget"):
+            sys.exit(3)
         if a.dry_run:
             n = st.get("to_extract", 0)
             print(f"AI 추출 대상 {n}건 → 예상 비용 약 ${n * 0.00012:.3f}~${n * 0.0003:.3f} "

@@ -20,6 +20,7 @@ from urllib.parse import urlparse
 
 sys.path.insert(0, str(Path(__file__).parent))
 
+from budget import BudgetExceeded
 from config import DATA
 from news import clean, search
 
@@ -120,6 +121,9 @@ def collect(dry_run: bool, budget_usd: float | None = None) -> dict:
         try:
             out = call_json(EXTRACT_SYSTEM, f"제목: {title}\n요약문: {desc}\n기사 날짜: {pub}", EXTRACT_SCHEMA,
                             purpose="poll_extract", effort="low", max_tokens=2000, model=CHEAP_MODEL)
+        except BudgetExceeded:
+            stats["stopped_by_budget"] = True
+            break
         except Exception as e:
             print(f"추출 실패: {e}")
             continue
@@ -206,10 +210,15 @@ if __name__ == "__main__":
     ap.add_argument("cmd", choices=["collect", "show"])
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--budget-usd", type=float, help="이번 실행 AI 비용 상한(달러). 닿으면 멈춤")
+    ap.add_argument("--stats-out", help="실행 통계를 JSON 파일로 저장(daily.py 요약용)")
     a = ap.parse_args()
     if a.cmd == "collect":
         st = collect(a.dry_run, a.budget_usd)
         print(st)
+        if a.stats_out:
+            Path(a.stats_out).write_text(json.dumps(st, ensure_ascii=False), encoding="utf-8")
+        if st.get("stopped_by_budget"):
+            sys.exit(3)
         if a.dry_run:
             n = st["new"]
             print(f"AI 추출 대상 {n}건 → 예상 약 ${n * 0.0001:.2f}~${n * 0.0003:.2f} "
